@@ -1,6 +1,8 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const sendEmail = require('../utils/emailService');
 
 const register = async (req, res) => {
     try {
@@ -32,4 +34,56 @@ const login = async (req, res) => {
     }
 };
 
-module.exports = { register, login };
+
+
+// Request Password Reset
+const requestPasswordReset = async (req, res) => {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    await user.save();
+
+    const resetUrl = `http://your-frontend-url.com/reset-password/${resetToken}`;
+    const message = `Please use the following link to reset your password: ${resetUrl}`;
+    
+    try {
+     const data =   await sendEmail(user.email, 'Password Reset Request', message);
+     console.log(data)
+        res.json({ message: 'Password reset email sent' });
+    } catch (error) {
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        await user.save();
+        console.log(error)
+        res.status(500).json({ message: 'Email could not be sent' });
+    }
+};
+
+// Reset Password
+const resetPassword = async (req, res) => {
+    const { token, newPassword } = req.body;
+    const user = await User.findOne({
+        resetPasswordToken: token,
+        resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+        return res.status(400).json({ message: 'Invalid or expired token' });
+    }
+
+    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.json({ message: 'Password has been reset successfully' });
+};
+
+module.exports = { register, login,requestPasswordReset, resetPassword }; 
