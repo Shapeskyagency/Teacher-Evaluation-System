@@ -1,76 +1,46 @@
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 
-export const isUserLogined = () => {
-  let token = null;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("accessToken");
-  }
-  return token ? true : false;
-};
+
 
 export const getToken = () => {
-  let token = null;
   if (typeof window !== "undefined") {
-    token = localStorage?.getItem("accessToken");
-    return token;
-  }else if(typeof window == "undefined"){
-    localStorage.clear()
+    return localStorage.getItem("token") || null;
   }
-  return token;
+  return null;
 };
 
 export const getUserId = () => {
-    var token = getToken();
-    let decoded = null;
-    if (token) {
-      decoded = jwtDecode(token);
-    }
-    return decoded;
+  const token = getToken()
+  return token ? jwtDecode(token) : null;
+};
+
+export const getAllTimes = (timestamp) => {
+  const dateTime = new Date(timestamp);
+
+  const pad = (number) => number.toString().padStart(2, '0');
+
+  const year = dateTime.getFullYear();
+  const month = pad(dateTime.getMonth() + 1);
+  const day = pad(dateTime.getDate());
+
+  const hours = pad(dateTime.getHours());
+  const minutes = pad(dateTime.getMinutes());
+  const seconds = pad(dateTime.getSeconds());
+
+  const timezoneOffsetMinutes = dateTime.getTimezoneOffset();
+  const timezoneOffsetSign = timezoneOffsetMinutes > 0 ? '-' : '+';
+  const timezoneOffsetHours = pad(Math.floor(Math.abs(timezoneOffsetMinutes) / 60));
+  const timezoneOffsetMinutesAdjusted = pad(Math.abs(timezoneOffsetMinutes) % 60);
+
+  return {
+    year,
+    month,
+    day,
+    hours,
+    minutes,
+    seconds,
+    formattedDate: `${year}-${month}-${day}`,
+    formattedTime: `${hours}:${minutes}:${seconds}`,
+    formattedTimezone: `${timezoneOffsetSign}${timezoneOffsetHours}:${timezoneOffsetMinutesAdjusted}`,
   };
-
-  export const LocalFbRole = () => {
-    var fb_role = localStorage.getItem("userRole");
-    let decoded = null;
-    if (fb_role) {
-      decoded = fb_role;
-    }
-    return decoded;
-  };
-
-export const getAllTimes = (timestamp) =>{
-    
- // Create a Date object from the timestamp
-const dateTime = new Date(timestamp);
-
-// Extract date, time, and timezone components
-const year = dateTime.getFullYear();
-const month = (dateTime.getMonth() + 1).toString().padStart(2, '0');
-const day = dateTime.getDate().toString().padStart(2, '0');
-
-const hours = dateTime.getHours().toString().padStart(2, '0');
-const minutes = dateTime.getMinutes().toString().padStart(2, '0');
-const seconds = dateTime.getSeconds().toString().padStart(2, '0');
-
-// Timezone offset in minutes
-const timezoneOffsetMinutes = dateTime.getTimezoneOffset();
-const timezoneOffsetHours = Math.floor(Math.abs(timezoneOffsetMinutes) / 60);
-const timezoneOffsetSign = timezoneOffsetMinutes > 0 ? '-' : '+';
-
-// Format the date, time, and timezone
-const formattedDate = `${year}-${month}-${day}`;
-const formattedTime = `${hours}:${minutes}:${seconds}`;
-const formattedTimezone = `${timezoneOffsetSign}${timezoneOffsetHours.toString().padStart(2, '0')}:${(Math.abs(timezoneOffsetMinutes) % 60).toString().padStart(2, '0')}`;
-
-const meinData = {
-  year:year,
-  month:month,
-  day:day,
-  hours:hours,
-  minutes:minutes,
-  seconds:seconds,
-  formattedDate:formattedDate,
-  formattedTime:formattedTime,
-  formattedTimezone:formattedTimezone
-}
-return meinData
-}
+};
