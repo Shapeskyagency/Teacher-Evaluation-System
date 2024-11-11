@@ -6,11 +6,11 @@ const sendEmail = require('../utils/emailService');
 
 const register = async (req, res) => {
     try {
-        const { employeeId, customId, name, email, mobile, access, designation, password } = req.body;
+        const { employeeId, customerId, name, email, mobile, access, designation, password } = req.body;
         const existingUser = await User.findOne({ email });
         if (existingUser) return res.status(400).json({ message: 'User already exists' });
 
-        const newUser = new User({ employeeId, customId, name, email, mobile, access, designation, password });
+        const newUser = new User({ employeeId, customerId, name, email, mobile, access, designation, password });
         await newUser.save();
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
