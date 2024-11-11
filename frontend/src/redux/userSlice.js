@@ -5,7 +5,10 @@ import { axiosInstanceToken } from './instence';
 
 
 
-
+export const UserLogin = createAsyncThunk('UserLogin',async (payload) => {
+    const response = await axiosInstanceToken.post(`/auth/login`,payload);
+      return response.data;
+  })
 
 
 

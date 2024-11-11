@@ -1,11 +1,11 @@
 import React from "react";
 import { useRoutes } from "react-router-dom";
-import { defaultProtect, protect } from "./Utils/Routes";
-import { withoutAuthRoute } from "./Utils/helper";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { defaultProtect, protect } from "./Utils/Routes";
+import { withoutAuthRoute } from "./Utils/helper";
 
-function App() {
+function App () {
   const routing = useRoutes(protect);
 
   let pathName = window.location.pathname

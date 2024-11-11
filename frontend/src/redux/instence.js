@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { getToken } from '../Utils/auth';
 import { baseURL } from '../config/config';
+import { getToken } from '../Utils/auth';
 
 export const axiosInstance = axios.create({
   baseURL: baseURL,
@@ -9,7 +9,7 @@ export const axiosInstance = axios.create({
   },
 });
 
-const token = JSON.parse(getToken());
+const token = getToken();
 
 export const axiosInstanceToken = axios.create({
   baseURL: baseURL,

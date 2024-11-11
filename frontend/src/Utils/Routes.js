@@ -10,10 +10,8 @@ import AdminDashboard from "../Pages/Admin/AdminDashboard";
 import ObserverDashboard from "../Pages/Observer/ObserverDashboard";
 import TeacherDashboard from "../Pages/Teachers/TeacherDashboard";
 
-
 const role = getUserId()?.access;
-const isLoggedIn = !!getToken();
-
+const isLoggedIn = getToken() !== null ? getToken()  : null;
 const protects = {
   Teacher: [
     {
@@ -29,7 +27,7 @@ const protects = {
   Superadmin: [
     {
       path: "/",
-      element: isLoggedIn && role === 'admin' ? <DashboardLayout /> : <Navigate to="/login" />,
+      element: isLoggedIn && role === 'Superadmin' ? <DashboardLayout /> : <Navigate to="/login" />,
       children: [
         { path: "/", element: <Navigate to="/dashboard" /> },
         { path: "/dashboard", element: <AdminDashboard/> },
@@ -62,5 +60,5 @@ const protects = {
   ],
 };
 
-export const protect = role && isLoggedIn ? (role === 'admin' ? protects['admin'] : protects['user']) : protects['default'];
+export const protect = role && isLoggedIn ?protects[role]  : protects['default'];
 export const defaultProtect = protects['default'];
