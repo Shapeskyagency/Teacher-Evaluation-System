@@ -29,7 +29,7 @@ const createUser = async (req, res) => {
         await sendEmail(
             email,
             'Your Account Details',
-            `Dear ${name},\n\nYour account has been successfully created.\nYour password is: ${password}\n\nThank you.`
+            `Dear ${name},\n\nYour account has been successfully created.\nUsername: ${email}\nYour password is: ${password}\n\nThank you.`
         )
         res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
@@ -49,4 +49,61 @@ const getAllUsers = async (req, res) => {
     }
 }
 
-module.exports = {createUser, getAllUsers};
+const getUserById = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const user = await User.findById(userId, '-password');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error:error.message });
+    }
+};
+
+const updateUserById = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const updateData = req.body;
+        
+        console.log("Update Data:", updateData);
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            updateData,
+            { new: true, runValidators: true, fields: '-password' } 
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'User updated successfully', data: updatedUser });
+    } catch (error) {
+        console.error("Error updating user:", error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+const deleteUserById = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'User deleted successfull' });
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+}
+
+
+module.exports = {createUser, getAllUsers, getUserById, updateUserById, deleteUserById};
