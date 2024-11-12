@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
     hod: { type: String},
     motherTeacher: { type: String},
     subjectTeacher: { type: String },
-    class: { type: String },
+    sclass: { type: String },
     section: { type: String },
     password: { type: String, required: true },
     resetPasswordToken: String,
