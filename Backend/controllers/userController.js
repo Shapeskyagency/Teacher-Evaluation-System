@@ -14,6 +14,9 @@ const generateCustomerId = () => {
 
 const createUser = async (req, res) => {
     try {
+         if (req.user.access !== 'Superadmin') {
+            return res.status(403).json({ message: 'Access denied. Only Superadmin can create new users.' });
+        }
         const { employeeId, name, email, mobile, access, designation, coordinator, hod, motherTeacher, subjectTeacher, sclass, section, password } = req.body;
 
         const customId = generateCustomerId();
@@ -35,5 +38,15 @@ const createUser = async (req, res) => {
     }
 };
 
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find({
+            // access: { $in: ["Teacher", "Observer"]}
+        }, '-password');
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+}
 
-module.exports = createUser;
+module.exports = {createUser, getAllUsers};
