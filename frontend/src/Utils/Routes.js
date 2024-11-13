@@ -9,6 +9,9 @@ import TeacherLayout from "./TeacherLayout";
 import AdminDashboard from "../Pages/Admin/AdminDashboard";
 import ObserverDashboard from "../Pages/Observer/ObserverDashboard";
 import TeacherDashboard from "../Pages/Teachers/TeacherDashboard";
+import Users from "../Pages/Admin/Users";
+import NotFound404 from "../Components/NotFound404";
+import UnderConstraction from "../Components/UnderConstraction";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken()  : null;
@@ -20,7 +23,7 @@ const protects = {
       children: [
         { path: "/", element: <Navigate to="/Teacher" /> },
         { path: "/Teacher", element: <TeacherDashboard/> },
-        { path: "*", element: <div>No page found</div> },
+        { path: "*", element: <NotFound404/>},
       ],
     },
   ],
@@ -31,7 +34,9 @@ const protects = {
       children: [
         { path: "/", element: <Navigate to="/dashboard" /> },
         { path: "/dashboard", element: <AdminDashboard/> },
-        { path: "*", element: <div>No page found</div> },
+        { path: "/users", element: <Users/> },
+        { path: "/reports", element: <UnderConstraction/> },
+        { path: "*", element: <NotFound404/> },
       ],
     },
   ],
@@ -42,7 +47,7 @@ const protects = {
       children: [
         { path: "/", element: <Navigate to="/Observer" /> },
         { path: "/dashboard", element: <ObserverDashboard/> },
-        { path: "*", element: <div>No page found</div> },
+        { path: "*", element: <NotFound404/> },
       ],
     },
   ],
