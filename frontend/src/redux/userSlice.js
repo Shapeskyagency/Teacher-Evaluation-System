@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { axiosInstanceToken } from './instence';
+import { axiosInstance, axiosInstanceToken } from './instence';
 
 
 
 
 
 export const UserLogin = createAsyncThunk('UserLogin',async (payload) => {
-    const response = await axiosInstanceToken.post(`/auth/login`,payload);
+    const response = await axiosInstance.post(`/auth/login`,payload);
       return response.data;
   })
 
