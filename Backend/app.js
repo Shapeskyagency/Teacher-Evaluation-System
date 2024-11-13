@@ -5,11 +5,15 @@ const userRouter = require('./routes/userRoutes');
 require('dotenv').config();
 const cors = require('cors')
 const app = express();
-app.use(cors({
-    origin: '*',  // Allow all origins
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',  // Allow these HTTP methods
-    allowedHeaders: 'Content-Type,Authorization',  // Allow these headers
-}));
+// app.use(cors({
+//     origin: '*',  // Allow all origins
+//     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',  // Allow these HTTP methods
+//     allowedHeaders: 'Content-Type,Authorization',  // Allow these headers
+
+// }));
+
+
+app.use(cors())
 
 // Connect to MongoDB
 connectDB();
