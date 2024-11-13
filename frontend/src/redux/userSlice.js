@@ -10,6 +10,10 @@ export const UserLogin = createAsyncThunk('UserLogin',async (payload) => {
       return response.data;
   })
 
+  export const GetUserList = createAsyncThunk('GetUserList',async (payload) => {
+    const response = await axiosInstanceToken.get(`/user/get`);
+      return response.data;
+  })
 
 
 
@@ -111,15 +115,15 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // Get user profile
-      .addCase(getUserProfile.pending, (state) => {
+      .addCase(GetUserList.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getUserProfile.fulfilled, (state, action) => {
+      .addCase(GetUserList.fulfilled, (state, action) => {
         state.loading = false;
-        state.profile = action.payload;
+        state.data = action.payload;
       })
-      .addCase(getUserProfile.rejected, (state, action) => {
+      .addCase(GetUserList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

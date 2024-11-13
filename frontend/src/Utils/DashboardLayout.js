@@ -48,18 +48,17 @@ const headerStyle = {
   height: 64,
   paddingInline: 48,
   lineHeight: '64px',
-  // backgroundColor: '#4096ff',
+  backgroundColor: '#4096ff',
 };
 const contentStyle = {
-  textAlign: 'center',
+  // textAlign: 'center',
   minHeight: 120,
-  lineHeight: '120px',
-  color: '#fff',
-  // backgroundColor: '#0958d9',
+  lineHeight: '100px',
+  backgroundColor: '#fff',
 };
 const siderStyle = {
   textAlign: 'center',
-  lineHeight: '120px',
+  lineHeight: '150%',
   color: '#fff',
   // backgroundColor: '#1677ff',
   height:"100dvh",
@@ -77,5 +76,4 @@ const layoutStyle = {
   maxWidth: '100%',
   margin:"auto"
 };
-
 

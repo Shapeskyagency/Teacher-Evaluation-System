@@ -45,7 +45,7 @@ const headerStyle = {
   height: 64,
   paddingInline: 48,
   lineHeight: '64px',
-  // backgroundColor: '#4096ff',
+  backgroundColor: '#4096ff',
 };
 const contentStyle = {
   textAlign: 'center',
@@ -56,7 +56,7 @@ const contentStyle = {
 };
 const siderStyle = {
   textAlign: 'center',
-  lineHeight: '120px',
+  lineHeight: '150%',
   color: '#fff',
   // backgroundColor: '#1677ff',
   height:"100dvh",

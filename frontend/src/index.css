@@ -2,12 +2,15 @@
 
 
 .host-grotesk-1 {
-  font-family: "Host Grotesk", sans-serif;
+  font-family: "Host Grotesk", sans-serif; 
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
 }
 
+*{
+  font-family: "Host Grotesk", sans-serif;
+}
 
 body {
   margin: 0;
