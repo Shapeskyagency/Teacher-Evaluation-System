@@ -12,6 +12,7 @@ import TeacherDashboard from "../Pages/Teachers/TeacherDashboard";
 import Users from "../Pages/Admin/Users";
 import NotFound404 from "../Components/NotFound404";
 import UnderConstraction from "../Components/UnderConstraction";
+import UserDetails from "../Pages/Admin/UserDetails";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken()  : null;
@@ -35,6 +36,7 @@ const protects = {
         { path: "/", element: <Navigate to="/dashboard" /> },
         { path: "/dashboard", element: <AdminDashboard/> },
         { path: "/users", element: <Users/> },
+        { path: "/users/:id", element: <UserDetails/> },
         { path: "/reports", element: <UnderConstraction/> },
         { path: "*", element: <NotFound404/> },
       ],
