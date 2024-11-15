@@ -64,19 +64,19 @@ function AdminDashboard() {
     <Col md={4}>
     <Card >
       <h2>Total Users</h2>
-      <p className='fs-3'>0</p>
+      <p className='fs-3 bg-success-subtle px-3 rounded-5' style={{width:"fit-content"}}>0{UserLists?.length}</p>
     </Card>
     </Col>
     <Col md={4}>
     <Card >
       <h2>Pending Forms Users</h2>
-      <p className='fs-3'>0</p>
+      <p className='fs-3 bg-success-subtle px-3 rounded-5' style={{width:"fit-content"}}>0</p>
     </Card>
     </Col>
     <Col md={4}>
     <Card >
       <h2>Filled Forms</h2>
-      <p className='fs-3'>0</p>
+      <p className='fs-3 bg-success-subtle px-3 rounded-5' style={{width:"fit-content"}}>0</p>
     </Card>
     </Col>
   </Row>
