@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form, Input, Select, Row, Col, Button, message } from "antd";
 import { useDispatch } from "react-redux";
-import { CreateUserList } from "../redux/userSlice";
+import { CreateUserList, GetUserList } from "../redux/userSlice";
 import Password from "antd/es/input/Password";
 
 const { Option } = Select;
@@ -17,7 +17,7 @@ function CreateUserForm({ onOk, onCancel, Payload }) {
       // Dispatch API call and handle response
       const response = await dispatch(CreateUserList(values));
       console.log(response);
-
+      dispatch(GetUserList());
       message.success("User created successfully");
       form.resetFields(); // Reset form after submission
       onOk(); // Notify parent about success

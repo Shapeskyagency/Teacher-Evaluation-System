@@ -106,4 +106,22 @@ const deleteUserById = async (req, res) => {
 }
 
 
-module.exports = {createUser, getAllUsers, getUserById, updateUserById, deleteUserById};
+
+
+// app.post("/api/users/bulk-upload", async (req, res) => {
+    const BulkUserCreate = async (req, res) => {
+        const users = req.body
+    try {
+        const usersWithCustomIds = users.map(user => ({
+            ...user,
+            customId:  generateCustomerId(),
+        }));
+      await User.insertMany(usersWithCustomIds, { ordered: false }); // `ordered: false` skips duplicates
+      res.status(200).send({ message: "Users uploaded successfully." });
+    } catch (error) {
+      res.status(500).send({ error: error.message });
+    }
+  }
+
+
+module.exports = {createUser, getAllUsers, getUserById, updateUserById, deleteUserById,BulkUserCreate};
