@@ -7,7 +7,7 @@ const cors = require('cors')
 const app = express();
 app.use(cors({
     credentials: true,
-    origin: ['https://demo.dekhooo.com','https://dekhooo.com'],  // Allow all origins
+    origin: ['https://teacher-evaluation-system-nine.vercel.app','https://teacher-evaluation-system-git-frontend-shape-skys-projects.vercel.app/'],  // Allow all origins
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',  // Allow these HTTP methods
     allowedHeaders: 'Content-Type,Authorization',  // Allow these headers
 }));
