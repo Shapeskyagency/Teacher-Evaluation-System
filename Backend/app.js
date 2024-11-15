@@ -6,8 +6,8 @@ require('dotenv').config();
 const cors = require('cors')
 const app = express();
 app.use(cors({
-    credentials: true,
-    origin: ['https://teacher-evaluation-system-nine.vercel.app','https://teacher-evaluation-system-git-frontend-shape-skys-projects.vercel.app/'],  // Allow all origins
+    // credentials: true,
+    origin: 'https://teacher-evaluation-system-nine.vercel.app',  // Allow all origins
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',  // Allow these HTTP methods
     allowedHeaders: 'Content-Type,Authorization',  // Allow these headers
 }));
