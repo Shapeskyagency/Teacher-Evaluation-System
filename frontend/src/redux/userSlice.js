@@ -30,6 +30,16 @@ export const UserLogin = createAsyncThunk('UserLogin',async (payload) => {
     const response = await axiosInstanceToken.put(`/user/update/${payload.id}`,payload);
       return response.data;
   })
+  export const BulkUserCreate = createAsyncThunk('BulkUserCreate',async (payload) => {
+    const response = await axiosInstanceToken.post(`/user/bulk-upload`,payload);
+      return response.data;
+  })
+
+  export const DeleteUser = createAsyncThunk('DeleteUser',async (payload) => {
+    const response = await axiosInstanceToken.delete(`/user/delete/${payload}`);
+      return response.data;
+  })
+
 
 
 
