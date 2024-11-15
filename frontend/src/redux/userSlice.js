@@ -14,6 +14,22 @@ export const UserLogin = createAsyncThunk('UserLogin',async (payload) => {
     const response = await axiosInstanceToken.get(`/user/get`);
       return response.data;
   })
+  export const CreateUserList = createAsyncThunk('CreateUserList',async (payload) => {
+    const response = await axiosInstanceToken.post(`/user/create`,payload);
+      return response.data;
+  })
+
+
+  export const GetSignleUser = createAsyncThunk('GetSignleUser',async (payload) => {
+    const response = await axiosInstanceToken.get(`/user/single/${payload}`);
+      return response.data;
+  })
+
+
+  export const UpdateUser = createAsyncThunk('UpdateUser',async (payload) => {
+    const response = await axiosInstanceToken.put(`/user/update/${payload.id}`,payload);
+      return response.data;
+  })
 
 
 
@@ -46,18 +62,7 @@ export const getUserProfile = createAsyncThunk(
   }
 );
 
-// Update user profile
-export const updateUserProfile = createAsyncThunk(
-  'user/updateUserProfile',
-  async (payload) => {
-    const response = await axiosInstanceToken.put(`/user/update-profile/${payload?.userId}`, payload?.formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    return response.data.user;
-  }
-);
+
 
 // Update user password
 export const updateUserPassword = createAsyncThunk(
@@ -128,15 +133,15 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
       // Update user profile
-      .addCase(updateUserProfile.pending, (state) => {
+      .addCase(CreateUserList.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateUserProfile.fulfilled, (state, action) => {
+      .addCase(CreateUserList.fulfilled, (state, action) => {
         state.loading = false;
         state.profile = action.payload;
       })
-      .addCase(updateUserProfile.rejected, (state, action) => {
+      .addCase(CreateUserList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

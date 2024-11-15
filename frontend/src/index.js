@@ -16,7 +16,25 @@ root.render(
   
   <Provider store={store}>
     <BrowserRouter>
-    <ConfigProvider theme={{ token: { colorPrimary: "linear-gradient(135deg, #6253e1, #04befe)"  } }}>
+    <ConfigProvider 
+    
+    theme={{
+      components:{
+        Modal: {
+          titleFontSize:25,
+        },
+        Input:{
+          activeBorderColor:"#1677ff",
+          hoverBorderColor:"#4096ff",
+          activeShadow:"#4096ff"
+        },
+        Button:{
+          // colorPrimary: "linear-gradient(135deg, #6253e1, #04befe)",
+          border:"none",
+        },
+        
+      },
+      }}>
         <App />
     </ConfigProvider>
     </BrowserRouter>

@@ -21,7 +21,7 @@ const createUser = async (req, res) => {
 
         const customId = generateCustomerId();
         const existingUser = await User.findOne({ email });
-        if (existingUser) return res.status(400).json({ message: 'User already exists' });
+        if (existingUser) return res.status(409).json({ message: 'User already exists' });
 
         const newUser = new User({ employeeId, customId, name, email, mobile, access, designation, coordinator, hod, motherTeacher, subjectTeacher, sclass, section, password });
         await newUser.save();
