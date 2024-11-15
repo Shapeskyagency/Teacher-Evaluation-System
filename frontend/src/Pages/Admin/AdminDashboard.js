@@ -1,15 +1,20 @@
 import { DeleteFilled } from '@ant-design/icons';
-import { Button, Card, Space, Table } from 'antd'
-import React, { useMemo } from 'react'
+import { Button, Card, Space, Spin, Table } from 'antd'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Col, Container, Row } from 'react-bootstrap'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getAllTimes } from '../../Utils/auth';
+import { GetUserList } from '../../redux/userSlice';
 
 function AdminDashboard() {
-
+  const [loading, setLoading] = useState(false); // Loader state
   const UserLists = useSelector((state) => state?.user?.data);
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    setLoading(true); // Show loader
+    dispatch(GetUserList()).finally(() => setLoading(false)); // Hide loader after fetching data
+  }, [dispatch]);
 
   const columns = useMemo(() => [
     {
@@ -77,7 +82,11 @@ function AdminDashboard() {
   </Row>
   <Row>
     <Col >
-    <Table showSizeChanger={false} dataSource={Array.isArray(UserLists) && UserLists.slice().reverse()} columns={columns} rowKey="employeeId" />
+    {loading ? (
+          <Spin size="large" />
+        ) : (
+          <Table showSizeChanger={false} dataSource={Array.isArray(UserLists) && UserLists.slice().reverse()} columns={columns} rowKey="employeeId" />
+        )}
     </Col>
   </Row>
 </Container>
