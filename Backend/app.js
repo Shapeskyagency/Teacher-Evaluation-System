@@ -2,6 +2,7 @@ const express = require('express');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
+const formRouts = require('./routes/formRoutes');
 require('dotenv').config();
 const cors = require('cors')
 const app = express();
@@ -24,5 +25,6 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRouter)
+app.use('/api/form', formRouts)
 
 module.exports = app;

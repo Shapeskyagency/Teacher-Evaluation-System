@@ -1,8 +1,8 @@
-import { Button, ConfigProvider, Input, message } from "antd";
+import { Button, Input, message } from "antd";
 import React, { useState } from "react";
 import { AntDesignOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Col } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { UserLogin } from "../redux/userSlice";
 
@@ -11,7 +11,6 @@ function Login() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   // Email validation function
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

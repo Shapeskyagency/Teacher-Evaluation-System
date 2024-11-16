@@ -13,6 +13,8 @@ import Users from "../Pages/Admin/Users";
 import NotFound404 from "../Components/NotFound404";
 import UnderConstraction from "../Components/UnderConstraction";
 import UserDetails from "../Pages/Admin/UserDetails";
+import UserProfile from "../Pages/UserProfile";
+import FortnightlyMonitor from "../Pages/Forms/FortnightlyMonitor";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken()  : null;
@@ -24,6 +26,7 @@ const protects = {
       children: [
         { path: "/", element: <Navigate to="/Teacher" /> },
         { path: "/Teacher", element: <TeacherDashboard/> },
+        {path:"/profile", element:<UserProfile/>},
         { path: "*", element: <NotFound404/>},
       ],
     },
@@ -38,6 +41,9 @@ const protects = {
         { path: "/users", element: <Users/> },
         { path: "/users/:id", element: <UserDetails/> },
         { path: "/reports", element: <UnderConstraction/> },
+        {path:"/profile", element:<UserProfile/>},
+        {path:'/fortnightly-monitor', element:<FortnightlyMonitor/>},
+        {path:'/fortnightly-monitor/:id', element:<FortnightlyMonitor/>},
         { path: "*", element: <NotFound404/> },
       ],
     },
@@ -49,7 +55,11 @@ const protects = {
       children: [
         { path: "/", element: <Navigate to="/Observer" /> },
         { path: "/dashboard", element: <ObserverDashboard/> },
+        {path:'/fortnightly-monitor', element:<FortnightlyMonitor/>},
+        {path:'/fortnightly-monitor/:id', element:<FortnightlyMonitor/>},
+        {path:"/profile", element:<UserProfile/>},
         { path: "*", element: <NotFound404/> },
+
       ],
     },
   ],
@@ -61,7 +71,7 @@ const protects = {
         { path: "/", element: <Login />},
         { path: "/login", element: <Login /> },
         { path: "/signup", element:<Register /> },
-        { path: "*", element: <div>No page found</div> },
+        { path: "*", element: <NotFound404/> },
       ],
     },
   ],
