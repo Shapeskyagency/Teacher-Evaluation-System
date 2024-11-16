@@ -60,9 +60,10 @@ const siderStyle = {
   textAlign: 'center',
   lineHeight: '150%',
   color: '#fff',
-  // backgroundColor: '#1677ff',
+  backgroundColor: '#fff',
   height:"100dvh",
-  overflow:"auto"
+  overflow:"auto",
+  boxShadow:"rgb(0 0 0 / 11%) 1px 1px 9px"
 };
 const footerStyle = {
   textAlign: 'center',

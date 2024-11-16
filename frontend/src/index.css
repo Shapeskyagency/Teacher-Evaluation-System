@@ -25,3 +25,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+.IndexColor:hover{
+color: #0b5ed7 !important;
+}
+
+.IndexColor.btn-primary{
+  color: #fff !important;
+}
+.Bg-Temp
+{
+  background-color: #6ca5f9fb;
+}

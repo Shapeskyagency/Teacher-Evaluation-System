@@ -39,6 +39,7 @@ const ObserverLayout = () => {
 export default memo(ObserverLayout);
 
 
+
 const headerStyle = {
   textAlign: 'center',
   color: '#fff',
@@ -48,19 +49,19 @@ const headerStyle = {
   backgroundColor: '#4096ff',
 };
 const contentStyle = {
-  textAlign: 'center',
+  // textAlign: 'center',
   minHeight: 120,
-  lineHeight: '120px',
-  color: '#fff',
-  // backgroundColor: '#0958d9',
+  lineHeight: '100px',
+  backgroundColor: '#fff',
 };
 const siderStyle = {
   textAlign: 'center',
   lineHeight: '150%',
   color: '#fff',
-  // backgroundColor: '#1677ff',
+  backgroundColor: '#fff',
   height:"100dvh",
-  overflow:"auto"
+  overflow:"auto",
+  boxShadow:"rgb(0 0 0 / 11%) 1px 1px 9px"
 };
 const footerStyle = {
   textAlign: 'center',
@@ -74,4 +75,5 @@ const layoutStyle = {
   maxWidth: '100%',
   margin:"auto"
 };
+
 

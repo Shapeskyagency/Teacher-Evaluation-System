@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Button, Input, message, Modal, Space, Table, Tag, Upload, Spin } from 'antd';
-import { UploadOutlined, PlusCircleOutlined, SearchOutlined, CloudFilled, DownloadOutlined, DeleteColumnOutlined, DeleteFilled } from '@ant-design/icons';
+import { Button, Input, message, Modal, Space, Table,  Upload, Spin } from 'antd';
+import { UploadOutlined, PlusCircleOutlined, SearchOutlined, CloudFilled, DownloadOutlined, DeleteFilled } from '@ant-design/icons';
 import { Container } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { BulkUserCreate, CreateUserList, DeleteUser, GetUserList } from '../../redux/userSlice';
+import { BulkUserCreate, DeleteUser, GetUserList } from '../../redux/userSlice';
 import { getAllTimes } from '../../Utils/auth';
 import CreateUserForm from '../../Components/CreateUserForm';
 import { Link } from 'react-router-dom';

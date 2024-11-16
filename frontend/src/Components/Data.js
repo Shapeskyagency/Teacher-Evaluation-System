@@ -1,23 +1,29 @@
 import { Space, Tag } from "antd";
 import { Link } from "react-router-dom";
-import { getAllTimes } from "../Utils/auth";
+import { AppstoreAddOutlined, FormOutlined, PieChartOutlined, UserAddOutlined, UserOutlined, UserSwitchOutlined } from "@ant-design/icons";
 
 export const Menu ={
     Superadmin:[
-        {name:"Dashboard", route:"/dashboard"},
-        {name:"Reports", route:"/reports"},
-        {name:"User", route:"/users"},
-        {name:"Logout", logout: function(){localStorage.clear(); window.location.replace('/') }},
+        {name:"Dashboard", route:"/dashboard",icon:<AppstoreAddOutlined />},
+        {name:"Reports", route:"/reports",icon:<PieChartOutlined />},
+        {name:"User", route:"/users",icon:<UserAddOutlined />},
+        {name:"Profile", route:"/profile",icon:<UserOutlined />},
+        {label:"Forms"},
+        {name:"Fortnightly Monitor", route:"/fortnightly-monitor",icon:<FormOutlined />},
     ],
     Observer:[
         {name:"Dashboard", route:"/dashboard"},
         {name:"Reports", route:"/reports"},
-        {name:"Logout", logout: function(){localStorage.clear(); window.location.replace('/') }},
+        {name:"Profile", route:"/profile",icon:<UserOutlined />},
+        {label:"Forms"},
+        {name:"Fortnightly Monitor", route:"/fortnightly-monitor",icon:<FormOutlined />},
     ],
     Teacher:[
         {name:"Dashboard", route:"/dashboard"},
         {name:"Reports", route:"/reports"},
-        {name:"Logout", logout: function(){localStorage.clear(); window.location.replace('/') }},
+        {name:"Profile", route:"/profile",icon:<UserOutlined />},
+        {label:"Forms"},
+        {name:"Fortnightly Monitor", route:"/fortnightly-monitor",icon:<FormOutlined />},
     ]
 }
 

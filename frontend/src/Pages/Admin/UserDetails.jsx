@@ -88,6 +88,10 @@ const UserDetails = () => {
     try {
       await dispatch(UpdateUser({ id, ...modifiedData }));
       message.success("User details updated successfully.");
+      setLoading(true);
+      const res = await dispatch(GetSignleUser(id));
+      setUserData(res.payload);
+      setLoading(false);
       setEditStatus(false);
       setModifiedData({});
       setErrors({});
