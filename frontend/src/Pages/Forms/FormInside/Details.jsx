@@ -74,7 +74,7 @@ const Details = () => {
 
     dispatch(GetSingleFormComplete(payload))
       .then((res) => {
-        if (res.success) {
+        if (res.payload.success) {
           message.success('Form submitted successfully!');
           navigate('/fortnightly-monitor/report');
         } else {
