@@ -63,7 +63,7 @@ const FortnightlyMonitor = () => {
             icon={<PlusCircleOutlined />}
             size="large"
           >
-            Create New User
+            New Form
           </Button>
 
           {renderForms(

@@ -37,18 +37,21 @@ const navigate = useNavigate()
         <Dropdown overlay={menu} trigger={['click']}>
           <a onClick={(e) => e.preventDefault()}  className='position-relative d-block'>
             <BellFilled style={{ fontSize: '20px', cursor: 'pointer',color:"#fff", fontWeight:"500" }} />
+            {menu?.props?.items && 
             <span className='bg-danger px-2 rounded-5 text-white position-absolute' style={{width:"fit-content", height:"40px",
-                 width: "fit-content",
-                 height: 20,
-                 textAlign: 'center',
-                 top: 12,
-                 left: 9,
-                 fontSize: 10,
-                 display: "flex",
-                 alignItems: "center",
-                 justifyContent: "center"
+              width: "fit-content",
+              height: 20,
+              textAlign: 'center',
+              top: 12,
+              left: 9,
+              fontSize: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
 
-            }}>{menu?.props?.items?.length}</span>
+         }}>
+          {menu?.props?.items?.length}
+           </span>}
           </a>
         </Dropdown>
       </div>

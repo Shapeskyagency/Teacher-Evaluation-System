@@ -64,7 +64,7 @@ function AdminDashboard() {
     <Col md={4}>
     <Card >
       <h2>Total Users</h2>
-      <p className='fs-3 bg-success-subtle px-3 rounded-5' style={{width:"fit-content"}}>{UserLists.length>0 ?" ":"0"}{UserLists?.length}</p>
+      <p className='fs-3 bg-success-subtle px-3 rounded-5' style={{width:"fit-content"}}>{UserLists?.length>0 ?" ":"0"}{UserLists?.length}</p>
     </Card>
     </Col>
     <Col md={4}>
