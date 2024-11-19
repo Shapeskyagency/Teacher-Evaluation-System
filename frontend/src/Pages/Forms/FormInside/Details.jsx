@@ -74,11 +74,11 @@ const Details = () => {
 
     dispatch(GetSingleFormComplete(payload))
       .then((res) => {
-        if (res.payload.success) {
+        if (res.payload.message) {
           message.success('Form submitted successfully!');
           navigate('/fortnightly-monitor/report');
         } else {
-          message.error(res.message || 'Error submitting the form.');
+          message.error(res.payload.message || 'Error submitting the form.');
         }
       })
       .catch(() => {
