@@ -15,6 +15,8 @@ import UnderConstraction from "../Components/UnderConstraction";
 import UserDetails from "../Pages/Admin/UserDetails";
 import UserProfile from "../Pages/UserProfile";
 import FortnightlyMonitor from "../Pages/Forms/FortnightlyMonitor";
+import BasicDetailsForm from "../Components/BasicDeatilsForm";
+import Details from "../Pages/Forms/FormInside/Details";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken()  : null;
@@ -27,6 +29,8 @@ const protects = {
         { path: "/", element: <Navigate to="/Teacher" /> },
         { path: "/Teacher", element: <TeacherDashboard/> },
         {path:"/profile", element:<UserProfile/>},
+        {path:'/fortnightly-monitor', element:<FortnightlyMonitor/>},
+        {path:'/fortnightly-monitor/create/:id', element:<Details/>},
         { path: "*", element: <NotFound404/>},
       ],
     },
@@ -43,7 +47,6 @@ const protects = {
         { path: "/reports", element: <UnderConstraction/> },
         {path:"/profile", element:<UserProfile/>},
         {path:'/fortnightly-monitor', element:<FortnightlyMonitor/>},
-        {path:'/fortnightly-monitor/:id', element:<FortnightlyMonitor/>},
         { path: "*", element: <NotFound404/> },
       ],
     },
@@ -56,7 +59,6 @@ const protects = {
         { path: "/", element: <Navigate to="/Observer" /> },
         { path: "/dashboard", element: <ObserverDashboard/> },
         {path:'/fortnightly-monitor', element:<FortnightlyMonitor/>},
-        {path:'/fortnightly-monitor/:id', element:<FortnightlyMonitor/>},
         {path:"/profile", element:<UserProfile/>},
         { path: "*", element: <NotFound404/> },
 

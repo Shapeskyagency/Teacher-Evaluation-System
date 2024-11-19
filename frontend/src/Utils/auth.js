@@ -40,6 +40,7 @@ export const getAllTimes = (timestamp) => {
     minutes,
     seconds,
     formattedDate: `${year}-${month}-${day}`,
+    formattedDate2: `${day}-${month}-${year}`,
     formattedTime: `${hours}:${minutes}:${seconds}`,
     formattedTimezone: `${timezoneOffsetSign}${timezoneOffsetHours}:${timezoneOffsetMinutesAdjusted}`,
   };

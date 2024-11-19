@@ -57,3 +57,13 @@ export const columnsCreate =[
       },
       
 ]
+
+
+
+// export const FormColumn =[
+//   {
+//     title: 'Form Name',
+//     dataIndex: 'formName',
+//     key: 'formName',
+//   },
+// ]
