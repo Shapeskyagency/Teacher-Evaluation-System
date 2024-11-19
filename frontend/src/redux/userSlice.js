@@ -14,6 +14,18 @@ export const UserLogin = createAsyncThunk('UserLogin',async (payload) => {
     const response = await axiosInstanceToken.get(`/user/get`);
       return response.data;
   })
+
+  export const GetTeacherList = createAsyncThunk('GetTeacherList',async (payload) => {
+    const response = await axiosInstanceToken.get(`/user/get/teachers`);
+      return response.data;
+  })
+
+  export const GetObserverList = createAsyncThunk('GetObserverList',async (payload) => {
+    const response = await axiosInstanceToken.get(`/user/get/observer`);
+      return response.data;
+  })
+
+
   export const CreateUserList = createAsyncThunk('CreateUserList',async (payload) => {
     const response = await axiosInstanceToken.post(`/user/create`,payload);
       return response.data;
@@ -40,79 +52,22 @@ export const UserLogin = createAsyncThunk('UserLogin',async (payload) => {
       return response.data;
   })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Fetch user profile
-export const getUserProfile = createAsyncThunk(
-  'user/getUserProfile',
-  async (userId, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstanceToken.get(`/user/get-profile/${userId}`);
-      return response.data.user;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
-
-
-
-// Update user password
-export const updateUserPassword = createAsyncThunk(
-  'user/updateUserPassword',
-  async (payload, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstanceToken.put(`/user/change-password/${payload?.userId}`, {
-        oldPassword: payload?.oldPassword,
-        newPassword: payload?.newPassword,
-      });
+  
+  export const getUserNotification = createAsyncThunk('getUserNotification',async (payload) => {
+    const response = await axiosInstanceToken.get(`/notification/get`);
       return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
+  })
 
-// Signup user
-export const signupUser = createAsyncThunk(
-  'user/signupUser',
-  async (userData, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstanceToken.post('/auth/signup', {
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        phone: userData.phone,
-        username: userData.username,
-        password: userData.password,
-      });
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
+
+
 
 const userSlice = createSlice({
-  name: 'user',
+  name: 'Users',
   initialState: {
-    profile: null,
+    Notification:null,
+    GetUsers: null,
+    GetTeachersLists: null,
+    GetObserverLists: null,
     loading: false,
     error: null,
     signupSuccess: false, 
@@ -129,6 +84,23 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+
+    //Get User Notification
+
+    .addCase(getUserNotification.pending,(state,action)=>{
+      state.loading =true;
+      state.error =null
+    })
+    .addCase(getUserNotification.fulfilled,(state,action)=>{
+      state.Notification =action.payload;
+      state.error=action.payload;
+    })
+    .addCase(getUserNotification.rejected,(state,action)=>{
+      state.loading = false;
+      state.error = action.payload;
+    })
+
+
       // Get user profile
       .addCase(GetUserList.pending, (state) => {
         state.loading = true;
@@ -142,48 +114,35 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      // Update user profile
-      .addCase(CreateUserList.pending, (state) => {
+      // GetTeacherList
+      .addCase(GetTeacherList.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(CreateUserList.fulfilled, (state, action) => {
+      .addCase(GetTeacherList.fulfilled, (state, action) => {
         state.loading = false;
-        state.profile = action.payload;
+        state.GetTeachersLists = action.payload;
       })
-      .addCase(CreateUserList.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      // Update user password
-      .addCase(updateUserPassword.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateUserPassword.fulfilled, (state, action) => {
-        state.loading = false;
-        state.message = 'Password updated successfully'; 
-      })
-      .addCase(updateUserPassword.rejected, (state, action) => {
+      .addCase(GetTeacherList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
-      // Signup user
-      .addCase(signupUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-        state.signupSuccess = false;
+      //GetObserverList 
+
+      .addCase(GetObserverList.pending,(state,action)=>{
+        state.loading =true;
+        state.error =null
       })
-      .addCase(signupUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.signupSuccess = true;
-        state.message = action.payload.message; 
+      .addCase(GetObserverList.fulfilled,(state,action)=>{
+        state.GetObserverLists =action.payload;
+        state.error=action.payload;
       })
-      .addCase(signupUser.rejected, (state, action) => {
+      .addCase(GetObserverList.rejected,(state,action)=>{
         state.loading = false;
-        state.signupSuccess = false;
         state.error = action.payload;
-      });
+      })
+
+    
   },
 });
 

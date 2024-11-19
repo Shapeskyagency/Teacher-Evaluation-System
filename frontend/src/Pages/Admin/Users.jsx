@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Button, Input, message, Modal, Space, Table,  Upload, Spin } from 'antd';
-import { UploadOutlined, PlusCircleOutlined, SearchOutlined, CloudFilled, DownloadOutlined, DeleteFilled } from '@ant-design/icons';
+import { Button, Input, message, Modal, Space, Table, Upload, Spin, Dropdown, Menu } from 'antd';
+import { UploadOutlined, PlusCircleOutlined, SearchOutlined, CloudFilled, DownloadOutlined, DeleteFilled, FilterOutlined } from '@ant-design/icons';
 import { Container } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,8 +14,11 @@ function Users() {
   const [size, setSize] = useState('large');
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
-  const [loading, setLoading] = useState(false); // Loader state
+  const [loading, setLoading] = useState(false);
   const [excelData, setExcelData] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const [filteredData, setFilteredData] = useState([]);
+  const [selectedAccess, setSelectedAccess] = useState('');
 
   const dispatch = useDispatch();
 
@@ -25,6 +28,22 @@ function Users() {
   }, [dispatch]);
 
   const UserLists = useSelector((state) => state?.user?.data);
+
+  useEffect(() => {
+    // Apply both search and access filters
+    let data = Array.isArray(UserLists) ? [...UserLists] : [];
+    if (searchText) {
+      data = data.filter((user) =>
+        Object.values(user).some((value) =>
+          String(value).toLowerCase().includes(searchText.toLowerCase())
+        )
+      );
+    }
+    if (selectedAccess) {
+      data = data.filter((user) => user.access === selectedAccess );
+    }
+    setFilteredData(data.slice().reverse());
+  }, [UserLists, searchText, selectedAccess]);
 
   const columns = useMemo(() => [
     {
@@ -52,7 +71,7 @@ function Users() {
       title: 'Created At',
       key: 'createdAt',
       dataIndex: 'createdAt',
-      render: (text) => <a>{getAllTimes(text).formattedDate}</a>,
+      render: (text) => <a>{getAllTimes(text).formattedDate2}</a>,
     },
     {
       title: 'Action',
@@ -60,15 +79,28 @@ function Users() {
       render: (_, record) => (
         <Space size="middle">
           <Link to={`${record?._id}`}>
-            <Button key={record?._id} className='bg-primary text-white' >View</Button>
+            <Button key={record?._id} className='bg-primary text-white'>View</Button>
           </Link>
-          
-            <Button onClick={() => DeleteUserRow(record?._id)} className='bg-danger text-white' key={record}>
-             <DeleteFilled/> Delete</Button>
+          <Button onClick={() => DeleteUserRow(record?._id)} className='bg-danger text-white' key={record}>
+            <DeleteFilled /> Delete
+          </Button>
         </Space>
       ),
     },
   ], []);
+
+  const handleFilterByAccess = ({ key }) => {
+    setSelectedAccess(key);
+  };
+
+  const accessMenu = (
+    <Menu onClick={handleFilterByAccess}>
+      <Menu.Item key="Superadmin">Super Admin</Menu.Item>
+      <Menu.Item key="Teacher">Teacher</Menu.Item>
+      <Menu.Item key="Observer">Observer</Menu.Item>
+      <Menu.Item key={''}>Clear Filter</Menu.Item>
+    </Menu>
+  );
 
   const showModal = () => setOpen(true);
   const showModal2 = () => setOpen2(true);
@@ -142,7 +174,6 @@ function Users() {
       .finally(() => setLoading(false)); // Hide loader
   };
 
-  
   return (
     <div>
       <Container>
@@ -153,12 +184,20 @@ function Users() {
           <Button onClick={showModal2} type="primary" icon={<CloudFilled />} size={size}>
             Bulk Upload
           </Button>
-          <Input prefix={<SearchOutlined />} placeholder="Search" />
+          <Dropdown overlay={accessMenu}>
+            <Button size='large' icon={<FilterOutlined />}>Filter By Access</Button>
+          </Dropdown>
+          <Input
+            prefix={<SearchOutlined />}
+            placeholder="Search"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
         </div>
         {loading ? (
           <Spin size="large" />
         ) : (
-          <Table dataSource={Array.isArray(UserLists) && UserLists.slice().reverse()} columns={columns} rowKey="employeeId" />
+          <Table dataSource={filteredData} columns={columns} rowKey="employeeId" />
         )}
       </Container>
       <Modal

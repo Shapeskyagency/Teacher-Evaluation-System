@@ -1,14 +1,25 @@
-import React, { memo } from "react";
+import React, { memo, useEffect } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { getUserId } from "./auth";
 import { Layout } from "antd";
 import MainFooter from "../Components/MainFooter";
 import Navbar from "../Components/Navbar";
 import Sidebar from "../Components/Sidebar";
+import { useDispatch } from "react-redux";
+import { getUserNotification } from "../redux/userSlice";
 
 const { Header, Footer, Sider, Content } = Layout;
 const TeacherLayout = () => {
+  
     const role = getUserId()?.access;
+  const dispatch = useDispatch()
+
+useEffect(()=>
+    {
+      dispatch(getUserNotification())
+    },[dispatch])
+
+
     return role === "Teacher" ? (
     <>
    <Layout style={layoutStyle}>
@@ -44,7 +55,6 @@ const headerStyle = {
   color: '#fff',
   height: 64,
   paddingInline: 48,
-  lineHeight: '64px',
   backgroundColor: '#4096ff',
 };
 const contentStyle = {

@@ -49,6 +49,35 @@ const getAllUsers = async (req, res) => {
     }
 }
 
+
+// get all Teachers 
+
+const GetAllTeachers =async (req,res)=>{
+    try{
+            const users = await User.find({
+                access: { $in: ["Teacher"]}
+            }, '-password');
+            res.status(200).json(users);
+    }
+    catch(err){
+        res.status(400).send(err)
+    }
+}
+
+
+const GetAllObserver =async (req,res)=>{
+    try{
+            const users = await User.find({
+                access: { $in: ["Observer"]}
+            }, '-password');
+            res.status(200).json(users);
+    }
+    catch(err){
+        res.status(400).send(err)
+    }
+}
+
+
 const getUserById = async (req, res) => {
     try {
         const { userId } = req.params;
@@ -124,4 +153,4 @@ const deleteUserById = async (req, res) => {
   }
 
 
-module.exports = {createUser, getAllUsers, getUserById, updateUserById, deleteUserById,BulkUserCreate};
+module.exports = {createUser, getAllUsers, getUserById, updateUserById, deleteUserById,BulkUserCreate,GetAllTeachers,GetAllObserver};

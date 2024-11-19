@@ -1,97 +1,174 @@
-// const Form = require('../models/Form');  // Import the Form model
-const Form1 = require('../models/Form1');
 const notification = require('../models/notification');
 const User = require('../models/User');  // Import the User model (for Coordinators, Teachers, and Observers)
 const sendEmail = require('../utils/emailService');
+const Form1 = require('../models/Form1');
 
-// 1. Create a new Fortnightly-monitor by Teacher or Coordinator
 exports.createForm = async (req, res) => {
   const { className, section, date, isCoordinator, coordinatorID, isTeacher, teacherID } = req.body;
-
-  const newForm = new Form1({
-    creationDetails: {
-      class: className,
-      section: section,
-      date: new Date(date),
-      isCoordinator: isCoordinator,
-      coordinatorID: coordinatorID,
-      isTeacher: isTeacher,
-      teacherID: teacherID,
-    },
-    // Default responses
-    classCleanliness: 'N/A',
-    newsUpdate: 'N/A',
-    smileyChart: 'N/A', // Default smiley chart value, can be modified later
-    missionEnglishChart: 'N/A',
-    transportCorner: 'N/A',
-    generalDiscipline: 'N/A',
-    lunchEtiquettes: 'N/A',
-    birthdayChart: 'N/A',
-    unitSyllabusChart: 'N/A',
-    uniformTieBeltShoesIDCard: 'N/A',
-    classPass: 'N/A',
-    classTeacherTimeTable: 'N/A',
-    participationChart: 'N/A',
-    coScholasticActivityChart: 'N/A',
-    goodwillPiggyBank: 'N/A',
-    thursdaySpecial: 'N/A',
-    homeworkRegister: 'N/A',
-    groupOnDuty: 'N/A',
-    weeklyRotationOfStudent: 'N/A',
-    anecdotalRegister: 'N/A',
-    supplementaryReadingRecord: 'N/A',
-    thinkZone: 'N/A',
-    digitalCitizenshipRules: 'N/A',
-    meditation: 'N/A',
-    totalScore: 0, // Can be calculated later based on responses
-    selfEvaluationScore: 0, // Self-evaluation score from teacher or observer
-  });
+  const userId = req?.user?.id;
 
   try {
-    await newForm.save();
-
-    // Send email to either the coordinator or the teacher based on the flags
     let recipientEmail = '';
-    let recipientId = '';
+    let reciverId = '';
+    let formData;
+
+    // Determine the recipient based on role
     if (isCoordinator && coordinatorID) {
-      const coordinator = await User.findById(coordinatorID);
-      if (coordinator && coordinator.email) {
+      const coordinator = await User.findById({_id:coordinatorID});
+      if (coordinator?.email) {
         recipientEmail = coordinator.email;
-        recipientId = coordinator._id
+        reciverId = coordinator._id;
       }
+
+      formData = new Form1({
+        userId,
+        className: className,
+        section,
+        date: new Date(date),
+        isCoordinator,
+        coordinatorID,
+        isTeacher,
+        observerForm: {}, // Defaults will apply
+        teacherForm: {}, // Defaults will apply
+      });
+
+      
     } else if (isTeacher && teacherID) {
-      const teacher = await User.findById(teacherID);
-      if (teacher && teacher.email) {
+      const teacher = await User.findById({_id:teacherID});
+      if (teacher?.email) {
         recipientEmail = teacher.email;
-        recipientId = teacher._id;
+        reciverId = teacher._id;
       }
+
+      formData = new Form1({
+        userId,
+        className: className,
+        section,
+        date: new Date(date),
+        isCoordinator,
+        isTeacher,
+        teacherID,
+        observerForm: {}, // Defaults will apply
+        teacherForm: {}, // Defaults will apply
+      });
     }
 
+    // Save the form
+    if (!formData) {
+      return res.status(400).json({ message: 'Invalid data. Either coordinator or teacher details are required.' });
+    }
+
+    await formData.save();
+
+    // Send email and notification if recipient exists
     if (recipientEmail) {
       const subject = 'New Fortnightly Monitor Form Created';
-      const body = `A new Fortnightly Monitor Form has been created for Class: ${className}, Section: ${section}.
-      Start Fill The From By Click on https://abcd.com/form/jksfljfdkljfjsl
+      const body = `
+        A new Fortnightly Monitor Form has been created for:
+        Class: ${className}, Section: ${section}.
+        Click here to fill the form: https://abcd.com/form/${formData._id}
       `;
+      // sendEmail(recipientEmail, subject, body);
 
-      // Send email to the recipient (coordinator or teacher)
-      sendEmail(recipientEmail, subject, body);
+      const notifications = new notification({
+        title: 'You are invited to fill the Fortnightly Monitor Form',
+        route: `fortnightly-monitor/create/${formData._id}`,
+        reciverId,
+        date: new Date(),
+        status: 'unSeen',
+      });
+      await notifications.save();
     }
-    
-    const SenderDeatils= new notification({
-      title: `Invite you for filling Fortnightly Monitor Form`,
-      route: `https://abcd.com/form/${newForm._id}`,
-      reciverId:recipientId,
-      date:new Date(),
-      status:"unSeen"
-    })
-    await SenderDeatils.save()
 
-    res.status(201).json({ message: 'Fortnightly Monitor created successfully!', form: newForm });
+    res.status(201).json({ message: 'Fortnightly Monitor created successfully!', form: formData });
   } catch (error) {
     console.error('Error creating Fortnightly Monitor:', error);
     res.status(500).json({ message: 'Error creating Fortnightly Monitor.', error });
   }
 };
+
+exports.getuserForm = async(req,res)=>{
+  const userId = req?.user?.id;
+  try{
+    const data = await Form1.find({userId}).populate('teacherID coordinatorID')
+    res.status(200).send(data)
+  }catch(err){
+    res.status(400).send(err)
+  }
+
+}
+
+exports.getSingleuserForm = async(req,res)=>{
+  const formId = req?.params.id;
+  try{
+    const data = await Form1.findById(formId).populate('teacherID coordinatorID')
+    res.status(200).send(data)
+  }catch(err){
+    res.status(400).send(err)
+  }
+
+}
+
+
+
+exports.FormFill = async (req, res) => {
+  const formId = req.params.id
+  try {
+    const { 
+      isCoordinatorComplete, 
+      isTeacherComplete, 
+      observerForm, 
+      teacherForm 
+    } = req.body;
+
+    // Check if the formId is provided
+    if (!formId) {
+      return res.status(400).json({
+        message: 'Form ID is required'
+      });
+    }
+
+    // Create an object to store the updates
+    let updateData = {};
+
+    if (isCoordinatorComplete) {
+      updateData = { 
+        isCoordinatorComplete, 
+        observerForm
+      };
+    } else if (isTeacherComplete) {
+      updateData = { 
+        isTeacherComplete, 
+        teacherForm
+      };
+    }
+
+    // Update the form based on the formId
+    const updatedForm = await Form1.findByIdAndUpdate(formId, updateData, { new: true });
+
+    // If no form was found, return a 404 error
+    if (!updatedForm) {
+      return res.status(404).json({
+        message: 'Form not found'
+      });
+    }
+
+    // Send a success response with the updated form
+    res.status(200).json({
+      message: 'Form updated successfully!',
+      form: updatedForm
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'Error updating the form.',
+      error: error.message
+    });
+  }
+};
+
+
+
 
 // 2. Get forms for Mother Teachers to fill
 exports.getFormsForMotherTeacher = async (req, res) => {
