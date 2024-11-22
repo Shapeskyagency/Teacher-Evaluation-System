@@ -41,17 +41,18 @@ const DashboardLayout = () => {
 export default memo(DashboardLayout);
 
 
-
 const headerStyle = {
   textAlign: 'center',
   color: '#fff',
   height: 64,
   paddingInline: 48,
-  lineHeight: '64px',
   backgroundColor: '#4096ff',
 };
 const contentStyle = {
   // textAlign: 'center',
+   width:"82%",
+    overflow: 'auto',
+        marginLeft: '18%',
   minHeight: 120,
   lineHeight: '100px',
   backgroundColor: '#fff',
@@ -63,7 +64,10 @@ const siderStyle = {
   backgroundColor: '#fff',
   height:"100dvh",
   overflow:"auto",
-  boxShadow:"rgb(0 0 0 / 11%) 1px 1px 9px"
+  boxShadow:"rgb(0 0 0 / 11%) 1px 1px 9px",
+  position: 'fixed',
+  zIndex:999,
+  left: 0,
 };
 const footerStyle = {
   textAlign: 'center',
@@ -77,4 +81,3 @@ const layoutStyle = {
   maxWidth: '100%',
   margin:"auto"
 };
-

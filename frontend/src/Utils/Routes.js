@@ -26,8 +26,8 @@ const protects = {
       path: "/",
       element: isLoggedIn && role === 'Teacher' ? <TeacherLayout /> : <Navigate to="/login" />,
       children: [
-        { path: "/", element: <Navigate to="/Teacher" /> },
-        { path: "/Teacher", element: <TeacherDashboard/> },
+        { path: "/", element: <Navigate to="/dashboard" /> },
+        { path: "/dashboard", element: <TeacherDashboard/> },
         {path:"/profile", element:<UserProfile/>},
         {path:'/fortnightly-monitor', element:<FortnightlyMonitor/>},
         {path:'/fortnightly-monitor/create', element:<BasicDetailsForm/>},
@@ -59,7 +59,7 @@ const protects = {
       path: "/",
       element: isLoggedIn && role === 'Observer' ? <ObserverLayout /> : <Navigate to="/login" />,
       children: [
-        { path: "/", element: <Navigate to="/Observer" /> },
+        { path: "/", element: <Navigate to="/dashboard" /> },
         { path: "/dashboard", element: <ObserverDashboard/> },
         {path:'/fortnightly-monitor', element:<FortnightlyMonitor/>},
         {path:"/profile", element:<UserProfile/>},

@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
-import { Card, Button } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Card, Button, Tag } from 'antd';
 import { Container, Row as BootstrapRow, Col as BootstrapCol } from 'react-bootstrap';
 import { Link } from 'react-router-dom'; // For page redirection
+import { useDispatch, useSelector } from 'react-redux';
+import { GetTodoForms } from '../../redux/Form/fortnightlySlice';
+import { getAllTimes, getUserId } from '../../Utils/auth';
 
-// Mock data for notifications
-const notifications = [
-  { id: 1, class: '10th', section: 'A', date: '2024-11-17', teacherName: 'Teacher 1' },
-  { id: 2, class: '12th', section: 'B', date: '2024-11-18', teacherName: 'Teacher 2' },
-];
 
 function ObserverDashboard() {
-  const [pendingCount, setPendingCount] = useState(notifications.length); // Based on mock data
+  const dispatch= useDispatch()
+  const userID = getUserId().id;
+  const FormData = useSelector((state)=>state?.Forms?.GetTodoFormList?.forms) ;
+  useEffect(()=>{
+    dispatch(GetTodoForms({observerID:userID}))
+  },[dispatch])
+
 
   return (
     <Container>
@@ -19,31 +23,41 @@ function ObserverDashboard() {
           <Card>
             <h2>Pending</h2>
             <p className="fs-3 bg-success-subtle px-3 rounded-5" style={{ width: "fit-content" }}>
-              {pendingCount}
+              {FormData?.length}
             </p>
           </Card>
         </BootstrapCol>
       </BootstrapRow>
 
       {/* To-Do Items (Notification List) */}
+      <h2>
+  To-Do Items{" "}
+  <span className="bg-info px-3 rounded-5 text-white">
+    {FormData?.length < 10 ? `0${FormData?.length}` : FormData?.length}
+  </span>
+</h2>
       <BootstrapRow className="my-3">
         <BootstrapCol>
-          <Card title="To-Do Items" style={{ minHeight: '300px' }}>
-            <ul>
-              {notifications.map((task) => (
-                <li key={task.id}>
-                  <Card>
-                    <h4>
-                      {`Class: ${task.class} | Section: ${task.section} | Date: ${task.date} | Teacher: ${task.teacherName}`}
-                    </h4>
-                    <Link to={`/fortnightly-monitor/${task.id}`}>
-                      <Button type="primary">Fill Form</Button>
-                    </Link>
-                  </Card>
-                </li>
-              ))}
-            </ul>
-          </Card>
+          {FormData?.map((items)=>(
+            <Card key={items._id} className="mb-3">
+              {console.log(items)}
+              <h4>
+              Fortnightly Monitor Form
+              </h4>
+              <p className='text-info'>Assigned to{' '}
+                {items.coordinatorID
+                  ? `Coordinator ${items.coordinatorID?.name}`
+                  : `Teacher ${items.teacherID?.name}`}</p>
+              <Tag className="black">Fiiled Date: {getAllTimes(items.date)?.formattedDate2}</Tag>
+              <Tag className="black">Observertion Date: {getAllTimes(items.observerForm.ObservationDates)?.formattedDate2}</Tag>
+              <Tag color="green">Class: {items.className.toUpperCase()}</Tag>
+              <Tag color="blue">Subject: {items.section.toUpperCase()}</Tag>
+                <Link to={`/fortnightly-monitor/create/${items._id}`} className="mt-3 d-block" style={{width:"fit-content"}}>
+                  <Button type="primary">Continue Form</Button>
+                </Link>
+            </Card>
+          ))}
+        
         </BootstrapCol>
       </BootstrapRow>
     </Container>

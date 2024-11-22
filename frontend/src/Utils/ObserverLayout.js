@@ -1,15 +1,25 @@
-import React, { memo } from "react";
+import React, { memo, useEffect } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { getUserId } from "./auth";
 import { Layout } from "antd";
 import Sidebar from "../Components/Sidebar";
 import Navbar from "../Components/Navbar";
 import MainFooter from "../Components/MainFooter";
+import { useDispatch } from "react-redux";
+import { getUserNotification } from "../redux/userSlice";
 
 const { Header, Footer, Sider, Content } = Layout;
 
 const ObserverLayout = () => {
+
   const role = getUserId()?.access;
+  const dispatch = useDispatch()
+
+useEffect(()=>
+    {
+      dispatch(getUserNotification())
+    },[dispatch])
+
   return role === "Observer" ? (
     <>
     <Layout style={layoutStyle}>
@@ -41,15 +51,20 @@ export default memo(ObserverLayout);
 
 
 const headerStyle = {
+  width:"82%",
+    overflow: 'auto',
+        marginLeft: '18%',
   textAlign: 'center',
   color: '#fff',
   height: 64,
   paddingInline: 48,
-  lineHeight: '64px',
   backgroundColor: '#4096ff',
 };
 const contentStyle = {
   // textAlign: 'center',
+   width:"82%",
+    overflow: 'auto',
+        marginLeft: '18%',
   minHeight: 120,
   lineHeight: '100px',
   backgroundColor: '#fff',
@@ -61,7 +76,10 @@ const siderStyle = {
   backgroundColor: '#fff',
   height:"100dvh",
   overflow:"auto",
-  boxShadow:"rgb(0 0 0 / 11%) 1px 1px 9px"
+  boxShadow:"rgb(0 0 0 / 11%) 1px 1px 9px",
+  position: 'fixed',
+  zIndex:999,
+  left: 0,
 };
 const footerStyle = {
   textAlign: 'center',
