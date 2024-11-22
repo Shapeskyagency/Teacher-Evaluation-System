@@ -28,12 +28,18 @@ export const GetObserverPendignForms = createAsyncThunk('GetObserverPendignForms
       return response.data;
   })
 
+  export const GetTodoForms = createAsyncThunk('GetTodoForms',async (payload) => {
+    const response = await axiosInstanceToken.post(`/form/fortnightly-monitor/observer-dashboard`,payload);
+      return response.data;
+  })
+
   const fortnightlySlice = createSlice({
     name: 'fortnightlySlice',
     initialState: {
       data: null,
       getAllForms:null,
       // GetSingleForms:null,
+      GetTodoFormList:null,
       loading: false,
       error: null,
       message: '', 
@@ -48,6 +54,20 @@ export const GetObserverPendignForms = createAsyncThunk('GetObserverPendignForms
     },
     extraReducers: (builder) => {
       builder
+      //GetTodoForms
+      .addCase(GetTodoForms.pending,(state)=>{
+        state.loading=true
+        state.error= null
+      })
+      .addCase(GetTodoForms.fulfilled,(state,action)=>{
+        state.loading= false;
+        state.GetTodoFormList=action.payload
+      })
+      .addCase(GetTodoForms.rejected,(state)=>{
+        state.loading=false;
+        state.error={message:"Server Error"}
+      })
+
         // Get GetObserverPendignForms
         .addCase(GetObserverPendignForms.pending, (state) => {
           state.loading = true;
@@ -59,7 +79,7 @@ export const GetObserverPendignForms = createAsyncThunk('GetObserverPendignForms
         })
         .addCase(GetObserverPendignForms.rejected, (state, action) => {
           state.loading = false;
-          state.error = action.payload;
+          state.error={message:"Server Error"}
         })
 
         //Get GetFormsOne
@@ -75,7 +95,7 @@ export const GetObserverPendignForms = createAsyncThunk('GetObserverPendignForms
         })
         .addCase(GetFormsOne.rejected,(state,action)=>{
           state.loading= false;
-          state.error= action.payload
+          state.error={message:"Server Error"}
         })
         //GetSingleFormsOne
 
@@ -89,7 +109,7 @@ export const GetObserverPendignForms = createAsyncThunk('GetObserverPendignForms
         })
         .addCase(GetSingleFormsOne.rejected,(state,action)=>{
           state.loading= false;
-          state.error= action.payload
+          state.error={message:"Server Error"}
         })
 
     },

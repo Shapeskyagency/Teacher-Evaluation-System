@@ -8,7 +8,7 @@ const userId = req.user.id
     try{
         const data = await notification.find({reciverId:userId})
             res.status(200).send(data)
-    }catch(err){
+    }catch(err){    
         res.status(400).send(err)
     }
 

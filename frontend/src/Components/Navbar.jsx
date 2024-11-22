@@ -19,7 +19,6 @@ const navigate = useNavigate()
   const onClick = ({key}) => {
     const clickedNotification = userNotification[key];
     navigate(clickedNotification.route)
-    console.log(clickedNotification.route)
   };
 
   const menu = <Menu items={menuItems} onClick={onClick} />;
