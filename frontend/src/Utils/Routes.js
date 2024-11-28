@@ -17,6 +17,7 @@ import UserProfile from "../Pages/UserProfile";
 import FortnightlyMonitor from "../Pages/Forms/FortnightlyMonitor";
 import BasicDetailsForm from "../Components/BasicDeatilsForm";
 import Details from "../Pages/Forms/FormInside/Details";
+import ClassroomWalkthrough from "../Pages/Forms/ClassroomWalkthrough";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken()  : null;
@@ -66,6 +67,7 @@ const protects = {
         {path:'/fortnightly-monitor', element:<FortnightlyMonitor/>},
         {path:'/fortnightly-monitor/create', element:<BasicDetailsForm/>},
         {path:'/fortnightly-monitor/create/:id', element:<Details/>},
+        {path:"classroom-walkthrough",element:<ClassroomWalkthrough/>},
         { path: "*", element: <NotFound404/> },
 
       ],
