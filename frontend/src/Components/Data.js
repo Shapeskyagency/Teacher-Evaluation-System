@@ -1,7 +1,7 @@
 import { Space, Tag } from "antd";
 import { Link } from "react-router-dom";
 import { AppstoreAddOutlined, FormOutlined, PieChartOutlined, UserAddOutlined, UserOutlined, UserSwitchOutlined } from "@ant-design/icons";
-
+import { SiGoogleclassroom } from "react-icons/si";
 export const Menu ={
     Superadmin:[
         {name:"Dashboard", route:"/dashboard",icon:<AppstoreAddOutlined />},
@@ -17,6 +17,7 @@ export const Menu ={
         {name:"Profile", route:"/profile",icon:<UserOutlined />},
         {label:"Forms"},
         {name:"Fortnightly Monitor", route:"/fortnightly-monitor",icon:<FormOutlined />},
+        {name:"Classroom Walkthrough", route:"/classroom-walkthrough",icon:<SiGoogleclassroom />},
     ],
     Teacher:[
         {name:"Dashboard", route:"/dashboard"},

@@ -56,7 +56,7 @@ const headerStyle = {
         marginLeft: '18%',
   textAlign: 'center',
   color: '#fff',
-  height: 64,
+  height: "auto",
   paddingInline: 48,
   backgroundColor: '#4096ff',
 };
