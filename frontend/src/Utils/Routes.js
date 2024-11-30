@@ -70,6 +70,7 @@ const protects = {
         {path:'/fortnightly-monitor/create/:id', element:<Details/>},
         {path:"/classroom-walkthrough",element:<ClassroomWalkthrough/>},
         {path:"/classroom-walkthrough/create",element:<DetailsWalkthrough/>},
+        {path:"/classroom-walkthrough/create/:id",element:<DetailsWalkthrough/>},
         { path: "*", element: <NotFound404/> },
 
       ],

@@ -61,10 +61,47 @@ export const columnsCreate =[
 
 
 
-// export const FormColumn =[
-//   {
-//     title: 'Form Name',
-//     dataIndex: 'formName',
-//     key: 'formName',
-//   },
-// ]
+export const Formcolumns1 = [
+  {
+    title: 'Form Title',
+    dataIndex: `grenralDetails`, // Accessing the teacher's name
+    key: `grenralDetails`,
+    render: (text) => <a>Classroom Walkthrough For {text.NameoftheVisitingTeacher.name}</a>,
+  },
+  {
+    title: 'Observation Date',
+    dataIndex: 'grenralDetails', // Correctly accessing the DateOfObservation
+    key: 'grenralDetails',
+    render: (text) => <span>{new Date(text.DateOfObservation).toLocaleDateString()}</span>, // Formatting the date
+  },
+  {
+    title: 'Teacher Status',
+    dataIndex: 'isTeacherCompletes', 
+    key: 'isTeacherCompletes',
+    render: (text) => (
+      <Space size="middle">
+        {text ?  
+        <Tag color="green">
+        COMPLETED
+       </Tag>
+       : <Tag color="volcano">
+       NOT COMPLETED
+      </Tag>
+      }
+        
+      </Space>
+    ),
+  },
+  {
+    title: 'Action',
+    dataIndex: 'action', 
+    key: 'action',
+    render: (_, record) => (
+      <Space size="middle">
+        <Link className="btn btn-outline-primary" to={`/classroom-walkthrough/report/${record._id}`}>
+          View Report
+        </Link>
+      </Space>
+    ),
+  },
+];
