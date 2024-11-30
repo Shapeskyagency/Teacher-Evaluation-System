@@ -26,7 +26,7 @@ const navigate = useNavigate()
   return (
     <div>
       <div className="d-flex gap-3">
-        <p className="fs-5 fw-bold">
+        <p className="fs-5 fw-bold mb-0">
           Hi,
           {role === 'Superadmin' && ' Super admin'}
           {role === 'Observer' && ' Observer'}
