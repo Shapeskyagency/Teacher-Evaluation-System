@@ -63,7 +63,7 @@ const headerStyle = {
   textAlign: "center",
   color: "#fff",
   height: "auto",
-  padding: "16px",
+  padding: "8px 16px",
   backgroundColor: "#4096ff",
   transition: "all 0.3s ease",
 };
