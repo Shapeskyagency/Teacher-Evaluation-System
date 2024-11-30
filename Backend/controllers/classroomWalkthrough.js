@@ -28,7 +28,8 @@ exports.createForm = async (req, res) => {
         ObserverFeedback,
     } = req.body;
     const userId = req?.user?.id;
-
+    // const parsedValues = Object.entries(essentialAggrements).map(([key, value]) => JSON.parse(value));
+    // console.log(parsedValues)
     try {
         // Fetch user details without sensitive fields
         const user = await User.findById(userId, "-password -mobile -employeeId -customId");
@@ -46,7 +47,7 @@ exports.createForm = async (req, res) => {
         // Create the new form data
         const newForm = new Form2({
             createdBy: userId,
-            isObserverCompleted: isObserverCompleted || false, // Default to `false` if not provided
+            isObserverCompleted: ObserverFeedback ? true : false, // Default to `false` if not provided
             ObserverFeedback: ObserverFeedback || [], // Default to an empty array
             grenralDetails: {
                 NameoftheVisitingTeacher,
@@ -74,10 +75,10 @@ exports.createForm = async (req, res) => {
         const savedForm = await newForm.save();
 
         // Send success response
-        res.status(201).json({ message: "Form created successfully", form: savedForm });
+        res.status(201).json({ message: "Form created successfully", form: savedForm,status: true });
     } catch (error) {
         console.error("Error creating Classroom Walkthrough:", error);
-        res.status(500).json({ message: "Error creating Classroom Walkthrough.", error });
+        res.status(500).json({ message: "Error creating Classroom Walkthrough.", status: false,error });
     }
 };
 
@@ -106,6 +107,36 @@ exports.getSignleForm = async (req, res) => {
         res.status(500).json({ message: "Error Getting Classroom Walkthrough.", error });
     }
 }
+
+
+exports.GetcreatedBy = async (req, res) => {
+    const userId = req?.user?.id;
+    try {
+        const Form = await Form2.find({createdBy:userId})
+        .populate({
+            path: 'createdBy',
+            select: '-password -mobile -employeeId -customId'
+        })
+        .populate({
+            path: 'grenralDetails.NameoftheVisitingTeacher',
+            select: '-password -mobile -employeeId -customId'
+        });
+
+        if(!userId && !userId?.id){
+            return res.status(403).json({ message: "You do not have permission." });
+        }
+
+        res.status(200).send(Form)
+
+    } catch (error) {
+        console.error("Error Getting Classroom Walkthrough:", error);
+        res.status(500).json({ message: "Error Getting Classroom Walkthrough.", error });
+    }
+}
+
+
+
+
 
 exports.TeacherContinueForm = async (req, res) => {
     const userId = req?.user?.id;

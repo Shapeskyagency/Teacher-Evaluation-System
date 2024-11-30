@@ -1,25 +1,54 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { Button } from "antd";
-import React from "react";
-import { Col, Row } from "react-bootstrap";
+import { Button, Spin, Table } from "antd";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { GetcreatedBy } from "../../redux/Form/classroomWalkthroughSlice";
+import { Formcolumns1 } from "../../Components/Data";
 
 function ClassroomWalkthrough() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { isLoading, GetForms } = useSelector((state) => state?.walkThroughForm);
+
+  useEffect(() => {
+    dispatch(GetcreatedBy()).then((res) => {
+      console.log(res?.payload);
+    });
+  }, [dispatch]);
+
   return (
     <div className="container py-4">
-      <Row>
-        <Col>
-          <Button
-            onClick={() => navigate("/classroom-walkthrough/create")}
-            type="primary"
-            icon={<PlusCircleOutlined />}
-            size="large"
-          >
-           Fill New Form
-          </Button>
-        </Col>
-      </Row>
+      {isLoading && (
+        <div className="LoaderWrapper">
+          <Spin size="large" className="position-absolute" />
+        </div>
+      )}
+      <div style={{ padding: "16px" }}>
+        <Button
+          onClick={() => navigate("/classroom-walkthrough/create")}
+          type="primary"
+          icon={<PlusCircleOutlined />}
+          size="large"
+          block // Makes the button responsive and full-width on smaller screens
+          style={{ marginBottom: "16px",width:"fit-content" }} // Adds spacing below the button
+        >
+          Fill New Form
+        </Button>
+
+        <Table
+          columns={Formcolumns1}
+          dataSource={GetForms}
+          bordered
+          scroll={{
+            x: "max-content", // Makes the table horizontally scrollable for mobile
+          }}
+          pagination={{
+            pageSize: 5, // Limits rows per page for better mobile UX
+            responsive: true,
+          }}
+        />
+      </div>
     </div>
   );
 }

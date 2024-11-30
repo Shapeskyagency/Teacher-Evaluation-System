@@ -1,0 +1,36 @@
+.scrollable-form {
+    height: calc(100vh - 60px); /* Adjust height */
+    overflow-y: auto;
+  }
+  
+  .scrollable-form::-webkit-scrollbar {
+    width: 0; /* Hide scrollbar */
+  }
+  
+  .scrollable-form {
+    -ms-overflow-style: none; /* Hide scrollbar for IE */
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+  }
+  
+  .sticky-stepper {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: white;
+  }
+
+  .LoaderWrapper{
+    z-index: 500;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #fff;
+    width: 100%;
+    height: 100%;
+    display: flex
+;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.6;
+  }
+  

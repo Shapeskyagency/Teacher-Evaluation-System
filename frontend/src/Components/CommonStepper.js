@@ -3,7 +3,7 @@ import { Steps } from 'antd';
 
 const CommonStepper = ({ currentStep, steps,direction }) => {
   return (
-    <Steps current={currentStep} direction={direction}>
+    <Steps  current={currentStep} direction={direction}>
       {steps.map((step, index) => (
         <Steps.Step
           key={index}
