@@ -137,6 +137,7 @@ const userSlice = createSlice({
         state.error =null
       })
       .addCase(GetObserverList.fulfilled,(state,action)=>{
+        state.loading=false;
         state.GetObserverLists =action.payload;
         state.error=action.payload;
       })
