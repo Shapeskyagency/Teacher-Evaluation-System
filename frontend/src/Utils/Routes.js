@@ -19,6 +19,8 @@ import BasicDetailsForm from "../Components/BasicDeatilsForm";
 import Details from "../Pages/Forms/FormInside/Details";
 import ClassroomWalkthrough from "../Pages/Forms/ClassroomWalkthrough";
 import DetailsWalkthrough from "../Pages/Forms/FormInside/DetailsWalkthrough";
+import Notebook from "../Pages/Forms/Notebook";
+import NoteBookDetails from "../Pages/Forms/FormInside/NoteBookDetails";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken()  : null;
@@ -34,6 +36,9 @@ const protects = {
         {path:'/fortnightly-monitor', element:<FortnightlyMonitor/>},
         {path:'/fortnightly-monitor/create', element:<BasicDetailsForm/>},
         {path:'/fortnightly-monitor/create/:id', element:<Details/>},
+        {path:'/notebook-checking-proforma', element:<Notebook/>},
+        {path:'/notebook-checking-proforma/create', element:<NoteBookDetails/>},
+        {path:'/notebook-checking-proforma/create/:id', element:<NoteBookDetails/>},
         { path: "*", element: <NotFound404/>},
       ],
     },

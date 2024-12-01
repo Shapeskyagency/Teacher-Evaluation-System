@@ -1,6 +1,6 @@
 import { Space, Tag } from "antd";
 import { Link } from "react-router-dom";
-import { AppstoreAddOutlined, FormOutlined, PieChartOutlined, SignatureOutlined, UserAddOutlined, UserOutlined, UserSwitchOutlined } from "@ant-design/icons";
+import { AppstoreAddOutlined, BookFilled, FormOutlined, PieChartOutlined, SignatureOutlined, UserAddOutlined, UserOutlined, UserSwitchOutlined } from "@ant-design/icons";
 // import { SiGoogleclassroom } from "react-icons/si";
 export const Menu ={
     Superadmin:[
@@ -10,6 +10,7 @@ export const Menu ={
         {name:"Profile", route:"/profile",icon:<UserOutlined />},
         {label:"Forms"},
         {name:"Fortnightly Monitor", route:"/fortnightly-monitor",icon:<FormOutlined />},
+        {name:"Classroom Walkthrough", route:"/classroom-walkthrough",icon:<SignatureOutlined />},
     ],
     Observer:[
         {name:"Dashboard", route:"/dashboard",icon:<AppstoreAddOutlined />},
@@ -25,6 +26,8 @@ export const Menu ={
         {name:"Profile", route:"/profile",icon:<UserOutlined />},
         {label:"Forms"},
         {name:"Fortnightly Monitor", route:"/fortnightly-monitor",icon:<FormOutlined />},
+        {name:"Classroom Walkthrough", route:"/classroom-walkthrough",icon:<SignatureOutlined />},
+        {name:"Notebook Checking", route:"/notebook-checking-proforma",icon:<BookFilled />},
     ]
 }
 
@@ -105,3 +108,24 @@ export const Formcolumns1 = [
     ),
   },
 ];
+
+export const Formcolumns2 = [
+  {
+    title: 'Title',
+    dataIndex: `userId`, // Accessing the teacher's name
+    key: `userId`,
+    render: (text,key) => text?.access === "Observer" && <p className="mb-0 fw-light" key={key}><span className="fw-bold">{text.name}</span> Invited you to Complete <br/> Fortnightly Monitor Form</p>,
+  },
+  {
+    title: 'Action',
+    dataIndex: 'action', 
+    key: 'action',
+    render: (_, record) => (
+      <Space size="middle">
+        <Link className="btn btn-primary" to={`/fortnightly-monitor/create/${record._id}`}>
+        Continue Form
+        </Link>
+      </Space>
+    ),
+  },
+]
