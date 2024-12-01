@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { GiTeacher } = require('react-icons/gi');
 const { Schema } = mongoose;
 
 
