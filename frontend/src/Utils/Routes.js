@@ -21,6 +21,7 @@ import ClassroomWalkthrough from "../Pages/Forms/ClassroomWalkthrough";
 import DetailsWalkthrough from "../Pages/Forms/FormInside/DetailsWalkthrough";
 import Notebook from "../Pages/Forms/Notebook";
 import NoteBookDetails from "../Pages/Forms/FormInside/NoteBookDetails";
+import TeacherWalkthrough from "../Pages/Forms/FormInside/TeacherWalkthrough";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken()  : null;
@@ -36,6 +37,8 @@ const protects = {
         {path:'/fortnightly-monitor', element:<FortnightlyMonitor/>},
         {path:'/fortnightly-monitor/create', element:<BasicDetailsForm/>},
         {path:'/fortnightly-monitor/create/:id', element:<Details/>},
+        {path:"/classroom-walkthrough",element:<ClassroomWalkthrough/>},
+        {path:"/classroom-walkthrough/create/:id",element:<TeacherWalkthrough/>},
         {path:'/notebook-checking-proforma', element:<Notebook/>},
         {path:'/notebook-checking-proforma/create', element:<NoteBookDetails/>},
         {path:'/notebook-checking-proforma/create/:id', element:<NoteBookDetails/>},

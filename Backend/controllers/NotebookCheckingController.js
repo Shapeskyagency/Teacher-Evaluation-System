@@ -1,3 +1,4 @@
+const { createNotification } = require('../config/notify');
 const Form3 = require('../models/Form3');
 const notification = require('../models/notification');
 const User = require('../models/User');
@@ -61,9 +62,15 @@ exports.createForm = async (req, res) => {
                 qualityOfLearner
             },
         });
-
+        
         const savedForm = await newForm.save();
 
+        const notification = await createNotification({
+            title: 'You are invited to fill the Nootbook Checking',
+            route: `notebook-checking-proforma/create/${savedForm._id}`,
+            reciverId: NameofObserver,
+          });
+          
         // Send success response
         res.status(201).json({ message: "Form created successfully", form: savedForm,status: true });
 

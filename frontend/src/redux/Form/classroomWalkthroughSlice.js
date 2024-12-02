@@ -12,7 +12,7 @@ export const CreateWalkThrough = createAsyncThunk('CreateWalkThrough',async (pay
   })
 
   export const TeacherWalkThroughComplete = createAsyncThunk('TeacherWalkThroughComplete',async (payload) => {
-    const response = await axiosInstanceToken.post(`classroom-walkthrough/teacher/${payload}`);
+    const response = await axiosInstanceToken.post(`classroom-walkthrough/teacher/${payload.id}`,payload.data);
       return response.data;
   })
 
