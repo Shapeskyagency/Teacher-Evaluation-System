@@ -1,3 +1,4 @@
+const { createNotification } = require('../config/notify');
 const Form2 = require('../models/Form2');
 const notification = require('../models/notification');
 const User = require('../models/User');
@@ -49,6 +50,7 @@ exports.createForm = async (req, res) => {
             createdBy: userId,
             isObserverCompleted: ObserverFeedback ? true : false, // Default to `false` if not provided
             ObserverFeedback: ObserverFeedback || [], // Default to an empty array
+            isTeacherCompletes:false,
             grenralDetails: {
                 NameoftheVisitingTeacher,
                 DateOfObservation: DateOfObservation || new Date(), // Use current date if not provided
@@ -70,9 +72,14 @@ exports.createForm = async (req, res) => {
             Grade,
             NumberofParametersNotApplicable,
         });
+         // Save the form to the database
+         const savedForm = await newForm.save();
+        const notification = await createNotification({
+            title: 'You are invited to fill the Classroom Walkthrough',
+            route: `classroom-walkthrough/create/${savedForm._id}`,
+            reciverId: NameoftheVisitingTeacher,
+          });
 
-        // Save the form to the database
-        const savedForm = await newForm.save();
 
         // Send success response
         res.status(201).json({ message: "Form created successfully", form: savedForm,status: true });
@@ -88,6 +95,30 @@ exports.getSignleForm = async (req, res) => {
     const FormID = req?.params?.id;
     try {
         const Form = await Form2.findById(FormID)
+        .populate({
+            path: 'createdBy',
+            select: '-password -mobile -employeeId -customId'
+        })
+        .populate({
+            path: 'grenralDetails.NameoftheVisitingTeacher',
+            select: '-password -mobile -employeeId -customId'
+        });
+
+        if(!FormID && !Form?._id){
+            return res.status(403).json({ message: "You do not have permission." });
+        }
+        res.status(200).send(Form)
+
+    } catch (error) {
+        console.error("Error Getting Classroom Walkthrough:", error);
+        res.status(500).json({ message: "Error Getting Classroom Walkthrough.", error });
+    }
+}
+
+exports.GetTeahearsForm = async (req, res) => {
+    const FormID = req?.params?.id;
+    try {
+        const Form = await Form2.find(FormID)
         .populate({
             path: 'createdBy',
             select: '-password -mobile -employeeId -customId'
@@ -151,11 +182,10 @@ exports.TeacherContinueForm = async (req, res) => {
         if (!user || (user.access !== "Teacher" && user.access !== "SuperAdmin")) {
             return res.status(403).json({ message: "You do not have permission to update this form." });
         }
-
         // Find the form
         const form = await Form2.findById(FormID);
 
-        if (!form) {
+        if (form) {
             return res.status(404).json({ message: "Form not found." });
         }
 
