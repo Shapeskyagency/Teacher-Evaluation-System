@@ -17,6 +17,11 @@ export const GetObserverPendignForms = createAsyncThunk('GetObserverPendignForms
       return response.data;
   })
 
+  export const GetObserverFormsOne = createAsyncThunk('GetObserverFormsOne',async (payload) => {
+    const response = await axiosInstanceToken.get(`/form/fortnightly-monitor/oberver/get`);
+      return response.data;
+  })
+
   export const GetSingleFormsOne = createAsyncThunk('GetSingleFormsOne',async (payload) => {
     const response = await axiosInstanceToken.get(`/form/fortnightly-monitor/${payload}`);
       return response.data;
@@ -97,6 +102,21 @@ export const GetObserverPendignForms = createAsyncThunk('GetObserverPendignForms
           state.loading= false;
           state.error={message:"Server Error"}
         })
+// --------------
+
+.addCase(GetObserverFormsOne.pending,(state,action)=>{
+  state.loading= true;
+  state.error= action.payload
+})
+.addCase(GetObserverFormsOne.fulfilled,(state,action)=>{
+  state.loading= false;
+  state.getAllForms= action.payload
+})
+.addCase(GetObserverFormsOne.rejected,(state,action)=>{
+  state.loading= false;
+  state.error={message:"Server Error"}
+})
+
         //GetSingleFormsOne
 
         .addCase(GetSingleFormsOne.pending,(state,action)=>{

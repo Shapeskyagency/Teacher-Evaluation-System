@@ -13,15 +13,22 @@ export const CreateNoteBookForm = createAsyncThunk('CreateNoteBookForm',async (p
       return response.data;
   })
 
-//   export const TeacherWalkThroughComplete = createAsyncThunk('TeacherWalkThroughComplete',async (payload) => {
-//     const response = await axiosInstanceToken.post(`classroom-walkthrough/teacher/${payload}`);
-//       return response.data;
-//   })
+  export const ObserverNotebookComplete = createAsyncThunk('TeacherNotebookComplete',async (payload) => {
+    const response = await axiosInstanceToken.post(`${prefixURL}/observer/${payload.id}`,payload.data);
+      return response.data;
+  })
 
-//   export const GetcreatedBy = createAsyncThunk('GetcreatedBy',async () => {
-//     const response = await axiosInstanceToken.get(`classroom-walkthrough/get`);
-//       return response.data;
-//   })
+  export const GetcreatedByUser = createAsyncThunk('GetcreatedByUser',async () => {
+    const response = await axiosInstanceToken.get(`${prefixURL}/get`);
+      return response.data;
+  })
+
+
+  export const GetobserverForms = createAsyncThunk('GetobserverForms',async () => {
+    const response = await axiosInstanceToken.get(`${prefixURL}/observer/get`);
+      return response.data;
+  })
+
 
 
 
@@ -59,17 +66,29 @@ export const CreateNoteBookForm = createAsyncThunk('CreateNoteBookForm',async (p
           state.error = action.payload; // Store the error message
         })
 
-        // .addCase(GetcreatedBy.pending, (state) => {
-        //   state.isLoading = true; // Set loading to true when the request is pending
-        // })
-        // .addCase(GetcreatedBy.fulfilled, (state, action) => {
-        //   state.isLoading = false; // Set loading to false when the request is fulfilled
-        //   state.GetForms = action.payload; // Store the received form data
-        // })
-        // .addCase(GetcreatedBy.rejected, (state, action) => {
-        //   state.isLoading = false; // Set loading to false when the request fails
-        //   state.error = action.payload; // Store the error message
-        // });
+        .addCase(GetcreatedByUser.pending, (state) => {
+          state.isLoading = true; // Set loading to true when the request is pending
+        })
+        .addCase(GetcreatedByUser.fulfilled, (state, action) => {
+          state.isLoading = false; // Set loading to false when the request is fulfilled
+          state.GetForms = action.payload; // Store the received form data
+        })
+        .addCase(GetcreatedByUser.rejected, (state, action) => {
+          state.isLoading = false; // Set loading to false when the request fails
+          state.error = action.payload; // Store the error message
+        })
+
+        .addCase(GetobserverForms.pending, (state) => {
+          state.isLoading = true; // Set loading to true when the request is pending
+        })
+        .addCase(GetobserverForms.fulfilled, (state, action) => {
+          state.isLoading = false; // Set loading to false when the request is fulfilled
+          state.GetForms = action.payload; // Store the received form data
+        })
+        .addCase(GetobserverForms.rejected, (state, action) => {
+          state.isLoading = false; // Set loading to false when the request fails
+          state.error = action.payload; // Store the error message
+        });
     },
   });
   

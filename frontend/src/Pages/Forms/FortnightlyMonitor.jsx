@@ -1,55 +1,64 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Card, Empty, Modal, Tag } from 'antd';
-import { Col, Row } from 'react-bootstrap';
-import { PlusCircleOutlined, EyeFilled } from '@ant-design/icons';
-import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { GetFormsOne } from '../../redux/Form/fortnightlySlice';
-import { getAllTimes } from '../../Utils/auth';
-import BasicDeatilsForm from '../../Components/BasicDeatilsForm';
+import React, { useEffect, useState } from "react";
+import { Button, Modal, Table } from "antd";
+import { Col, Row } from "react-bootstrap";
+import { PlusCircleOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { GetFormsOne, GetObserverFormsOne } from "../../redux/Form/fortnightlySlice";
+import BasicDeatilsForm from "../../Components/BasicDeatilsForm";
+import { FormcolumnsForm1 } from "../../Components/Data";
+import { UserRole } from "../../config/config";
+import { getUserId } from "../../Utils/auth";
 
 const FortnightlyMonitor = () => {
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const forms = useSelector((state) => state?.Forms?.getAllForms);
+  const Role = getUserId().access
 
+  // Default `forms` to an empty array to avoid errors
+  const forms = useSelector((state) => state?.Forms?.getAllForms || []);
+  const [sortedForms, setSortedForms] = useState([]);
+
+  // Fetch forms only once
   useEffect(() => {
-    dispatch(GetFormsOne());
+    if(Role === UserRole[1]){
+      dispatch(GetObserverFormsOne());
+    }else if(Role === UserRole[2]){
+      dispatch(GetFormsOne());
+    }
   }, [dispatch]);
 
-  const renderForms = (filterCondition, title, isRecentlyFilled) => (
+  // Sort forms when they change
+  useEffect(() => {
+    if (Array.isArray(forms)) {
+      const sortedData = [...forms].sort((a, b) => {
+        if (a.isTeacherComplete === b.isTeacherComplete) {
+          return 0; // No change in order if both are the same
+        }
+        return a.isTeacherComplete ? 1 : -1; // Place `false` first
+      });
+      setSortedForms(sortedData);
+    }
+  }, [forms]);
+
+
+  const renderForms = (title) => (
     <>
       <h3>{title}</h3>
-      {forms?.length ? (
-        forms
-          .filter(filterCondition)
-          .map((form) => (
-            <Card key={form._id} className="mb-3">
-              <h4>
-                Assigned to{' '}
-                {form.coordinatorID
-                  ? `Coordinator ${form.coordinatorID?.name}`
-                  : `Teacher ${form.teacherID?.name}`}
-              </h4>
-              <Tag className="black">Date: {getAllTimes(form.date)?.formattedDate2}</Tag>
-              <Tag color="green">Class: {form.className.toUpperCase()}</Tag>
-              <Tag color="blue">Subject: {form.section.toUpperCase()}</Tag>
-
-              {isRecentlyFilled ? (
-                <Link to={`/fortnightly-monitor/report/${form._id}`} className="mt-3 d-block">
-                  <Button icon={<EyeFilled />}>View Report</Button>
-                </Link>
-              ) : (
-                <Link to={`/fortnightly-monitor/create/${form._id}`} className="mt-3 d-block">
-                  <Button type="primary">Continue Form</Button>
-                </Link>
-              )}
-            </Card>
-          ))
-      ) : (
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-      )}
+      <Table
+        columns={FormcolumnsForm1}
+        dataSource={sortedForms}
+        rowKey="id" // Ensure a unique key for each row
+        bordered
+        scroll={{
+          x: "max-content", // Makes the table horizontally scrollable for mobile
+        }}
+        pagination={{
+          pageSize: 5, // Limits rows per page for better mobile UX
+          responsive: true,
+        }}
+      />
     </>
   );
 
@@ -57,38 +66,24 @@ const FortnightlyMonitor = () => {
     <div className="container py-4">
       <Row>
         <Col>
-          <Button
-            onClick={() => navigate('/fortnightly-monitor/create')}
-            type="primary"
-            icon={<PlusCircleOutlined />}
-            size="large"
-          >
-            New Form
-          </Button>
-
-          {renderForms(
-            (form) => !form.isTeacherComplete && !form.isCoordinatorComplete,
-            'Pending Forms',
-            false
+        <div className='pb-0 pt-0' style={{ padding: "16px" }}>
+       
+          {getUserId().access === UserRole[2] && (
+            <Button
+              onClick={() => navigate("/fortnightly-monitor/create")}
+              type="primary"
+              icon={<PlusCircleOutlined />}
+              size="large"
+            >
+              New Form
+            </Button>
           )}
-
-          {renderForms(
-            (form) => form.isTeacherComplete || form.isCoordinatorComplete,
-            'Recently Filled Forms',
-            true
-          )}
+        
+          {renderForms("All Forms")}
+          </div>
         </Col>
       </Row>
 
-      <Modal
-        width={520}
-        footer={null}
-        open={openModal}
-        onCancel={() => setOpenModal(false)}
-        className="w-50"
-      >
-        <BasicDeatilsForm close={() => setOpenModal(false)} />
-      </Modal>
     </div>
   );
 };

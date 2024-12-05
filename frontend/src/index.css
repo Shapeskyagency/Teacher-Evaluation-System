@@ -38,3 +38,13 @@ color: #0b5ed7 !important;
 {
   background-color: #6ca5f9fb;
 }
+.Grid-Columns{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.text-color-gy
+{
+  color: #9c9c9c;
+}

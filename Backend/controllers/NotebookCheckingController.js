@@ -139,7 +139,7 @@ exports.updateObserverFields = async (req, res) => {
                 Absentees,
                 Defaulters,
             },
-            isObserverComplete,
+            isObserverComplete: true,
             ObserverForm:{
                 maintenanceOfNotebooks,
                 qualityOfOppurtunities,
@@ -182,3 +182,54 @@ exports.updateObserverFields = async (req, res) => {
     }
 };
 
+
+exports.GetcreatedByID = async (req, res) => {
+    const userId = req?.user?.id;
+    try {
+        const Form = await Form3.find({createdBy:userId})
+        .populate({
+            path: 'createdBy',
+            select: '-password -mobile -employeeId -customId'
+        })
+        .populate({
+            path: 'grenralDetails.NameofObserver',
+            select: '-password -mobile -employeeId -customId'
+        });
+
+        if(!userId && !userId?.id){
+            return res.status(403).json({ message: "You do not have permission." });
+        }
+
+        res.status(200).send(Form)
+
+    } catch (error) {
+        console.error("Error Getting NoteBook:", error);
+        res.status(500).json({ message: "Error Getting NoteBook.", error });
+    }
+}
+
+
+exports.GetObseverForm = async (req, res) => {
+    const userId = req?.user?.id;
+    try {
+        const Form = await Form3.find({ "grenralDetails.NameofObserver": userId })
+        .populate({
+            path: 'createdBy',
+            select: '-password -mobile -employeeId -customId'
+        })
+        .populate({
+            path: 'grenralDetails.NameofObserver',
+            select: '-password -mobile -employeeId -customId'
+        });
+
+        if(!userId && !userId?.id){
+            return res.status(403).json({ message: "You do not have permission." });
+        }
+
+        res.status(200).send(Form)
+
+    } catch (error) {
+        console.error("Error Getting Classroom Walkthrough:", error);
+        res.status(500).json({ message: "Error Getting Classroom Walkthrough.", error });
+    }
+}
