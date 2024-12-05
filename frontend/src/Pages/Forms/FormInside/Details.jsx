@@ -160,7 +160,7 @@ const Details = () => {
             onValuesChange={calculateScore} // Trigger score calculation
           >
             <Row gutter={[16, 16]}>
-              <Col xs={24} sm={12} md={16} lg={16}>
+              <Col xs={24} sm={12} md={12} lg={12}>
                 {questions.map((field, index) => {
                   return (
                     <div className="mb-3 border p-3 rounded shadow-sm" key={field}>
@@ -195,7 +195,7 @@ const Details = () => {
                   );
                 })}
               </Col>
-              <Col xs={24} sm={12} md={8} lg={8}>
+              <Col xs={24} sm={12} md={12} lg={12}>
                 <div className="sticky-top">
                     <Card
                     title={

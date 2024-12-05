@@ -208,7 +208,7 @@ function DetailsWalkthrough() {
     const response = await dispatch(CreateWalkThrough(data));
     if (response?.payload?.status) {
       message.success(response?.payload?.message);
-      navigate(`/classroom-walkthrough/report/${response?.payload?.Form._id}`);
+      navigate(`/classroom-walkthrough/report/${response?.payload?.form?._id}`);
     } else {
       message.error(response?.payload?.message);
     }

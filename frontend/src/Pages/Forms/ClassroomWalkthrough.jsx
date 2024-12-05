@@ -1,9 +1,9 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { Button, Spin, Table } from "antd";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { GetcreatedBy } from "../../redux/Form/classroomWalkthroughSlice";
+import { GetcreatedBy, TeacherwalkthroughForms } from "../../redux/Form/classroomWalkthroughSlice";
 import { Formcolumns1 } from "../../Components/Data";
 import { getUserId } from "../../Utils/auth";
 import { UserRole } from "../../config/config";
@@ -12,12 +12,28 @@ function ClassroomWalkthrough() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isLoading, GetForms } = useSelector((state) => state?.walkThroughForm);
+  const Role = getUserId().access
+  const [sortedForms, setSortedForms] = useState([]);
+  useEffect(() => {
+    if(Role === UserRole[2]){
+      dispatch(TeacherwalkthroughForms())
+    }else if(Role === UserRole[1]){
+      dispatch(GetcreatedBy())
+    }
+  }, [dispatch]);
+
 
   useEffect(() => {
-    dispatch(GetcreatedBy()).then((res) => {
-      console.log(res?.payload);
-    });
-  }, [dispatch]);
+    if (Array.isArray(GetForms)) {
+      const sortedData = [...GetForms].sort((a, b) => {
+        if (a.isTeacherCompletes === b.isTeacherCompletes) {
+          return 0; // No change in order if both are the same
+        }
+        return a.isTeacherCompletes ? 1 : -1; // Place `false` first
+      });
+      setSortedForms(sortedData);
+    }
+  }, [GetForms]);
 
   return (
     <div className="container py-4">
@@ -44,7 +60,7 @@ function ClassroomWalkthrough() {
        
         <Table
           columns={Formcolumns1}
-          dataSource={GetForms}
+          dataSource={sortedForms}
           bordered
           scroll={{
             x: "max-content", // Makes the table horizontally scrollable for mobile

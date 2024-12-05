@@ -1,7 +1,12 @@
-import { Space, Tag } from "antd";
+import { Button, Space, Tag } from "antd";
 import { Link } from "react-router-dom";
 import { AppstoreAddOutlined, BookFilled, FormOutlined, PieChartOutlined, SignatureOutlined, UserAddOutlined, UserOutlined, UserSwitchOutlined } from "@ant-design/icons";
+import { getAllTimes, getUserId } from "../Utils/auth";
+import { UserRole } from "../config/config";
 // import { SiGoogleclassroom } from "react-icons/si";
+
+const Role = getUserId()?.access
+
 export const Menu ={
     Superadmin:[
         {name:"Dashboard", route:"/dashboard",icon:<AppstoreAddOutlined />},
@@ -11,6 +16,7 @@ export const Menu ={
         {label:"Forms"},
         {name:"Fortnightly Monitor", route:"/fortnightly-monitor",icon:<FormOutlined />},
         {name:"Classroom Walkthrough", route:"/classroom-walkthrough",icon:<SignatureOutlined />},
+        {name:"Notebook Checking", route:"/notebook-checking-proforma",icon:<BookFilled />},
     ],
     Observer:[
         {name:"Dashboard", route:"/dashboard",icon:<AppstoreAddOutlined />},
@@ -19,6 +25,7 @@ export const Menu ={
         {label:"Forms"},
         {name:"Fortnightly Monitor", route:"/fortnightly-monitor",icon:<FormOutlined />},
         {name:"Classroom Walkthrough", route:"/classroom-walkthrough",icon:<SignatureOutlined />},
+        {name:"Notebook Checking", route:"/notebook-checking-proforma",icon:<BookFilled />},
     ],
     Teacher:[
         {name:"Dashboard", route:"/dashboard",icon:<AppstoreAddOutlined />},
@@ -77,8 +84,15 @@ export const Formcolumns1 = [
     key: 'grenralDetails',
     render: (text) => <span>{new Date(text.DateOfObservation).toLocaleDateString()}</span>, // Formatting the date
   },
+
   {
-    title: 'Teacher Status',
+    title: 'Class',
+    dataIndex: 'grenralDetails', // Correctly accessing the DateOfObservation
+    key: 'grenralDetails',
+    render: (text) => <span>{text?.className}</span>, // Formatting the date
+  },
+  {
+    title: Role === UserRole[2 ]? 'Your Status' :  'Teacher Status',
     dataIndex: 'isTeacherCompletes', 
     key: 'isTeacherCompletes',
     render: (text) => (
@@ -95,15 +109,32 @@ export const Formcolumns1 = [
       </Space>
     ),
   },
+  
+
+
   {
     title: 'Action',
     dataIndex: 'action', 
     key: 'action',
     render: (_, record) => (
       <Space size="middle">
-        <Link className="btn btn-outline-primary" to={`/classroom-walkthrough/report/${record._id}`}>
+        {(Role === UserRole[2] || Role === UserRole[1] )&&
+       (record?.isTeacherCompletes && record?.isObserverCompleted) ?
+          <Link className="btn btn-primary" to={`/classroom-walkthrough/report/${record._id}`}>
           View Report
-        </Link>
+        </Link> : Role === UserRole[1] &&  
+      
+      <Button size="large" className="btn-outline-primary">Push Notify</Button>
+      }
+          {Role === UserRole[2] && 
+          (!record?.isTeacherCompletes && record?.isObserverCompleted) &&
+          <Link className="btn text-primary" to={`/classroom-walkthrough/create/${record._id}`}>
+                 Continue Form
+                 </Link>}
+        {/*       */}
+
+        
+        
       </Space>
     ),
   },
@@ -128,4 +159,199 @@ export const Formcolumns2 = [
       </Space>
     ),
   },
+]
+
+
+export const Formcolumns3 = [
+  {
+    title: 'Form Title',
+    dataIndex: `grenralDetails`, // Accessing the teacher's name
+    key: `grenralDetails`,
+    render: (text) => <a>Notebook Checking For {text.NameofObserver.name}</a>,
+  },
+  {
+    title: 'Observation Date',
+    dataIndex: 'grenralDetails', // Correctly accessing the DateOfObservation
+    key: 'grenralDetails',
+    render: (text) => <span>{new Date(text.DateOfObservation).toLocaleDateString()}</span>, // Formatting the date
+  },
+  {
+    title: 'Observer Status',
+    dataIndex: 'isObserverComplete', 
+    key: 'isObserverComplete',
+    render: (text) => (
+      <Space size="middle">
+        {text ?  
+        <Tag color="green">
+        COMPLETED
+       </Tag>
+       : <Tag color="volcano">
+       NOT COMPLETED
+      </Tag>
+      }
+        
+      </Space>
+    ),
+  },
+  {
+    title: 'Teacher Status',
+    dataIndex: 'isTeacherComplete', 
+    key: 'isTeacherComplete',
+    render: (text) => (
+      <Space size="middle">
+        {text ?  
+        <Tag color="green">
+        COMPLETED
+       </Tag>
+       : <Tag color="volcano">
+       NOT COMPLETED
+      </Tag>
+      }
+        
+      </Space>
+    ),
+  },
+  // {
+  //   title: 'Action',
+  //   dataIndex: 'action', 
+  //   key: 'action',
+  //   render: (_, record) => (
+  //     <Space size="middle">
+  //       {Role === UserRole[1] ? 
+  //       (
+  //         <>
+  //         {(record?.isObserverComplete && record?.isTeacherComplete) ? 
+  //         <Link className="btn btn-outline-primary" to={`/notebook-checking-proforma/report/${record._id}`}>
+  //         View Report
+  //       </Link>
+  //       :
+  //           (!record?.isObserverComplete && record?.isTeacherComplete)&& 
+
+  //           <Link className="btn text-primary" to={`/notebook-checking-proforma/create/${record._id}`}>
+  //          Continue Form
+  //         </Link>
+  //       }
+          
+  //         </>
+  //       )
+  //      :
+  //      <Link className="btn btn-outline-primary" to={`/notebook-checking-proforma/report/${record._id}`}>
+  //         View Report
+  //       </Link>
+  //      }
+        
+  //     </Space>
+  //   ),
+  // },
+  {
+    title: 'Action',
+    dataIndex: 'action', 
+    key: 'action',
+    render: (_, record) => (
+      <Space size="middle">
+        {(Role === UserRole[1] || Role === UserRole[2] )&&
+       (record?.isTeacherComplete && record?.isObserverComplete) ?
+          <Link className="btn btn-primary" to={`/notebook-checking-proforma/report/${record._id}`}>
+          View Report
+        </Link> : Role === UserRole[2] &&  
+      
+      <Button size="large" className="btn-outline-primary">Push Notify</Button>
+      }
+          {Role === UserRole[1] && 
+          (record?.isTeacherComplete && !record?.isObserverComplete) &&
+          <Link className="btn text-primary" to={`/notebook-checking-proforma/create/${record._id}`}>
+                 Continue Form
+                 </Link>}
+        {/*       */}
+
+        
+        
+      </Space>
+    ),
+  },
+];
+
+
+export const FormcolumnsForm1 = [
+  {
+    title: 'Form Title',
+    dataIndex: `coordinatorID`, // Accessing the teacher's name
+    key: `coordinatorID`,
+    render: (text,record) => <a>
+      <b>Assign to</b> {text?.access ==="Observer" ?  (<> <b>Observer</b> {text?.name}</>) : (<><b>Teacher</b> {text?.name}</>)}
+     {/* {getAllTimes(record.TeacherSubmissionDate)?.formattedDate2} */}
+    </a>,
+  },
+  {
+    title: 'Class Name',
+    dataIndex: `className`, // Accessing the teacher's name
+    key: `className`,
+    render: (text) => <a>
+      {text}
+    </a>,
+  },
+  {
+    title: 'Teacher Status',
+    dataIndex: 'isTeacherComplete', 
+    key: 'isTeacherComplete',
+    render: (text,record) => (
+      <Space size="middle">
+       
+        {text ?  
+        <Tag color="green">
+        COMPLETED
+       </Tag>
+       : <Tag color="volcano">
+       NOT COMPLETED
+      </Tag>
+      }
+        
+      </Space>
+    ),
+  },
+  {
+    title: 'Obsever Status',
+    dataIndex: `isCoordinatorComplete`, // Accessing the teacher's name
+    key: `isCoordinatorComplete`,
+    render: (text) => (
+      <Space size="middle">
+        {text ?  
+        <Tag color="green">
+        COMPLETED
+       </Tag>
+       : <Tag color="volcano">
+       NOT COMPLETED
+      </Tag>
+      }
+      </Space>
+    ),
+  },
+  {
+    title: 'Action',
+    dataIndex: 'action', 
+    key: 'action',
+    render: (_, record) => (
+      <Space size="middle">
+        {(Role === UserRole[1] || Role === UserRole[2] )&&
+       (record?.isTeacherComplete && record?.isCoordinatorComplete) ?
+          <Link className="btn btn-primary" to={`/fortnightly-monitor/report/${record._id}`}>
+          View Report
+        </Link> : Role === UserRole[2] &&  
+      
+      <Button size="large" className="btn-outline-primary">Push Notify</Button>
+      }
+          {Role === UserRole[1] && 
+          (record?.isTeacherComplete && !record?.isCoordinatorComplete) &&
+          <Link className="btn text-primary" to={`/fortnightly-monitor/create/${record._id}`}>
+                 Continue Form
+                 </Link>}
+        {/*       */}
+
+        
+        
+      </Space>
+    ),
+  },
+
+
 ]

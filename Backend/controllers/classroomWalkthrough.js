@@ -166,6 +166,32 @@ exports.GetcreatedBy = async (req, res) => {
 }
 
 
+exports.GetTeacherForm = async (req, res) => {
+    const userId = req?.user?.id;
+    try {
+        const Form = await Form2.find({ "grenralDetails.NameoftheVisitingTeacher": userId })
+        .populate({
+            path: 'createdBy',
+            select: '-password -mobile -employeeId -customId'
+        })
+        .populate({
+            path: 'grenralDetails.NameoftheVisitingTeacher',
+            select: '-password -mobile -employeeId -customId'
+        });
+
+        if(!userId && !userId?.id){
+            return res.status(403).json({ message: "You do not have permission." });
+        }
+
+        res.status(200).send(Form)
+
+    } catch (error) {
+        console.error("Error Getting Classroom Walkthrough:", error);
+        res.status(500).json({ message: "Error Getting Classroom Walkthrough.", error });
+    }
+}
+
+
 
 
 
@@ -184,8 +210,8 @@ exports.TeacherContinueForm = async (req, res) => {
         }
         // Find the form
         const form = await Form2.findById(FormID);
-
-        if (form) {
+            
+        if (!form) {
             return res.status(404).json({ message: "Form not found." });
         }
 

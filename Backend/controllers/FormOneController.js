@@ -97,6 +97,35 @@ exports.getuserForm = async(req,res)=>{
 
 }
 
+exports.GetObseverForm1 = async (req, res) => {
+    const userId = req?.user?.id;
+    try {
+        const Form = await Form1.find({ coordinatorID: userId })
+        .populate({
+            path: 'teacherID',
+            select: '-password -mobile -employeeId -customId'
+        })
+        .populate({
+            path: 'userId',
+            select: '-password -mobile -employeeId -customId'
+        })
+        .populate({
+          path: 'coordinatorID',
+          select: '-password -mobile -employeeId -customId'
+      })
+        if(!userId && !userId?.id){
+            return res.status(403).json({ message: "You do not have permission." });
+        }
+
+        res.status(200).send(Form)
+
+    } catch (error) {
+        console.error("Error Getting Classroom Walkthrough:", error);
+        res.status(500).json({ message: "Error Getting Classroom Walkthrough.", error });
+    }
+}
+
+
 exports.getSingleuserForm = async(req,res)=>{
   const formId = req?.params.id;
   try{

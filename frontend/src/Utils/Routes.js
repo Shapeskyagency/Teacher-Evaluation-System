@@ -22,6 +22,8 @@ import DetailsWalkthrough from "../Pages/Forms/FormInside/DetailsWalkthrough";
 import Notebook from "../Pages/Forms/Notebook";
 import NoteBookDetails from "../Pages/Forms/FormInside/NoteBookDetails";
 import TeacherWalkthrough from "../Pages/Forms/FormInside/TeacherWalkthrough";
+import ObserverNotebook from "../Pages/Forms/FormInside/ObserverNotebook";
+import Reader from "../Pages/Reports/Reader";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken()  : null;
@@ -37,6 +39,7 @@ const protects = {
         {path:'/fortnightly-monitor', element:<FortnightlyMonitor/>},
         {path:'/fortnightly-monitor/create', element:<BasicDetailsForm/>},
         {path:'/fortnightly-monitor/create/:id', element:<Details/>},
+        {path:'/fortnightly-monitor/report/:id', element:<Reader/>},
         {path:"/classroom-walkthrough",element:<ClassroomWalkthrough/>},
         {path:"/classroom-walkthrough/create/:id",element:<TeacherWalkthrough/>},
         {path:'/notebook-checking-proforma', element:<Notebook/>},
@@ -60,6 +63,7 @@ const protects = {
         {path:'/fortnightly-monitor', element:<FortnightlyMonitor/>},
         {path:'/fortnightly-monitor/create', element:<BasicDetailsForm/>},
         {path:'/fortnightly-monitor/create/:id', element:<Details/>},
+        {path:'/fortnightly-monitor/report/:id', element:<Reader/>},
         { path: "*", element: <NotFound404/> },
       ],
     },
@@ -76,9 +80,12 @@ const protects = {
         {path:'/fortnightly-monitor', element:<FortnightlyMonitor/>},
         {path:'/fortnightly-monitor/create', element:<BasicDetailsForm/>},
         {path:'/fortnightly-monitor/create/:id', element:<Details/>},
+        {path:'/fortnightly-monitor/report/:id', element:<Reader/>},
         {path:"/classroom-walkthrough",element:<ClassroomWalkthrough/>},
         {path:"/classroom-walkthrough/create",element:<DetailsWalkthrough/>},
         {path:"/classroom-walkthrough/create/:id",element:<DetailsWalkthrough/>},
+          {path:'/notebook-checking-proforma', element:<Notebook/>},
+        {path:'/notebook-checking-proforma/create/:id', element:<ObserverNotebook/>},
         { path: "*", element: <NotFound404/> },
 
       ],
