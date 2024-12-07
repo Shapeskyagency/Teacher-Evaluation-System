@@ -13,14 +13,14 @@ import LogoBanner from "../Imgs/image.png";
 import { getAllTimes } from "../../../Utils/auth";
 import AnswerComp from "./AnswerComp";
 
-Font.register({
-  family: "PT Serif",
-  src: "http://fonts.gstatic.com/s/ptserif/v8/EgBlzoNBIHxNPCMwXaAhYPesZW2xOQ-xsNqO47m55DA.ttf",
-});
-Font.register({
-  family: "Gilda Display",
-  src: "http://fonts.gstatic.com/s/gildadisplay/v4/8yAVUZLLZ3wb7dSsjix0CP1Ie94GXVQ4L73iNy0KJ5Y.ttf",
-});
+// Font.register({
+//   family: "PT Serif",
+//   src: "http://fonts.gstatic.com/s/ptserif/v8/EgBlzoNBIHxNPCMwXaAhYPesZW2xOQ-xsNqO47m55DA.ttf",
+// });
+// Font.register({
+//   family: "Gilda Display",
+//   src: "http://fonts.gstatic.com/s/gildadisplay/v4/8yAVUZLLZ3wb7dSsjix0CP1Ie94GXVQ4L73iNy0KJ5Y.ttf",
+// });
 
 // Create styles
 const styles = StyleSheet.create({
@@ -54,11 +54,11 @@ const styles = StyleSheet.create({
   Centered: {
     justifyContent: "center",
     flexDirection: "row",
-    fontFamily: "PT Serif",
+    // fontFamily: "PT Serif",
     marginBottom: 5,
   },
   Question: {
-    fontFamily: "Gilda Display",
+    // fontFamily: "Gilda Display",
     fontSize: 12,
   },
   testCenter:{
