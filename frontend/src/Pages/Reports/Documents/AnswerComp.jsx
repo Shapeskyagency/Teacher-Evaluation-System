@@ -169,11 +169,11 @@ const styles = StyleSheet.create({
   Centered: {
     justifyContent: "center",
     flexDirection: "row",
-    fontFamily: "PT Serif",
+    // fontFamily: "PT Serif",
     marginBottom: 5,
   },
   Question: {
-    fontFamily: "Gilda Display",
+    // fontFamily: "Gilda Display",
     fontSize: 12,
   },
   testCenter: {

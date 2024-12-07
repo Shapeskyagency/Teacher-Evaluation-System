@@ -6,7 +6,6 @@ import {
   Document,
   StyleSheet,
   Image,
-  Font,
 } from "@react-pdf/renderer";
 import Logo from "../Imgs/Logo.png";
 import LogoBanner from "../Imgs/image.png";
@@ -96,7 +95,6 @@ const Questions = [
 
 // Create Document Component
 const MyDocument = ({ data }) => {
-  console.log(data);
   return (
     <Document>
       <Page size="A4" style={styles.page}>
