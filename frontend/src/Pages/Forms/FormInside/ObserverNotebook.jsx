@@ -56,6 +56,12 @@ function ObserverNotebook() {
         { name: "NotebooksSubmitted", label: "Notebooks Submitted", type: "input" },
         { name: "Absentees", label: "Absentees", type: "input" },
         { name: "Defaulters", label: "Defaulters", type: "input" },
+        // { name: "observerFeedback", label: "Observer Feedback", type: "textarea" },
+      ];
+
+      
+      const generalDetailsConfig2 = [
+       
         { name: "observerFeedback", label: "Observer Feedback", type: "textarea" },
       ];
       const renderFormItem = ({ name, label, type }) => {
@@ -84,6 +90,9 @@ function ObserverNotebook() {
           </Form.Item>
         );
       };
+
+
+      
     
       const renderGeneralDetails = () =>
         generalDetailsConfig.map((item) => (
@@ -93,6 +102,15 @@ function ObserverNotebook() {
           </Col>
         </Row>
         ));
+
+        const renderGeneralDetails2 = () =>
+          generalDetailsConfig2.map((item) => (
+          <Row>
+                <Col md={12} key={item.name}>
+              {renderFormItem(item)}
+            </Col>
+          </Row>
+          ));
     
 
     const RenderRadioFormItem = ({ name, label, question, isTextArea }) => {
@@ -258,7 +276,7 @@ function ObserverNotebook() {
                 "qualityOfTeacherFeedback"
               )}
             </div>
-            <div className="">
+            <div className="mb-5 pb-3">
               {renderSections(
                 "Quality Of Learner",
                 [
@@ -268,6 +286,9 @@ function ObserverNotebook() {
 
                 "qualityOfLearner"
               )}
+            </div>
+            <div>
+            {renderGeneralDetails2()}
             </div>
             <Button size="large" type="primary" onClick={handleNext}>
               {" "}
@@ -357,6 +378,11 @@ function ObserverNotebook() {
                     </Tag>
                      ))}
                     </h6>
+
+                    {item?.remark && <h6 className="Question-Title fw-normal">
+                      <b>Remarks: </b>
+                      {item?.remark}
+                    </h6>}
                     
                   </div>
                 </div>
@@ -377,7 +403,10 @@ function ObserverNotebook() {
                       Item.label
                      ))}
                     </h6>
-                    
+                    {item?.remark && <h6 className="Question-Title fw-normal">
+                      <b>Remarks: </b>
+                      {item?.remark}
+                    </h6>}
                   </div>
                 </div>
               )
@@ -397,7 +426,10 @@ function ObserverNotebook() {
                       Item.label
                      ))}
                     </h6>
-                    
+                    {item?.remark && <h6 className="Question-Title fw-normal">
+                      <b>Remarks: </b>
+                      {item?.remark}
+                    </h6>}
                   </div>
                 </div>
               )
@@ -417,7 +449,10 @@ function ObserverNotebook() {
                       Item.label
                      ))}
                     </h6>
-                    
+                   {item?.remark && <h6 className="Question-Title fw-normal">
+                      <b>Remarks: </b>
+                      {item?.remark}
+                    </h6>}
                   </div>
                 </div>
               )

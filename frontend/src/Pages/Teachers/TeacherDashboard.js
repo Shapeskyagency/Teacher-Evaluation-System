@@ -39,6 +39,16 @@ function TeacherDashboard() {
         </Card>
         </Link>
       </BootstrapCol>
+      <BootstrapCol md={4}>
+        <Link to={'/fortnightly-monitor'} className='text-decoration-none'>
+        <Card className='shadow-sm'>
+          <h3 className='mb-3'>Notebook Checking</h3>
+          <p className="fs-5 bg-primary-subtle px-3 rounded-5 text-primary" style={{ width: "fit-content" }}>
+            0 invitation
+          </p>
+        </Card>
+        </Link>
+      </BootstrapCol>
     </BootstrapRow>
 
    <Container>
@@ -63,6 +73,23 @@ function TeacherDashboard() {
      <Col md={6}>
       
       <p className='fs-5 mb-2 lh-lg'>Classroom Walkthrough Form To Do Items</p>
+
+<Table
+      columns={Formcolumns2}
+      dataSource={FormData}
+      bordered
+      scroll={{
+        x: "max-content", // Makes the table horizontally scrollable for mobile
+      }}
+      pagination={{
+        pageSize: 5, // Limits rows per page for better mobile UX
+        responsive: true,
+      }}
+    /></Col>
+
+<Col md={6}>
+      
+      <p className='fs-5 mb-2 lh-lg'>Notebook Checking Form To Do Items</p>
 
 <Table
       columns={Formcolumns2}
