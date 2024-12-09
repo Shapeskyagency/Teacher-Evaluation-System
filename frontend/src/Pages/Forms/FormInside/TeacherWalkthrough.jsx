@@ -127,7 +127,7 @@ function TeacherWalkthrough() {
           <Form form={form} layout="vertical">
             {renderSections(
               "Feedback",
-              ["What went well?", "Areas that need work"],
+              ["What went well in the classroom and how can you leverage it in future?", "Describe key learning from your Feedback session"],
               "TeacherFeedback"
             )}
             <Button type="primary" onClick={handleNext}>
