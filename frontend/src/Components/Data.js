@@ -26,6 +26,7 @@ export const Menu ={
         {name:"Fortnightly Monitor", route:"/fortnightly-monitor",icon:<FormOutlined />},
         {name:"Classroom Walkthrough", route:"/classroom-walkthrough",icon:<SignatureOutlined />},
         {name:"Notebook Checking", route:"/notebook-checking-proforma",icon:<BookFilled />},
+        {name:"Wing Coordinator", route:"/wing-coordinator",icon:<BookFilled />},
     ],
     Teacher:[
         {name:"Dashboard", route:"/dashboard",icon:<AppstoreAddOutlined />},

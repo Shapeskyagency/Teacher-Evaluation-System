@@ -11,7 +11,7 @@ import { UserRole } from '../../config/config';
 function Notebook() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { isLoading, GetForms } = useSelector((state) => state?.notebook);
+    const { isLoading, GetForms2 } = useSelector((state) => state?.notebook);
     const [sortedForms, setSortedForms] = useState([]);
     const Role = getUserId().access
     useEffect(() => {
@@ -25,8 +25,8 @@ function Notebook() {
 
 
     useEffect(() => {
-      if (Array.isArray(GetForms)) {
-        const sortedData = [...GetForms].sort((a, b) => {
+      if (Array.isArray(GetForms2)) {
+        const sortedData = [...GetForms2].sort((a, b) => {
           if (a.isObserverComplete === b.isObserverComplete) {
             return 0; // No change in order if both are the same
           }
@@ -34,7 +34,7 @@ function Notebook() {
         });
         setSortedForms(sortedData);
       }
-    }, [GetForms]);
+    }, [GetForms2]);
 
   return (
     <div className="container py-3">

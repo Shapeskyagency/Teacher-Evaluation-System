@@ -38,10 +38,11 @@ export const CreateNoteBookForm = createAsyncThunk('CreateNoteBookForm',async (p
     name: 'noteBook',
     initialState: {
       formDataList: null,
-      GetForms:null,
+      GetForms2:null,
       isLoading: false,
       error: null,
       message: '', 
+      GetForms:null
     },
     reducers: {
       resetError: (state) => {
@@ -83,7 +84,7 @@ export const CreateNoteBookForm = createAsyncThunk('CreateNoteBookForm',async (p
         })
         .addCase(GetobserverForms.fulfilled, (state, action) => {
           state.isLoading = false; // Set loading to false when the request is fulfilled
-          state.GetForms = action.payload; // Store the received form data
+          state.GetForms2 = action.payload; // Store the received form data
         })
         .addCase(GetobserverForms.rejected, (state, action) => {
           state.isLoading = false; // Set loading to false when the request fails

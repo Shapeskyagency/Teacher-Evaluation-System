@@ -113,6 +113,23 @@ const MyDocument = ({ data }) => {
                 { padding: 0, margin: 0, width: "70%" },
               ]}
             >
+
+            <View
+                style={[
+                  styles.Question,
+                  {
+                    padding: 5,
+                    paddingBottom: 3,
+                    paddingTop: 3,
+                    borderBottomWidth: 1,
+                  },
+                ]}
+              >
+                <Text style={{textAlign:"center"}} >Questions</Text>
+              </View>
+
+
+
               <View
                 style={[
                   styles.Question,
@@ -164,6 +181,21 @@ const MyDocument = ({ data }) => {
                 { padding: 0, margin: 0, borderLeftWidth: 0, width: "20%" },
               ]}
             >
+               <View
+                style={[
+                  styles.Question,
+                  {
+                    padding: 5,
+                    paddingBottom: 3,
+                    paddingTop: 3,
+                    borderBottomWidth: 1,
+                  },
+                ]}
+              >
+                <Text style={{textAlign:"center"}}>Teacher</Text>
+              </View>
+
+
               <AnswerComp data={data} type={"teacherForm"}/>
             </View>
 
@@ -174,6 +206,21 @@ const MyDocument = ({ data }) => {
                 { padding: 0, margin: 0, borderLeftWidth: 0, width: "20%" },
               ]}
             >
+               <View
+                style={[
+                  styles.Question,
+                  {
+                    padding: 5,
+                    paddingBottom: 3,
+                    paddingTop: 3,
+                    borderBottomWidth: 1,
+                  },
+                ]}
+              >
+                <Text style={{textAlign:"center"}}>Observer</Text>
+              </View>
+
+
             <AnswerComp data={data} type={"observerForm"}/>
 
             </View>
