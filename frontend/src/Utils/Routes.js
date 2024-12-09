@@ -26,6 +26,7 @@ import ObserverNotebook from "../Pages/Forms/FormInside/ObserverNotebook";
 import Reader from "../Pages/Reports/Reader";
 import FinalReport from "../Pages/Observer/FinalFom/FinalReport";
 import WingCoordinator from "../Pages/Forms/WingCoordinator";
+import ClassroomWalkthroughReader from "../Pages/Reports/ClassroomWalkthroughReader";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken()  : null;
@@ -86,6 +87,7 @@ const protects = {
         {path:"/classroom-walkthrough",element:<ClassroomWalkthrough/>},
         {path:"/classroom-walkthrough/create",element:<DetailsWalkthrough/>},
         {path:"/classroom-walkthrough/create/:id",element:<DetailsWalkthrough/>},
+        {path:"/classroom-walkthrough/report/:id",element:<ClassroomWalkthroughReader/>},
           {path:'/notebook-checking-proforma', element:<Notebook/>},
         {path:'/notebook-checking-proforma/create/:id', element:<ObserverNotebook/>},
         { path: "/wing-coordinator", element:<WingCoordinator /> },
