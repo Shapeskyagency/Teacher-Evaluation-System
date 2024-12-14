@@ -38,6 +38,17 @@ export const GetObserverPendignForms = createAsyncThunk('GetObserverPendignForms
       return response.data;
   })
 
+
+  export const FormInitiationAction = createAsyncThunk('FormInitiationAction',async (payload) => {
+    const response = await axiosInstanceToken.post(`/form/fortnightly-monitor/form-initiation`,payload);
+      return response.data;
+  })
+  export const EditUpdate = createAsyncThunk('FormInitiationAction',async (payload) => {
+    const response = await axiosInstanceToken.put(`/form/fortnightly-monitor/upadte/${payload?.id}`,payload?.data);
+      return response.data;
+  })
+
+
   const fortnightlySlice = createSlice({
     name: 'fortnightlySlice',
     initialState: {

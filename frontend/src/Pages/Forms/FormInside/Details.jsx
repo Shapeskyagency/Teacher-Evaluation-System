@@ -13,6 +13,10 @@ import {
   Card,
   Empty,
   Button,
+  Select,
+  DatePicker,
+  Input,
+  Alert,
 } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -22,26 +26,45 @@ import {
 import { getUserId } from "../../../Utils/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { UserRole } from "../../../config/config";
-
+import { GetObserverList } from "../../../redux/userSlice";
+const { Option } = Select;
 const Details = () => {
   const [form] = Form.useForm();
   const [formDetails, setFormDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCoordinator, setIsCoordinator] = useState(false);
   const [selfAssessmentScore, setSelfAssessmentScore] = useState(0);
+  const [ObserverID, setObserverID] = useState("");
   const Id = useParams().id;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const GetUserAccess = getUserId()?.access;
   const isLoading2 = useSelector((state) => state?.Forms?.loading);
-
+  const [betaLoading,setBetaLoading] =useState(false);
+  const CurrectUserRole = getUserId().access;
+  const ObserverList = useSelector((state) => state.user.GetObserverLists);
+  
   // Fetch form details
   useEffect(() => {
     setIsLoading(true);
+ 
     dispatch(GetSingleFormsOne(Id))
       .then((response) => {
-        setFormDetails(response.payload);
+        setFormDetails(response?.payload);
         setIsLoading(false);
-        if (
+      const {className,date,section} = response.payload
+      if(!className || !date || !section){
+        dispatch(GetObserverList());
+        setBetaLoading(!className || !date || !section)
+        message.success("Fill All the data!");
+      }
+      else if (
+        response?.payload?.isCoordinatorComplete && response?.payload?.isTeacherComplete
+      ){
+        message.success("Form is already submitted!");
+        navigate(`/fortnightly-monitor/report/${Id}`);
+      }
+        else if (
           GetUserAccess === UserRole[1] && response?.payload?.isCoordinatorComplete
         ) {
           message.success("Form is already submitted!");
@@ -50,18 +73,48 @@ const Details = () => {
           message.success("Form is already submitted!");
           navigate(`/fortnightly-monitor/report/${Id}`);
         }
+
+
+        
       })
       .catch(() => {
         message.error("Error fetching form details.");
         setIsLoading(false);
       });
-  }, [Id, navigate]);
+  }, [Id, navigate,!ObserverID]);
+
+
+
+
 
   // Enum options
-  const yesNoNAOptions = ["Yes", "No", "0.5", "N/A"];
+  const yesNoNAOptions = ["Yes", "No", "Sometimes", "N/A"];
+
+  const [totalCount, setTotalCount] = useState(0);
+  const type= "teacherForm"
+
+  useEffect(() => {
+    if (!formDetails || !formDetails[type]) return;
+
+    const validValues2 = ["Yes", 'Sometimes'];
+    const Assesscount = Object.values(formDetails[type]).filter(value =>
+        validValues2.includes(value)
+      ).length;
+      // setSelfAssessCount(Assesscount)
+
+    const validValues = ["Yes", "No", 'Sometimes']; // Include these values
+    const count = Object.values(formDetails[type]).filter(value =>
+      validValues.includes(value)
+    ).length;
+
+    setTotalCount(count);
+  }, [formDetails, type]);
+
+
 
   // Form submission handler
   const onFinish = (values) => {
+    console.log(values)
     let payload;
 
     if (
@@ -74,6 +127,19 @@ const Details = () => {
           observerForm: values,
         },
       };
+    } else if(GetUserAccess === UserRole[2] && !formDetails?.isTeacherComplete && formDetails.isObserverInitiation){
+      
+      payload = {
+        id: Id,
+        data: {
+          isTeacherComplete: true,
+          teacherForm: values,
+          className:values?.className,
+          date:values?.date,
+          Section:values?.section,
+        }
+      }
+
     } else if (
       GetUserAccess === UserRole[2] && !formDetails?.isTeacherComplete
     ) {
@@ -81,7 +147,7 @@ const Details = () => {
         id: Id,
         data: {
           isTeacherComplete: true,
-          teacherForm: values,
+          teacherForm: values
         },
       };
     } else {
@@ -113,7 +179,7 @@ const Details = () => {
       const answer = values[key];
       if (answer === "Yes") score += 1;       // Add 1 for "Yes"
       else if (answer === "No") score += 0;   // No points for "No"
-      else if (answer === "0.5") score += 0.5; // Add 0.5 for "0.5"
+      else if (answer === "Sometimes") score += 0.5; // Add 0.5 for "0.5"
       // Ignore "N/A" (or any undefined answer)
     });
   
@@ -152,7 +218,10 @@ const Details = () => {
         <Spin size="large" />
       ) : (
         <>
+          <div className="d-flex justify-content-around">
           <h2 className="text-start mb-4 fs-5">Observation is Started</h2>
+          <h2 className="text-start mb-4 fs-5">Teacher Response</h2>
+          </div>
           <Form
             form={form}
             layout="vertical"
@@ -161,6 +230,84 @@ const Details = () => {
           >
             <Row gutter={[16, 16]}>
               <Col xs={24} sm={12} md={12} lg={12}>
+              {betaLoading && (
+                <>
+                 <Form.Item
+              label="Class"
+              name="className"
+              rules={[{ required: true, message: "Please enter a class!" }]}
+            >
+              <Input placeholder="Enter Class (e.g., 10th)" />
+            </Form.Item>
+
+            <Form.Item
+              label="Section"
+              name="section"
+              rules={[{ required: true, message: "Please enter a section!" }]}
+            >
+              <Input placeholder="Enter Section (e.g., A, B)" />
+            </Form.Item>
+
+            <div className="d-flex gap-3 align-items-center justify-content-between">
+              <Form.Item
+                className="w-100"
+                label="Date"
+                name="date"
+                rules={[{ required: true, message: "Please select a date!" }]}
+              >
+                <DatePicker className="w-100" format="YYYY-MM-DD" />
+              </Form.Item>
+              {CurrectUserRole === UserRole[2] && (
+                <>
+                  <Form.Item
+                  className="w-100"
+                    label="Coordinator ID"
+                    name="coordinatorID"
+                    // initialValue={ObserverID?.name}
+                    rules={[
+                      {
+                        // required: true,
+                        message: "Please select a Coordinator!",
+                      },
+                    ]}
+                  >
+                    <Select
+                    defaultValue={formDetails?.userId?.name}
+                    disabled={betaLoading}
+                      showSearch
+                      placeholder="Select a Coordinator"
+                      options={ObserverList?.map((item) => ({
+                        value: item._id,
+                        label: item.name,
+                      }))}
+                      filterOption={(input, option) =>
+                        option.label.toLowerCase().includes(input.toLowerCase())
+                      }
+                    />
+                  </Form.Item>
+                  <Form.Item
+                  hidden
+                    className="w-100"
+                    label="Coordinator"
+                    name="isCoordinator"
+                  >
+                    <Select
+                      onChange={(value) => {
+                        setIsCoordinator(true);
+                        form.resetFields(["teacherID"]); // Reset teacher-related fields
+                      }}
+                    >
+                      <Option value={false}>No</Option>
+                      <Option value={true}>Yes</Option>
+                    </Select>
+                  </Form.Item>
+                </>
+              )}
+
+             
+            </div>
+                </>
+              )}
                 {questions.map((field, index) => {
                   return (
                     <div className="mb-3 border p-3 rounded shadow-sm" key={field}>
@@ -196,8 +343,9 @@ const Details = () => {
                 })}
               </Col>
               <Col xs={24} sm={12} md={12} lg={12}>
+              
                 <div className="sticky-top">
-                    <Card
+                    {/* <Card
                     title={
                       GetUserAccess === UserRole[2] &&
                       formDetails?.isCoordinatorComplete ? (
@@ -209,7 +357,7 @@ const Details = () => {
                         <p className="fs-2 text-center" style={{color:"rgb(119 119 119 / 72%)"}}>No One Filled Form Yet!</p>
                       )
                     }
-                  >
+                  > */}
                     {(GetUserAccess === UserRole[2] &&
                       !formDetails?.isCoordinatorComplete) ||
                     (GetUserAccess === UserRole[1] &&
@@ -218,7 +366,7 @@ const Details = () => {
                     ) : (
                       ""
                     )}
-                    {GetUserAccess === UserRole[2] &&
+                    {/* {GetUserAccess === UserRole[2] &&
                       formDetails?.isCoordinatorComplete && (
                         <>
                         <Descriptions bordered column={1}>
@@ -230,8 +378,9 @@ const Details = () => {
                                   .replace(/([A-Z])/g, " $1")
                                   .replace(/^./, (str) => str.toUpperCase())}
                               >
-                                <Tag color="blue">
+                                <Tag color={formDetails?.observerForm[item] === "Yes" ? "blue":"volcano"}>
                                   {formDetails?.observerForm[item]}
+                             
                                 </Tag>
                               </Descriptions.Item>
                             );
@@ -257,41 +406,52 @@ const Details = () => {
                       ).length}
                     </p>
                      </>
-                      )}
+                      )} */}
                     {GetUserAccess === UserRole[1] &&
                       formDetails?.isTeacherComplete && (
-                        <Descriptions bordered column={1}>
-                          {questions.map((item, index) => {
+                       <>{   questions?.map((item, index) => {
                             return (
                               <>
-                              <Descriptions.Item
-                               key={index}
-                                label={item
-                                  .replace(/([A-Z])/g, " $1")
-                                  .replace(/^./, (str) => str.toUpperCase())}
-                              >
-                                <Tag color="blue">
-                                  {formDetails?.teacherForm[item]}
-                                </Tag>
-                              </Descriptions.Item>
+                              <Card  className="mb-3 p-0" key={index+1}>
+                              <h3
+                            className="mb-0 fs-5"
+                            style={{ color: "rgb(52 52 52 / 64%)" }}
+                          >
+                            {item
+                              .replace(/([A-Z])/g, " $1")
+                              .replace(/^./, (str) => str.toUpperCase())}
+                          </h3>
+                          <div className={`alert ${formDetails?.teacherForm[item] === "Yes" ? "alert-success": formDetails?.teacherForm[item] === "No" ? "alert-danger" : formDetails?.teacherForm[item] === "N/A"?"alert-primary":formDetails?.teacherForm[item] === "0.5"&&"alert-warning"} py-0 mt-3`}
+                          
+                          style={{width:"fit-content"}}>
+
+                            <span> {formDetails?.teacherForm[item]}</span></div>
+                              </Card>
+                             
                              
                               </>
                             );
                           })}
-                           <Descriptions.Item
-                          
-                                label={"Assement Score"}
-                              >
-                                <Tag color="blue">
-                                  {formDetails?.teacherForm.selfEvaluationScore}
-                                </Tag>
-                              </Descriptions.Item>
-                        </Descriptions>
-                      )}
 
-                  </Card>
+                            <Card  className="mb-3 p-0" >
+                              <h3
+                            className="mb-0 fs-5"
+                            style={{ color: "rgb(52 52 52 / 64%)" }}
+                          >
+                         Self Assesment
+                          </h3>
+                          <div className={` py-0 mt-3`}
+                          
+                          style={{width:"fit-content"}}>
+
+                            <span> {formDetails?.teacherForm?.selfEvaluationScore} Out of {totalCount}</span></div>
+                              </Card>
+                        </>
+                      )}
+                      
                 </div>
-              </Col>
+   
+             </Col>
             </Row>
 
             {/* Self-assessment score */}
@@ -301,7 +461,7 @@ const Details = () => {
                 <Form.Item name="selfEvaluationScore" hidden label="Self Assessment Score">
                   <InputNumber
                     value={selfAssessmentScore}
-                    disabled
+                    disabled          
                     className="w-100"
                   />
                 </Form.Item>

@@ -4,7 +4,10 @@ import { Col, Row } from "react-bootstrap";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { GetFormsOne, GetObserverFormsOne } from "../../redux/Form/fortnightlySlice";
+import {
+  GetFormsOne,
+  GetObserverFormsOne,
+} from "../../redux/Form/fortnightlySlice";
 import BasicDeatilsForm from "../../Components/BasicDeatilsForm";
 import { FormcolumnsForm1 } from "../../Components/Data";
 import { UserRole } from "../../config/config";
@@ -14,23 +17,26 @@ const FortnightlyMonitor = () => {
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const Role = getUserId().access
+  const Role = getUserId().access;
 
   // Default `forms` to an empty array to avoid errors
-  const forms = useSelector((state) => state?.Forms?.getAllForms || []);
+  const forms = useSelector((state) => state?.Forms?.getAllForms?.Assigned  || []);
+  const FormInitiationList = useSelector(
+    (state) => state?.Forms?.getAllForms?.Initiated || []
+  );
   const [sortedForms, setSortedForms] = useState([]);
+  const [sortedFormsInitiation, setSortedFormsInitiation] = useState([]);
 
   // Fetch forms only once
   useEffect(() => {
-    if(Role === UserRole[1]){
+    if (Role === UserRole[1]) {
       dispatch(GetObserverFormsOne());
-    }else if(Role === UserRole[2]){
+    } else if (Role === UserRole[2]) {
       dispatch(GetFormsOne());
     }
   }, [dispatch]);
 
-  // Sort forms when they change
-  useEffect(() => {
+  const Sordata = (forms) => {
     if (Array.isArray(forms)) {
       const sortedData = [...forms].sort((a, b) => {
         if (a.isTeacherComplete === b.isTeacherComplete) {
@@ -38,17 +44,27 @@ const FortnightlyMonitor = () => {
         }
         return a.isTeacherComplete ? 1 : -1; // Place `false` first
       });
-      setSortedForms(sortedData);
+
+      return sortedData;
     }
+  };
+
+  // Sort forms when they change
+  useEffect(() => {
+    let FetchDtaa = Sordata(forms);
+    setSortedForms(FetchDtaa);
+    // if (UserRole[1] === getUserId().access) {
+      FetchDtaa = Sordata(FormInitiationList);
+      setSortedFormsInitiation(FetchDtaa);
+    // }
   }, [forms]);
 
-
-  const renderForms = (title) => (
+  const renderForms = (title, options) => (
     <>
       <h3>{title}</h3>
       <Table
         columns={FormcolumnsForm1}
-        dataSource={sortedForms}
+        dataSource={options}
         rowKey="id" // Ensure a unique key for each row
         bordered
         scroll={{
@@ -66,24 +82,36 @@ const FortnightlyMonitor = () => {
     <div className="container py-4">
       <Row>
         <Col>
-        <div className='pb-0 pt-0' style={{ padding: "16px" }}>
-       
-          {getUserId().access === UserRole[2] && (
-            <Button
-              onClick={() => navigate("/fortnightly-monitor/create")}
-              type="primary"
-              icon={<PlusCircleOutlined />}
-              size="large"
-            >
-              New Form
-            </Button>
-          )}
-        
-          {renderForms("All Forms")}
+          <div className="pb-0 pt-0" style={{ padding: "16px" }}>
+            {getUserId().access === UserRole[2] && (
+              <Button
+                onClick={() => navigate("/fortnightly-monitor/create")}
+                type="primary"
+                icon={<PlusCircleOutlined />}
+                size="large"
+              >
+                New Form
+              </Button>
+            )}
+
+            {getUserId().access === UserRole[1] && (
+              <Button
+                className="mb-3"
+                onClick={() => navigate("/fortnightly-monitor/form-initiation")}
+                type="primary"
+                icon={<PlusCircleOutlined />}
+                size="large"
+              >
+                Form Initiation
+              </Button>
+            )}
+            { UserRole[1] === getUserId().access && renderForms("Initiated Forms", sortedFormsInitiation)}
+            {renderForms(UserRole[1] === getUserId().access?"All Forms":"Initiated Forms", sortedForms)}
+            {UserRole[2] === getUserId().access && renderForms(UserRole[2] === getUserId().access?"All Forms":"Initiated Forms", sortedFormsInitiation)}
+
           </div>
         </Col>
       </Row>
-
     </div>
   );
 };
