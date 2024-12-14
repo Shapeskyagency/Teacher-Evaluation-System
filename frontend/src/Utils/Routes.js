@@ -27,6 +27,8 @@ import Reader from "../Pages/Reports/Reader";
 import FinalReport from "../Pages/Observer/FinalFom/FinalReport";
 import WingCoordinator from "../Pages/Forms/WingCoordinator";
 import ClassroomWalkthroughReader from "../Pages/Reports/ClassroomWalkthroughReader";
+import FortnightlyMonitorInitiation from "../Pages/Observer/FinalFom/FortnightlyMonitorInitiation";
+import InitiateBasicDetails from "../Components/InitiateBasicDetails";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken()  : null;
@@ -42,6 +44,7 @@ const protects = {
         {path:'/fortnightly-monitor', element:<FortnightlyMonitor/>},
         {path:'/fortnightly-monitor/create', element:<BasicDetailsForm/>},
         {path:'/fortnightly-monitor/create/:id', element:<Details/>},
+        {path:'/fortnightly-monitor/initiate/create/:id', element:<Details/>},
         {path:'/fortnightly-monitor/report/:id', element:<Reader/>},
         {path:"/classroom-walkthrough",element:<ClassroomWalkthrough/>},
         {path:"/classroom-walkthrough/create/:id",element:<TeacherWalkthrough/>},
@@ -84,6 +87,7 @@ const protects = {
         {path:"/profile", element:<UserProfile/>},
         {path:'/fortnightly-monitor', element:<FortnightlyMonitor/>},
         {path:'/fortnightly-monitor/create', element:<BasicDetailsForm/>},
+        {path:'/fortnightly-monitor/initiate/create/:id', element:<Details/>},
         {path:'/fortnightly-monitor/create/:id', element:<Details/>},
         {path:'/fortnightly-monitor/report/:id', element:<Reader/>},
         {path:"/classroom-walkthrough",element:<ClassroomWalkthrough/>},
@@ -94,6 +98,7 @@ const protects = {
         {path:'/notebook-checking-proforma/create/:id', element:<ObserverNotebook/>},
         { path: "/wing-coordinator", element:<WingCoordinator /> },
         { path: "/wing-coordinator/create", element:<FinalReport /> },
+        { path: "/fortnightly-monitor/form-initiation", element:<FortnightlyMonitorInitiation /> },
         { path: "*", element: <NotFound404/> },
 
       ],

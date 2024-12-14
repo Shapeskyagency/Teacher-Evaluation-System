@@ -128,7 +128,7 @@ export const Formcolumns1 = [
       <Button size="large" className="btn-outline-primary">Push Notify</Button>
       }
           {Role === UserRole[2] && 
-          (!record?.isTeacherCompletes && record?.isObserverCompleted) &&
+          (!record?.isTeacherCompletes && record?.isObserverCompleted || !record?.isTeacherCompletes && !record?.isObserverCompleted) &&
           <Link className="btn text-primary" to={`/classroom-walkthrough/create/${record._id}`}>
                  Continue Form
                  </Link>}
@@ -212,38 +212,7 @@ export const Formcolumns3 = [
       </Space>
     ),
   },
-  // {
-  //   title: 'Action',
-  //   dataIndex: 'action', 
-  //   key: 'action',
-  //   render: (_, record) => (
-  //     <Space size="middle">
-  //       {Role === UserRole[1] ? 
-  //       (
-  //         <>
-  //         {(record?.isObserverComplete && record?.isTeacherComplete) ? 
-  //         <Link className="btn btn-outline-primary" to={`/notebook-checking-proforma/report/${record._id}`}>
-  //         View Report
-  //       </Link>
-  //       :
-  //           (!record?.isObserverComplete && record?.isTeacherComplete)&& 
 
-  //           <Link className="btn text-primary" to={`/notebook-checking-proforma/create/${record._id}`}>
-  //          Continue Form
-  //         </Link>
-  //       }
-          
-  //         </>
-  //       )
-  //      :
-  //      <Link className="btn btn-outline-primary" to={`/notebook-checking-proforma/report/${record._id}`}>
-  //         View Report
-  //       </Link>
-  //      }
-        
-  //     </Space>
-  //   ),
-  // },
   {
     title: 'Action',
     dataIndex: 'action', 
@@ -259,13 +228,10 @@ export const Formcolumns3 = [
       <Button size="large" className="btn-outline-primary">Push Notify</Button>
       }
           {Role === UserRole[1] && 
-          (record?.isTeacherComplete && !record?.isObserverComplete) &&
+          (record?.isTeacherComplete && !record?.isObserverComplete || !record?.isTeacherComplete && !record?.isObserverComplete) &&
           <Link className="btn text-primary" to={`/notebook-checking-proforma/create/${record._id}`}>
                  Continue Form
                  </Link>}
-        {/*       */}
-
-        
         
       </Space>
     ),
@@ -275,12 +241,11 @@ export const Formcolumns3 = [
 
 export const FormcolumnsForm1 = [
   {
-    title: 'Form Title',
-    dataIndex: `coordinatorID`, // Accessing the teacher's name
-    key: `coordinatorID`,
+    title: 'Teacher Name',
+    dataIndex: `teacherID`, // Accessing the teacher's name
+    key: `teacherID`,
     render: (text,record) => <a>
-      <b>Assign to</b> {text?.access ==="Observer" ?  (<> <b>Observer</b> {text?.name}</>) : (<><b>Teacher</b> {text?.name}</>)}
-     {/* {getAllTimes(record.TeacherSubmissionDate)?.formattedDate2} */}
+      {text?.name || record?.userId?.name}
     </a>,
   },
   {
@@ -288,7 +253,15 @@ export const FormcolumnsForm1 = [
     dataIndex: `className`, // Accessing the teacher's name
     key: `className`,
     render: (text) => <a>
-      {text}
+      {text || "N/A"}
+    </a>,
+  },
+  {
+    title:"Section",
+    dataIndex: `section`, // Accessing the teacher's name
+    key: `section`,
+    render: (text) => <a>
+      {text || "N/A"}
     </a>,
   },
   {
@@ -314,7 +287,7 @@ export const FormcolumnsForm1 = [
     title: 'Obsever Status',
     dataIndex: `isCoordinatorComplete`, // Accessing the teacher's name
     key: `isCoordinatorComplete`,
-    render: (text) => (
+    render: (text,record) => (
       <Space size="middle">
         {text ?  
         <Tag color="green">
@@ -331,27 +304,72 @@ export const FormcolumnsForm1 = [
     title: 'Action',
     dataIndex: 'action', 
     key: 'action',
-    render: (_, record) => (
-      <Space size="middle">
-        {(Role === UserRole[1] || Role === UserRole[2] )&&
-       (record?.isTeacherComplete && record?.isCoordinatorComplete) ?
-          <Link className="btn btn-primary" to={`/fortnightly-monitor/report/${record._id}`}>
-          View Report
-        </Link> : Role === UserRole[2] &&  
-      
-      <Button size="large" className="btn-outline-primary">Push Notify</Button>
-      }
-          {Role === UserRole[1] && 
-          (record?.isTeacherComplete && !record?.isCoordinatorComplete) &&
-          <Link className="btn text-primary" to={`/fortnightly-monitor/create/${record._id}`}>
-                 Continue Form
-                 </Link>}
-        {/*       */}
+    render: (_, record) => {
+      const { isTeacherComplete, isCoordinatorComplete, isObserverInitiation } = record;
+      const currentUserRole = getUserId()?.access;
+        if(isTeacherComplete &&isCoordinatorComplete){
+          return(
+            <Link className="btn btn-primary" to={`/fortnightly-monitor/report/${record._id}`}>
+                         View Report
+                    </Link>
+          )
+        }
+          if(currentUserRole === UserRole[1] && !isTeacherComplete && !isCoordinatorComplete && !isObserverInitiation){
+            return (<Button size="large" className="btn-outline-primary">Push Notify</Button>)
+          }
 
+          if(currentUserRole === UserRole[2] && !isTeacherComplete && !isCoordinatorComplete && isObserverInitiation){
+            return(
+              <Link className="btn text-primary" to={`/fortnightly-monitor/create/${record._id}`}>
+                          Continue Form
+                      </Link>)
+            
+          }
+        if( currentUserRole === UserRole[2] && isTeacherComplete && !isCoordinatorComplete){
+          return (<Button size="large" className="btn-outline-primary">Push Notify</Button>)
+        }
+
+        if((currentUserRole === UserRole[1] && !isTeacherComplete && !isCoordinatorComplete && isObserverInitiation) || currentUserRole === UserRole[1] && !isTeacherComplete && isCoordinatorComplete){
+          return (<Button size="large" className="btn-outline-primary">Push Notify</Button>)
+        }
         
+        if(currentUserRole === UserRole[1] && isTeacherComplete && !isCoordinatorComplete){
+            return(
+              <Link className="btn text-primary" to={`/fortnightly-monitor/create/${record._id}`}>
+                          Continue Form
+                      </Link>
+            )
+        }
         
-      </Space>
-    ),
+
+
+
+//       if (isTeacherComplete && isCoordinatorComplete) {
+//         return (
+//           <Link className="btn btn-primary" to={`/fortnightly-monitor/report/${record._id}`}>
+//             View Report
+//           </Link>
+//         );
+//       }else if (
+//         !isTeacherComplete && !isCoordinatorComplete && isObserverInitiation && currentUserRole === UserRole[1]
+//       ) {
+//         return <Button size="large" className="btn-outline-primary">Push Notify</Button>;
+//       }else if(isTeacherComplete && !isCoordinatorComplete && !isObserverInitiation){
+
+// console.log("hj")
+//       }else if (
+//         (!isTeacherComplete && isCoordinatorComplete && currentUserRole === UserRole[2]) ||
+//         (isTeacherComplete && !isCoordinatorComplete&& currentUserRole === UserRole[1])
+//       ) {
+//         return (
+//           <Link className="btn text-primary" to={`/fortnightly-monitor/create/${record._id}`}>
+//             Continue Form
+//           </Link>
+//         );
+//       }
+    
+      return null;
+    }
   },
 
 

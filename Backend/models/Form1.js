@@ -34,11 +34,12 @@ const formSchema = new Schema({
 
 // Main schema for the creation details
 const creationDetailsSchema = new Schema({
-  className: { type: String, required: true },
+  className: { type: String},
+  isObserverInitiation:{ type: Boolean },
   userId: { type: Schema.Types.ObjectId, ref: 'User' },
-  section: { type: String, required: true },
-  date: { type: Date, required: true },
-  isCoordinator: { type: Boolean, required: true },
+  section: { type: String },
+  date: { type: Date },
+  isCoordinator: { type: Boolean },
   isCoordinatorComplete: { type: Boolean, default: false },
   coordinatorID: { type: Schema.Types.ObjectId, ref: 'User' },
   isTeacher: { type: Boolean, required: true },
