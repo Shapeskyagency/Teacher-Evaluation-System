@@ -21,6 +21,16 @@ function BasicDetailsForm() {
   const TeachersList = useSelector((state) => state.user.GetTeachersLists);
   const ObserverList = useSelector((state) => state.user.GetObserverLists);
 
+  const disableFutureDates = (current) => {
+    // Get the current date without the time part
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to 00:00:00 to compare only the date
+
+    // Disable dates that are in the future
+    return current && current.toDate() > today;
+  };
+
+
   useEffect(() => {
     dispatch(GetTeacherList());
     dispatch(GetObserverList());
@@ -102,7 +112,7 @@ function BasicDetailsForm() {
                 name="date"
                 rules={[{ required: true, message: "Please select a date!" }]}
               >
-                <DatePicker className="w-100" format="YYYY-MM-DD" />
+                <DatePicker className="w-100" format="YYYY-MM-DD"  disabledDate={disableFutureDates}/>
               </Form.Item>
               {CurrectUserRole === UserRole[2] && (
                 <>
