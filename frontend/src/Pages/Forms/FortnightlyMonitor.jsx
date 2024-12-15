@@ -87,6 +87,51 @@ const FortnightlyMonitor = () => {
     return [...new Set(teachers)];
   };
 
+
+
+  const GetClasses = () => {
+    const classes = [];
+
+    // Push teacher names from forms
+    forms?.forEach((item) => {
+      if (item?.className) {
+        classes.push(item?.className);
+            }
+    });
+
+    // Push teacher names from formInitiationList
+    formInitiationList?.forEach((item) => {
+      if (item?.className) {
+        classes.push(item?.className);
+     }
+    });
+
+    // Remove duplicates by creating a Set and then convert back to an array
+    return [...new Set(classes)];
+  };
+
+
+  const GetSections = () => {
+    const Sections = [];
+
+    // Push teacher names from forms
+    forms?.forEach((item) => {
+      if (item?.section) {
+        Sections.push(item?.section);
+            }
+    });
+
+    // Push teacher names from formInitiationList
+    formInitiationList?.forEach((item) => {
+      if (item?.section) {
+        Sections.push(item?.section);
+            }
+    });
+
+    // Remove duplicates by creating a Set and then convert back to an array
+    return [...new Set(Sections)];
+  };
+
   // Handle filter changes
   const handleFilter = (key, value) => {
     setFilters((prevFilters) => {
@@ -235,7 +280,7 @@ const FortnightlyMonitor = () => {
                     placeholder="Select Class"
                     value={filters.className}
                     onChange={(value) => handleFilter("className", value)}
-                    options={[...new Set(forms.flatMap((item) => item.className))].map((className) => ({
+                    options={GetClasses().map((className) => ({
                       value: className,
                       label: className,
                     }))}
@@ -250,7 +295,7 @@ const FortnightlyMonitor = () => {
                     placeholder="Select Section"
                     value={filters.section}
                     onChange={(value) => handleFilter("section", value)}
-                    options={[...new Set(forms.flatMap((item) => item.section))].map((section) => ({
+                    options={GetSections().map((section) => ({
                       value: section,
                       label: section,
                     }))}
