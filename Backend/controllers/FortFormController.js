@@ -236,7 +236,6 @@ exports.EditUpdate = async (req, res) => {
         res.status(200).json({
             message: 'Form updated successfully!',
             success: true,
-            form: updatedForm
         });
 
     } catch (error) {

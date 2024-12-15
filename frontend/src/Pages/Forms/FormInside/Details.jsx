@@ -27,6 +27,7 @@ import { getUserId } from "../../../Utils/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { UserRole } from "../../../config/config";
 import { GetObserverList } from "../../../redux/userSlice";
+import { questions } from "../../../Components/normalData";
 const { Option } = Select;
 const Details = () => {
   const [form] = Form.useForm();
@@ -114,7 +115,6 @@ const Details = () => {
 
   // Form submission handler
   const onFinish = (values) => {
-    console.log(values)
     let payload;
 
     if (
@@ -176,7 +176,7 @@ const Details = () => {
     let score = 0;
   
     questions.forEach((key) => {
-      const answer = values[key];
+      const answer = values[key?.key];
       if (answer === "Yes") score += 1;       // Add 1 for "Yes"
       else if (answer === "No") score += 0;   // No points for "No"
       else if (answer === "Sometimes") score += 0.5; // Add 0.5 for "0.5"
@@ -188,34 +188,22 @@ const Details = () => {
   };
 
   // Questions to dynamically render
-  const questions = [
-    "classCleanliness",
-    "newsUpdate",
-    "smileyChart",
-    "missionEnglishChart",
-    "transportCorner",
-    "generalDiscipline",
-    "lunchEtiquettes",
-    "birthdayChart",
-    "unitSyllabusChart",
-    "uniformTieBeltShoesICard",
-    "classPass",
-    "classTeacherTimeTable",
-    "participationChart",
-    "goodwillPiggyBank",
-    "thursdaySpecial",
-    "homeworkRegisterAQADRegister",
-    "anecdotalRegister",
-    "supplementaryReadingRecord",
-    "thinkZone",
-    "digitalCitizenshipRules",
-    "meditation",
-  ];
+
+  const disableFutureDates = (current) => {
+    // Get the current date without the time part
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to 00:00:00 to compare only the date
+
+    // Disable dates that are in the future
+    return current && current.toDate() > today;
+  };
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-3">
       {isLoading ? (
-        <Spin size="large" />
+        <div className="LoaderWrapper">
+                 <Spin size="large" className="position-absolute" />
+               </div>
       ) : (
         <>
           <div className="d-flex justify-content-around">
@@ -255,7 +243,7 @@ const Details = () => {
                 name="date"
                 rules={[{ required: true, message: "Please select a date!" }]}
               >
-                <DatePicker className="w-100" format="YYYY-MM-DD" />
+                <DatePicker className="w-100" format="YYYY-MM-DD"  disabledDate={disableFutureDates} />
               </Form.Item>
               {CurrectUserRole === UserRole[2] && (
                 <>
@@ -263,10 +251,8 @@ const Details = () => {
                   className="w-100"
                     label="Coordinator ID"
                     name="coordinatorID"
-                    // initialValue={ObserverID?.name}
                     rules={[
                       {
-                        // required: true,
                         message: "Please select a Coordinator!",
                       },
                     ]}
@@ -310,16 +296,16 @@ const Details = () => {
               )}
                 {questions.map((field, index) => {
                   return (
-                    <div className="mb-3 border p-3 rounded shadow-sm" key={field}>
+                    <div className="mb-3 border p-3 rounded shadow-sm" key={field?.key}>
                       <Form.Item
-                        className="w-75"
-                        name={field}
+                         className="w-75 mb-2"
+                        name={field?.key}
                         label={
                           <p
-                            className="mb-0 fs-5"
+                            className="mb-0 fs-6"
                             style={{ color: "rgb(52 52 52 / 64%)" }}
                           >
-                            {field
+                            {field?.name
                               .replace(/([A-Z])/g, " $1")
                               .replace(/^./, (str) => str.toUpperCase())}
                           </p>
@@ -327,7 +313,7 @@ const Details = () => {
                         rules={[
                           {
                             required: true,
-                            message: `Please select an option for ${field}.`,
+                            message: `Please select an option for ${field?.name}.`,
                           },
                         ]}
                       >
@@ -345,19 +331,6 @@ const Details = () => {
               <Col xs={24} sm={12} md={12} lg={12}>
               
                 <div className="sticky-top">
-                    {/* <Card
-                    title={
-                      GetUserAccess === UserRole[2] &&
-                      formDetails?.isCoordinatorComplete ? (
-                        "Observer Completed Form"
-                      ) : GetUserAccess == UserRole[1] &&
-                        formDetails?.isTeacherComplete ? (
-                        " Teacher Completed Form"
-                      ) : (
-                        <p className="fs-2 text-center" style={{color:"rgb(119 119 119 / 72%)"}}>No One Filled Form Yet!</p>
-                      )
-                    }
-                  > */}
                     {(GetUserAccess === UserRole[2] &&
                       !formDetails?.isCoordinatorComplete) ||
                     (GetUserAccess === UserRole[1] &&
@@ -366,74 +339,35 @@ const Details = () => {
                     ) : (
                       ""
                     )}
-                    {/* {GetUserAccess === UserRole[2] &&
-                      formDetails?.isCoordinatorComplete && (
-                        <>
-                        <Descriptions bordered column={1}>
-                          {questions.map((item, index) => {
-                            return (
-                              <Descriptions.Item
-                              key={index}
-                                label={item
-                                  .replace(/([A-Z])/g, " $1")
-                                  .replace(/^./, (str) => str.toUpperCase())}
-                              >
-                                <Tag color={formDetails?.observerForm[item] === "Yes" ? "blue":"volcano"}>
-                                  {formDetails?.observerForm[item]}
-                             
-                                </Tag>
-                              </Descriptions.Item>
-                            );
-                          })}
-                           <Descriptions.Item
-                                label={"Assement Score"}
-                              >
-                                <Tag color="blue">
-                                  
-                                </Tag>
-                              </Descriptions.Item>
-
-                              
-                        </Descriptions>
-                        <p className="mt-4">
-                      Assessment Score: {formDetails?.observerForm?.selfEvaluationScore}
-                    </p>
-                    <p>
-                      Total Score:{" "}
-                      {Object.keys(formDetails?.observerForm || {}).filter(
-                        (key) =>
-                          key !== "selfEvaluationScore" &&   key !== "ObservationDates"  && formDetails?.observerForm[key] !== "N/A"
-                      ).length}
-                    </p>
-                     </>
-                      )} */}
+                   
                     {GetUserAccess === UserRole[1] &&
                       formDetails?.isTeacherComplete && (
-                       <>{   questions?.map((item, index) => {
+                       <>{questions?.map((item, index) => {
+                       
                             return (
                               <>
-                              <Card  className="mb-3 p-0" key={index+1}>
+                              <div  className="mb-3 border p-3 rounded shadow-sm" key={index+1}>
                               <h3
-                            className="mb-0 fs-5"
+                            className="mb-0 fs-6"
                             style={{ color: "rgb(52 52 52 / 64%)" }}
                           >
-                            {item
+                            {item?.name
                               .replace(/([A-Z])/g, " $1")
                               .replace(/^./, (str) => str.toUpperCase())}
                           </h3>
-                          <div className={`alert ${formDetails?.teacherForm[item] === "Yes" ? "alert-success": formDetails?.teacherForm[item] === "No" ? "alert-danger" : formDetails?.teacherForm[item] === "N/A"?"alert-primary":formDetails?.teacherForm[item] === "0.5"&&"alert-warning"} py-0 mt-3`}
+                          <div className={`alert ${formDetails?.teacherForm[item.key] === "Yes" ? "alert-success": formDetails?.teacherForm[item.key] === "No" ? "alert-danger" : formDetails?.teacherForm[item.key] === "N/A"?"alert-primary":formDetails?.teacherForm[item.key] === "0.5"&&"alert-warning"} py-0 mt-3 mb-0`}
                           
                           style={{width:"fit-content"}}>
 
-                            <span> {formDetails?.teacherForm[item]}</span></div>
-                              </Card>
+                            <span> {formDetails?.teacherForm[item.key]}</span></div>
+                              </div>
                              
                              
                               </>
                             );
                           })}
 
-                            <Card  className="mb-3 p-0" >
+                        <div  className="mb-3 border p-3 rounded shadow-sm" >
                               <h3
                             className="mb-0 fs-5"
                             style={{ color: "rgb(52 52 52 / 64%)" }}
@@ -445,7 +379,7 @@ const Details = () => {
                           style={{width:"fit-content"}}>
 
                             <span> {formDetails?.teacherForm?.selfEvaluationScore} Out of {totalCount}</span></div>
-                              </Card>
+                              </div>
                         </>
                       )}
                       
