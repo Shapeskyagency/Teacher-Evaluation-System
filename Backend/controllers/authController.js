@@ -55,7 +55,6 @@ const requestPasswordReset = async (req, res) => {
     
     try {
      const data =   await sendEmail(user.email, 'Password Reset Request', message);
-     console.log(data)
         res.json({ message: 'Password reset email sent' });
     } catch (error) {
         user.resetPasswordToken = undefined;

@@ -16,7 +16,6 @@ function CreateUserForm({ onOk, onCancel, Payload }) {
     try {
       // Dispatch API call and handle response
       const response = await dispatch(CreateUserList(values));
-      console.log(response);
       dispatch(GetUserList());
       message.success("User created successfully");
       form.resetFields(); // Reset form after submission

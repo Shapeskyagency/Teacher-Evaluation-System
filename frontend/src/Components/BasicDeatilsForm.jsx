@@ -58,7 +58,6 @@ function BasicDetailsForm() {
     setLoading(true);
     try {
       const response = await dispatch(CreateFormOne(payload)).unwrap();
-      console.log(response?.form);
       message.success(response?.message);
       form.resetFields(); // Reset the form fields after submission
       navigate(`/fortnightly-monitor/create/${response?.form?._id}`);

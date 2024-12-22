@@ -128,14 +128,25 @@ exports.getUserForm = async (req, res) => {
   const userId = req?.user?.id;
 
   try {
-    const initiatedForms = await Form1.find({ userId }).populate('teacherID coordinatorID userId')
+    const initiatedForms = await Form1.find({ userId }).populate('teacherID coordinatorID userId');
     const assignedForms = await Form1.find({ teacherID: userId }).populate('teacherID coordinatorID userId');
-    res.status(200).json({ Initiated: initiatedForms, Assigned: assignedForms });
+
+    // Combine both arrays while avoiding duplicates based on _id
+    const combinedForms = [
+      ...initiatedForms,
+      ...assignedForms.filter(
+        (assignedForm) =>
+          !initiatedForms.some((initiatedForm) => initiatedForm._id.toString() === assignedForm._id.toString())
+      ),
+    ];
+
+    res.status(200).json({ Combined: combinedForms, Initiated: initiatedForms, Assigned: assignedForms });
   } catch (error) {
     console.error('Error fetching user forms:', error);
     res.status(500).json({ message: 'Error fetching user forms.', error });
   }
 };
+
 
 // Get Observer Dashboard
 exports.getObserverDashboard = async (req, res) => {
@@ -182,26 +193,37 @@ const populateOptions = [
     }
 ];
 
-exports.GetObseverForm01 = async (req, res) => {
-    const userId = req?.user?.id; // Fetch user ID from the request
+exports.GetObserverForm01 = async (req, res) => {
+  const userId = req?.user?.id; // Fetch user ID from the request
 
-    if (!userId) {
-        return res.status(403).json({ message: "You do not have permission." });
-    }
+  if (!userId) {
+    return res.status(403).json({ message: "You do not have permission." });
+  }
 
-    try {
-        // Query forms assigned to the user
-        const Assigned = await Form1.find({ coordinatorID: userId }).populate(populateOptions);
+  try {
+    // Query forms assigned to the user
+    const Assigned = await Form1.find({ coordinatorID: userId }).populate(populateOptions);
 
-        // Query forms with observer initiation
-        const Initiated = await Form1.find({ isObserverInitiation: true }).populate(populateOptions);
-        // Return both sets of forms
-        res.status(200).json({ Assigned, Initiated });
-    } catch (error) {
-        console.error("Error Getting Classroom Walkthrough:", error);
-        res.status(500).json({ message: "Error Getting Classroom Walkthrough.", error: error.message });
-    }
+    // Query forms with observer initiation
+    const Initiated = await Form1.find({ isObserverInitiation: true }).populate(populateOptions);
+
+    // Combine both arrays while avoiding duplicates based on _id
+    const Combined = [
+      ...Assigned,
+      ...Initiated.filter(
+        (initiatedForm) =>
+          !Assigned.some((assignedForm) => assignedForm._id.toString() === initiatedForm._id.toString())
+      ),
+    ];
+
+    // Return combined forms along with separate arrays
+    res.status(200).json({ Combined, Assigned, Initiated });
+  } catch (error) {
+    console.error("Error Getting Classroom Walkthrough:", error);
+    res.status(500).json({ message: "Error Getting Classroom Walkthrough.", error: error.message });
+  }
 };
+
 
 
 exports.EditUpdate = async (req, res) => {

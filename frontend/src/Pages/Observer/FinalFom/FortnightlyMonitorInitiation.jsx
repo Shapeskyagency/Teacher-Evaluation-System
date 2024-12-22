@@ -36,7 +36,6 @@ function FortnightlyMonitorInitiation() {
   
     const handleSubmit = async (values) => {
 
-        console.log(values)
 
       const payload = {
         isTeacher: values?.isTeacher|| isTeacher,
@@ -44,12 +43,10 @@ function FortnightlyMonitorInitiation() {
       };
       
 
-      console.log(payload)
   
       setLoading(true);
       try {
         const response = await dispatch(FormInitiationAction(payload)).unwrap();
-        console.log(response?.form);
         message.success(response?.message);
         form.resetFields(); // Reset the form fields after submission
         navigate(`/fortnightly-monitor`);

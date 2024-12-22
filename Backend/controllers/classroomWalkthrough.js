@@ -13,9 +13,6 @@ exports.createForm = async (req, res) => {
         Section,
         Subject,
         Topic,
-        LessonTakenBy,
-        ratingScale,
-        rangeOfGrade,
         essentialAggrements,
         planingAndPreparation,
         classRoomEnvironment,
@@ -29,8 +26,7 @@ exports.createForm = async (req, res) => {
         ObserverFeedback,
     } = req.body;
     const userId = req?.user?.id;
-    // const parsedValues = Object.entries(essentialAggrements).map(([key, value]) => JSON.parse(value));
-    // console.log(parsedValues)
+
     try {
         // Fetch user details without sensitive fields
         const user = await User.findById(userId, "-password -mobile -employeeId -customId");
@@ -58,10 +54,7 @@ exports.createForm = async (req, res) => {
                 Section,
                 Subject,
                 Topic,
-                LessonTakenBy: LessonTakenBy || "Not Specified" // Default value for LessonTakenBy
             },
-            ratingScale,
-            rangeOfGrade,
             essentialAggrements,
             planingAndPreparation,
             classRoomEnvironment,
@@ -89,6 +82,87 @@ exports.createForm = async (req, res) => {
     }
 };
 
+
+exports.editWalkthrouForm = async (req, res) => {
+    const {
+        NameoftheVisitingTeacher,
+        DateOfObservation,
+        className,
+        Section,
+        Subject,
+        Topic,
+        essentialAggrements,
+        planingAndPreparation,
+        classRoomEnvironment,
+        instruction,
+        totalScores,
+        scoreOutof,
+        percentageScore,
+        Grade,
+        NumberofParametersNotApplicable,
+        isObserverCompleted,
+        ObserverFeedback,
+    } = req.body;
+    const userId = req?.user?.id;
+    const formId = req.params.id;
+
+    try {
+        // Fetch user details without sensitive fields
+        const user = await User.findById(userId, "-password -mobile -employeeId -customId");
+
+        // Check if the user has access as "Observer" or "SuperAdmin"
+        if (!user || (user.access !== "Observer" && user.access !== "SuperAdmin")) {
+            return res.status(403).json({ message: "You do not have permission to edit this form." });
+        }
+
+        // Check if the form exists
+        const form = await Form2.findById(formId);
+        if (!form) {
+            return res.status(404).json({ message: "Form does not exist." });
+        }
+
+        // Prepare the update values
+        const UpdateValue = {};
+
+        // Dynamically add fields to the UpdateValue object if they are provided in the request body
+        if (NameoftheVisitingTeacher) UpdateValue["grenralDetails.NameoftheVisitingTeacher"] = NameoftheVisitingTeacher;
+        if (DateOfObservation) UpdateValue["grenralDetails.DateOfObservation"] = DateOfObservation;
+        if (className) UpdateValue["grenralDetails.className"] = className;
+        if (Section) UpdateValue["grenralDetails.Section"] = Section;
+        if (Subject) UpdateValue["grenralDetails.Subject"] = Subject;
+        if (Topic) UpdateValue["grenralDetails.Topic"] = Topic;
+        if (essentialAggrements) UpdateValue.essentialAggrements = essentialAggrements;
+        if (planingAndPreparation) UpdateValue.planingAndPreparation = planingAndPreparation;
+        if (classRoomEnvironment) UpdateValue.classRoomEnvironment = classRoomEnvironment;
+        if (instruction) UpdateValue.instruction = instruction;
+        if (totalScores) UpdateValue.totalScores = totalScores;
+        if (scoreOutof) UpdateValue.scoreOutof = scoreOutof;
+        if (percentageScore) UpdateValue.percentageScore = percentageScore;
+        if (Grade) UpdateValue.Grade = Grade;
+        if (NumberofParametersNotApplicable) UpdateValue.NumberofParametersNotApplicable = NumberofParametersNotApplicable;
+        if (ObserverFeedback) {
+            UpdateValue.ObserverFeedback = ObserverFeedback;
+        }
+
+        // Ensure isTeacherCompletes is set to false
+        UpdateValue.isTeacherCompletes = false;
+
+        // Update the form
+        const updatedForm = await Form2.findByIdAndUpdate(formId, UpdateValue, {
+            new: true,
+        });
+
+        // Send a success response
+        res.status(200).json({
+            message: 'Form updated successfully!',
+            success: true,
+            updatedForm,
+        });
+
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
 
 
 exports.getSignleForm = async (req, res) => {

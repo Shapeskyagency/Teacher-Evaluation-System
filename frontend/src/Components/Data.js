@@ -125,19 +125,43 @@ export const columnsCreate = [
 
 export const Formcolumns1 = [
   {
-    title: "Form Title",
+    title: UserRole[2] === Role ?"Observer Name": "Teacher Name",
     dataIndex: `grenralDetails`, // Accessing the teacher's name
     key: `grenralDetails`,
-    render: (text) => (
-      <a>Classroom Walkthrough For {text.NameoftheVisitingTeacher.name}</a>
+    render: (text,record) => (
+      <a>{UserRole[2] === Role ? record.createdBy.name : text.NameoftheVisitingTeacher.name}</a>
     ),
+  },
+  {
+    title: "Grade",
+    dataIndex: "grenralDetails", // Correctly accessing the DateOfObservation
+    key: "grenralDetails",
+    render: (text) => (
+      <span>{text?.className}</span>
+    ), // Formatting the date
+  },
+  {
+    title: "Section",
+    dataIndex: "grenralDetails", // Correctly accessing the DateOfObservation
+    key: "grenralDetails",
+    render: (text) => (
+      <span>{text?.Section}</span>
+    ), // Formatting the date
+  },
+  {
+    title: "Subject",
+    dataIndex: "grenralDetails", // Correctly accessing the DateOfObservation
+    key: "grenralDetails",
+    render: (text) => (
+      <span>{text?.Subject}</span>
+    ), // Formatting the date
   },
   {
     title: "Observation Date",
     dataIndex: "grenralDetails", // Correctly accessing the DateOfObservation
     key: "grenralDetails",
     render: (text) => (
-      <span>{new Date(text.DateOfObservation).toLocaleDateString()}</span>
+      <span>{getAllTimes(text.DateOfObservation)?.formattedDate2}</span>
     ), // Formatting the date
   },
 
@@ -171,12 +195,20 @@ export const Formcolumns1 = [
         {(Role === UserRole[2] || Role === UserRole[1]) &&
         record?.isTeacherCompletes &&
         record?.isObserverCompleted ? (
+         <>
           <Link
             className="btn btn-primary"
             to={`/classroom-walkthrough/report/${record._id}`}
           >
             View Report
           </Link>
+          <Link
+          className="btn btn-danger"
+          to={`/classroom-walkthrough/edit/${record._id}`}
+        >
+         Edit
+        </Link>
+         </>
         ) : (
           Role === UserRole[1] && (
             <Button size="large" className="btn-outline-primary">
@@ -312,16 +344,18 @@ export const Formcolumns3 = [
 ];
 
 
-
 export const FormcolumnsForm1 = [
   {
-    title: "Teacher Name",
+    title: UserRole[1] === Role ? "Teacher Name" : "Observer Name",
     dataIndex: "teacherID",
     key: "teacherID",
     render: (text, record) => (
-      <a>{record?.teacherID?.name || record?.userId?.name || "N/A"}
+      <a>
+        {UserRole[1] === Role
+          ? record?.teacherID?.name || record?.userId?.name
+          : record?.coordinatorID?.name || record?.userId?.name}
       </a>
-    )
+    ),
   },
   {
     title: "Class Name",
@@ -334,6 +368,12 @@ export const FormcolumnsForm1 = [
     dataIndex: "section",
     key: "section",
     render: (text) => <a>{text || "N/A"}</a>,
+  },
+  {
+    title: "Date",
+    dataIndex: "date",
+    key: "date",
+    render: (text) => <a>{getAllTimes(text).formattedDate2 || "N/A"}</a>,
   },
   {
     title: "Teacher Status",
@@ -480,3 +520,174 @@ export const FormcolumnsForm1 = [
     },
   },
 ];
+
+
+// export const FormcolumnsForm1 = [
+//   {
+//     title: UserRole[1] === Role ? "Teacher Name" : " Observer Name",
+//     dataIndex: `teacherID`,
+//     key: `teacherID`,
+//     render: (text, record) => (
+//       <a>{UserRole[1] === Role ? (record?.teacherID?.name || record?.userId?.name) : 
+//         (record?.coordinatorID?.name || record?.userId?.name)
+//       }
+//       </a>
+//     )
+//   },
+//   {
+//     title: "Class Name",
+//     dataIndex: "className",
+//     key: "className",
+//     render: (text) => <a>{text || "N/A"}</a>,
+//   },
+//   {
+//     title: "Section",
+//     dataIndex: "section",
+//     key: "section",
+//     render: (text) => <a>{text || "N/A"}</a>,
+//   },
+//   {
+//     title: "Teacher Status",
+//     dataIndex: "isTeacherComplete",
+//     key: "isTeacherComplete",
+//     render: (text) => (
+//       <Space size="middle">
+//         <Tag color={text ? "green" : "volcano"}>
+//           {text ? "COMPLETED" : "NOT COMPLETED"}
+//         </Tag>
+//       </Space>
+//     ),
+//   },
+//   {
+//     title: "Observer Status",
+//     dataIndex: "isCoordinatorComplete",
+//     key: "isCoordinatorComplete",
+//     render: (text) => (
+//       <Space size="middle">
+//         <Tag color={text ? "green" : "volcano"}>
+//           {text ? "COMPLETED" : "NOT COMPLETED"}
+//         </Tag>
+//       </Space>
+//     ),
+//   },
+//   {
+//     title: "Action",
+//     dataIndex: "action",
+//     key: "action",
+//     render: (_, record) => {
+//       const { isTeacherComplete, isCoordinatorComplete, isObserverInitiation } =
+//         record;
+//       const currentUserRole = getUserId()?.access;
+
+//       if (isTeacherComplete && isCoordinatorComplete) {
+//         return (
+//           <>
+//             <Link
+//               className="btn btn-primary"
+//               to={`/fortnightly-monitor/report/${record._id}`}
+//             >
+//               View Report
+//             </Link>
+//             <Link
+//               className="btn text-primary"
+//               to={`/fortnightly-monitor/edit/${record._id}`}
+//             >
+//               <Button size="large" color="danger" variant="solid">
+//                 Edit
+//               </Button>
+//             </Link>
+//           </>
+//         );
+//       }
+
+//       if (
+//         currentUserRole === UserRole[1] &&
+//         !isTeacherComplete &&
+//         !isCoordinatorComplete &&
+//         !isObserverInitiation
+//       ) {
+//         return (
+//           <Button size="large" className="btn-outline-primary">
+//             Push Notify
+//           </Button>
+//         );
+//       }
+
+//       if (
+//         currentUserRole === UserRole[2] &&
+//         !isTeacherComplete &&
+//         !isCoordinatorComplete &&
+//         isObserverInitiation
+//       ) {
+//         return (
+//           <Link
+//             className="btn text-primary"
+//             to={`/fortnightly-monitor/create/${record._id}`}
+//           >
+//             Continue Form
+//           </Link>
+//         );
+//       }
+
+//       if (
+//         currentUserRole === UserRole[2] &&
+//         isTeacherComplete &&
+//         !isCoordinatorComplete
+//       ) {
+//         return (
+//           <>
+//             <Button
+//               size="large"
+//               variant="solid"
+//               color="primary"
+//               className="me-2"
+//             >
+//               Push Notify
+//             </Button>
+//             <Link
+//               className="btn text-primary"
+//               to={`/fortnightly-monitor/edit/${record._id}`}
+//             >
+//               <Button size="large" color="danger" variant="solid">
+//                 Edit
+//               </Button>
+//             </Link>
+//           </>
+//         );
+//       }
+
+//       if (
+//         (currentUserRole === UserRole[1] &&
+//           !isTeacherComplete &&
+//           !isCoordinatorComplete &&
+//           isObserverInitiation) ||
+//         (currentUserRole === UserRole[1] &&
+//           !isTeacherComplete &&
+//           isCoordinatorComplete)
+//       ) {
+//         return (
+//           <Button size="large" className="btn-outline-primary">
+//             Push Notify
+//           </Button>
+//         );
+//       }
+
+//       if (
+//         currentUserRole === UserRole[1] &&
+//         isTeacherComplete &&
+//         !isCoordinatorComplete
+//       ) {
+//         return (
+//           <Link
+//             className="btn text-primary"
+//             to={`/fortnightly-monitor/create/${record._id}`}
+//           >
+//             Continue Form
+//           </Link>
+//         );
+//       }
+
+//       return null;
+//     },
+//   },
+// ];

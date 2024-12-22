@@ -39,7 +39,6 @@ function Login() {
       // Proceed with login
 
       dispatch(UserLogin({email:email, password:password})).then((res)=>{
-        console.log(res.payload.token)
         if(res.payload.token){
           localStorage.setItem("token",res.payload.token)
           message.success("Logging in...");

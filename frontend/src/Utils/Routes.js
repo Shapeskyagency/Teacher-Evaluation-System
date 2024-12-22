@@ -31,6 +31,7 @@ import FortnightlyMonitorInitiation from "../Pages/Observer/FinalFom/Fortnightly
 import InitiateBasicDetails from "../Components/InitiateBasicDetails";
 import FortnightlyMonitorEdit from "../Pages/Teachers/FortnightlyMonitorEdit";
 import OB_FortnightlyMonitorEdit from "../Pages/Observer/OB_FortnightlyMonitorEdit";
+import OB_WalkthroughEdit from "../Pages/Observer/OB_WalkthroughEdit";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken()  : null;
@@ -55,6 +56,7 @@ const protects = {
         {path:'/notebook-checking-proforma/create', element:<NoteBookDetails/>},
         {path:'/notebook-checking-proforma/create/:id', element:<NoteBookDetails/>},
         {path:'/fortnightly-monitor/edit/:id', element:<FortnightlyMonitorEdit/>},
+        {path:"/classroom-walkthrough/edit/:id",element:<OB_WalkthroughEdit/>},
         { path: "*", element: <NotFound404/>},
       ],
     },
@@ -103,6 +105,7 @@ const protects = {
         { path: "/wing-coordinator/create", element:<FinalReport /> },
         { path: "/fortnightly-monitor/form-initiation", element:<FortnightlyMonitorInitiation /> },
         {path:'/fortnightly-monitor/edit/:id', element:<OB_FortnightlyMonitorEdit/>},
+        {path:"/classroom-walkthrough/edit/:id",element:<OB_WalkthroughEdit/>},
         { path: "*", element: <NotFound404/> },
 
       ],
