@@ -62,7 +62,6 @@ function OB_FortnightlyMonitorEdit() {
     
 
     const onFinish= async (value)=>{
-        console.log(value)
         const payload ={
             id:Id,
             data:{observerForm:value}

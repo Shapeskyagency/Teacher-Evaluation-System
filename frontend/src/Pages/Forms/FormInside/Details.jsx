@@ -92,6 +92,7 @@ const Details = () => {
   const yesNoNAOptions = ["Yes", "No", "Sometimes", "N/A"];
 
   const [totalCount, setTotalCount] = useState(0);
+  const [totalCountMein, setTotalCountMein] = useState(0);
   const type= "teacherForm"
 
   useEffect(() => {
@@ -110,6 +111,15 @@ const Details = () => {
 
     setTotalCount(count);
   }, [formDetails, type]);
+
+  const getTotalScore = (formValue) =>{
+  
+    const validValues = ["Yes", "No", 'Sometimes']; // Include these values
+    const count = Object.values(formValue).filter(value =>
+      validValues.includes(value)
+    ).length;
+    setTotalCountMein(count)
+  }
 
 
 
@@ -182,7 +192,7 @@ const Details = () => {
       else if (answer === "Sometimes") score += 0.5; // Add 0.5 for "0.5"
       // Ignore "N/A" (or any undefined answer)
     });
-  
+    getTotalScore(values)
     setSelfAssessmentScore(score);
     form.setFieldsValue({ selfEvaluationScore: score }); // Update hidden field
   };
@@ -391,7 +401,7 @@ const Details = () => {
             {/* Self-assessment score */}
             <Row gutter={[16, 16]}>
               <Col xs={24} sm={12} md={8} lg={12}>
-              <h4 className="mb-3 mt-4">Self Assessment Score: {selfAssessmentScore}</h4>
+              <h4 className="mb-3 mt-4">Self Assessment Score: {selfAssessmentScore} Out of {totalCountMein}</h4>
                 <Form.Item name="selfEvaluationScore" hidden label="Self Assessment Score">
                   <InputNumber
                     value={selfAssessmentScore}

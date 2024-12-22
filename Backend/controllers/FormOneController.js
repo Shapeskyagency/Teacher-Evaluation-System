@@ -153,16 +153,27 @@ exports.FormInitiation = async (req, res) => {
 };
 
 
-exports.getuserForm = async(req,res)=>{
+exports.getuserForm = async (req, res) => {
   const userId = req?.user?.id;
-  try{
-    const data = await Form1.find({userId})
-    const Form = await Form1.find({teacherID:userId}).populate('teacherID coordinatorID')
-    res.status(200).send({Form:Form,Initiate:data})
-  }catch(err){
-    res.status(400).send(err)
+  try {
+    // Fetch both sets of data
+    const data = await Form1.find({ userId });
+    const Form = await Form1.find({ teacherID: userId }).populate('teacherID coordinatorID');
+
+    // Combine both arrays without duplicates based on _id
+    const combinedArray = [
+      ...data,
+      ...Form.filter(
+        (formItem) => !data.some((dataItem) => dataItem._id.toString() === formItem._id.toString())
+      ),
+    ];
+
+    res.status(200).send({ CombinedForm: combinedArray});
+  } catch (err) {
+    res.status(400).send(err);
   }
-}
+};
+
 
 exports.GetObseverForm1 = async (req, res) => {
     const userId = req?.user?.id;

@@ -63,7 +63,6 @@ function FortnightlyMonitorEdit() {
     
 
     const onFinish= async (value)=>{
-        console.log(value)
         const payload ={
             id:Id,
             data:{teacherForm:value}

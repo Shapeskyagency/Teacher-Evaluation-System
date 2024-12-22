@@ -27,6 +27,12 @@ export const CreateWalkThrough = createAsyncThunk('CreateWalkThrough',async (pay
   })
 
 
+  export const EditUpdateClassForm = createAsyncThunk('EditUpdateClassForm',async (payload) => {
+    const response = await axiosInstanceToken.put(`classroom-walkthrough/edit/${payload?.id}`,payload?.data);
+      return response.data;
+  })
+
+
 
   
   const classroomWalkthroughSlice = createSlice({

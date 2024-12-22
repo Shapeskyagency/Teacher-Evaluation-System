@@ -15,7 +15,6 @@ function ClassroomWalkthroughReader() {
     const dispatch = useDispatch();
 
     const {formDataList,loading} = useSelector((state) => state?.walkThroughForm);
-    console.log(formDataList)
 
   const downloadPDF = async () => {
     const blob = await ReactPDF.pdf(<WalkthroughDoc data={formDataList} />).toBlob();

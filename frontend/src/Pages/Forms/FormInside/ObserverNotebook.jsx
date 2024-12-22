@@ -201,7 +201,6 @@ function ObserverNotebook() {
       };
     
       const handleSubmit = async (data) => {
-        console.log(data)
         const payload = {
         data,
           id: FormId,

@@ -10,9 +10,9 @@ function Navbar() {
   const userNotification = useSelector((state) => state.user.Notification);
 
   // Transform notifications into menu items
-  const menuItems = userNotification?.map((item, index) => ({
+  const menuItems = (userNotification || []).map((item, index) => ({
     key: index.toString(),
-    route:item.route,
+    route: item.route,
     label: item.title,
   }));
 const navigate = useNavigate()

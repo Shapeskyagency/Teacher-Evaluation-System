@@ -97,9 +97,6 @@ const updateUserById = async (req, res) => {
     try {
         const { userId } = req.params;
         const updateData = req.body;
-        
-        console.log("Update Data:", updateData);
-
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             updateData,

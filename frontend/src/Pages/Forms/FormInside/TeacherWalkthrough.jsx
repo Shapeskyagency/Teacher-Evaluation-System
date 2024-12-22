@@ -5,7 +5,7 @@ import {
   GetWalkThroughForm,
   TeacherWalkThroughComplete,
 } from "../../../redux/Form/classroomWalkthroughSlice";
-import { getUserId } from "../../../Utils/auth";
+import { getAllTimes, getUserId } from "../../../Utils/auth";
 import {
   Button,
   Card,
@@ -48,7 +48,7 @@ function TeacherWalkthrough() {
     <>
       <Form.Item
         name={[...name, "answer"]}
-        label={<h5 className="text-gray">{label}</h5>}
+        label={<h6 className="text-gray">{label}</h6>}
         rules={[{ required: true, message: "Please select an answer!" }]}
       >
         <>
@@ -102,7 +102,7 @@ function TeacherWalkthrough() {
 
   const handleSubmit = async (data) => {
     const payload = {
-      data: { isTeacherCompletes: true, TeacherFeedback: data.TeacherFeedback },
+      data: { isTeacherCompletes: true, TeacherFeedback: data?.TeacherFeedback },
       id: FormId,
     };
 
@@ -123,8 +123,65 @@ function TeacherWalkthrough() {
         </div>
       )}
       <Row>
-        <Col md={5}>
-          <Form form={form} layout="vertical">
+      <Col md={12}>
+          <Card title="Observer Response">
+            <Card className="mt-4">
+                <div className="d-grid" style={{gridTemplateColumns:"1fr 1fr"}}>
+                <p className="mb-0 fs-5"><b>Name:</b> {formDataList?.grenralDetails?.NameoftheVisitingTeacher?.name}</p>
+                <p className="mb-0 fs-5"><b>Date Of Observation:</b> {getAllTimes(formDataList?.grenralDetails?.DateOfObservation).formattedDate2}</p>
+                <p className="mb-0 fs-5"><b>Class:</b> {formDataList?.grenralDetails?.className}</p>
+                <p className="mb-0 fs-5"><b>Section:</b> {formDataList?.grenralDetails?.Section}</p>
+                <p className="mb-0 fs-5"><b>Subject:</b> {formDataList?.grenralDetails?.Subject}</p>
+                <p className="mb-0 fs-5"><b>Topic:</b> {formDataList?.grenralDetails?.Topic}</p>  
+                </div>
+            </Card>
+            <Card className="mt-4" title={'Essential Aggrements'}>
+            {formDataList?.essentialAggrements?.map((item, index) => (
+                 <div key={index} className="d-flex py-2  justify-content-between">
+                   <p className="mb-0">{item?.question}</p>
+                   <p className="mb-0"> {item?.answer}</p>
+                 </div>
+              ))}
+               </Card>
+
+               <Card className="mt-4" title="Planing And Preparation">
+            {formDataList?.planingAndPreparation?.map((item, index) => (
+                 <div key={index} className="d-flex py-2  justify-content-between">
+                   <p className="mb-0">{item?.question}</p>
+                   <p className="mb-0"> {item?.answer}</p>
+                 </div>
+              ))}
+               </Card>
+
+               <Card className="mt-4"  title="Class Room Environment">
+            {formDataList?.classRoomEnvironment?.map((item, index) => (
+                 <div key={index} className="d-flex py-2  justify-content-between">
+                   <p className="mb-0">{item?.question}</p>
+                   <p className="mb-0"> {item?.answer}</p>
+                 </div>
+              ))}
+               </Card>
+
+
+               <Card className="mt-4" title="Instruction">
+            {formDataList?.instruction?.map((item, index) => (
+                 <div key={index} className="d-flex py-2  justify-content-between">
+                   <p className="mb-0">{item?.question}</p>
+                   <p className="mb-0"> {item?.answer}</p>
+                 </div>
+              ))}
+               </Card>
+
+               <Card className="mt-4"  title="Observer Feedback">
+            {formDataList?.ObserverFeedback?.map((item, index) => (
+                 <div key={index} className="d-flex flex-column py-2  justify-content-between">
+                   <p className="mb-0">{item?.question}</p>
+                   <p style={{background:"#f7f7f7"}} className="mb-0 p-2 rounded border mt-2"> {item?.answer}</p>
+                 </div>
+              ))}
+               </Card>
+           
+               <Form form={form} layout="vertical" className="mt-4">
             {renderSections(
               "Feedback",
               ["What went well in the classroom and how can you leverage it in future?", "Describe key learning from your Feedback session"],
@@ -135,56 +192,12 @@ function TeacherWalkthrough() {
               Submit
             </Button>
           </Form>
-        </Col>
-        <Col md={7}>
-          <Card title="Observer Response">
-            <Descriptions bordered column={1}>
-              <Descriptions.Item label={"Name"}>
-                {formDataList?.grenralDetails?.NameoftheVisitingTeacher?.name}
-              </Descriptions.Item>
-              <Descriptions.Item label={"Date Of Observation"}>
-                {formDataList?.grenralDetails?.DateOfObservation}
-              </Descriptions.Item>
-              <Descriptions.Item label={"Class"}>
-                {formDataList?.grenralDetails?.className}
-              </Descriptions.Item>
-              <Descriptions.Item label={"Section"}>
-                {formDataList?.grenralDetails?.Section}
-              </Descriptions.Item>
-              <Descriptions.Item label={"Subject"}>
-                {formDataList?.grenralDetails?.Subject}
-              </Descriptions.Item>
-              <Descriptions.Item label={"Topic"}>
-                {formDataList?.grenralDetails?.Topic}
-              </Descriptions.Item>
-              {formDataList?.essentialAggrements?.map((item, index) => (
-                <Descriptions.Item key={index} label={item?.question}>
-                  {item?.answer}
-                </Descriptions.Item>
-              ))}
-              {formDataList?.planingAndPreparation?.map((item, index) => (
-                <Descriptions.Item key={index} label={item?.question}>
-                  {item?.answer}
-                </Descriptions.Item>
-              ))}
-              {formDataList?.classRoomEnvironment?.map((item, index) => (
-                <Descriptions.Item key={index} label={item?.question}>
-                  {item?.answer}
-                </Descriptions.Item>
-              ))}
-              {formDataList?.instruction?.map((item, index) => (
-                <Descriptions.Item key={index} label={item?.question}>
-                  {item?.answer}
-                </Descriptions.Item>
-              ))}
-              {formDataList?.ObserverFeedback?.map((item, index) => (
-                <Descriptions.Item key={index} label={item?.question}>
-                  {item?.answer}
-                </Descriptions.Item>
-              ))}
-            </Descriptions>
           </Card>
         </Col>
+        <Col md={5}>
+         
+        </Col>
+        
       </Row>
     </Container>
   );

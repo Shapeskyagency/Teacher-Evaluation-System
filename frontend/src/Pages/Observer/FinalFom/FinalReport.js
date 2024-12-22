@@ -27,7 +27,6 @@ export default function FinalReport() {
   const { isLoading, GetForms } = useSelector((state) => state?.walkThroughForm); // Classroom_Walkthrough data
   const { isLoading2, GetForms2 } = useSelector((state) => state?.notebook); // notebook data
 
-  // console.log(GetForms)
 
   useEffect(() => {
     dispatch(GetObserverFormsOne());
@@ -110,12 +109,7 @@ export default function FinalReport() {
 
   const GetData = () => {
     const values = form.getFieldsValue();
-    console.log("Form Values:", {
-      ...values,
-      Fortnightly_Monitor: selectedItems.Fortnightly_Monitor,
-      Classroom_Walkthrough: selectedItems.Classroom_Walkthrough,
-      Notebook_Checking: selectedItems.Notebook_Checking,
-    });
+    
   };
 
   const columns = useCallback((weekKey, category) => [
