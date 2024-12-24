@@ -288,7 +288,15 @@ const calculateScore = () => {
   };
 
 
-
+  const handleSubmit = async (data) => {
+    const response = await dispatch(CreateWalkThrough(data));
+    if (response?.payload?.status) {
+      message.success(response?.payload?.message);
+      navigate(`/classroom-walkthrough/report/${response?.payload?.form?._id}`);
+    } else {
+      message.error(response?.payload?.message);
+    }
+  };
 
 
 
