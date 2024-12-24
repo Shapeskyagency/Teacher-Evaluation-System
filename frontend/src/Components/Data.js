@@ -125,12 +125,14 @@ export const columnsCreate = [
 
 export const Formcolumns1 = [
   {
-    title: UserRole[2] === Role ?"Observer Name": "Teacher Name",
-    dataIndex: `grenralDetails`, // Accessing the teacher's name
-    key: `grenralDetails`,
-    render: (text,record) => (
-      <a>{UserRole[2] === Role ? record.createdBy.name : text.NameoftheVisitingTeacher.name}</a>
-    ),
+    title: UserRole[2] === Role ? "Observer Name" : "Teacher Name",
+    dataIndex: "grenralDetails", // Corrected the typo from 'grenralDetails' to 'generalDetails'
+    key: "grenralDetails",
+    render: (text, record) => (
+      <a>
+        {UserRole[2] === Role ? record.createdBy.name : text.NameoftheVisitingTeacher.name}
+      </a>
+    )
   },
   {
     title: "Grade",
@@ -161,15 +163,8 @@ export const Formcolumns1 = [
     dataIndex: "grenralDetails", // Correctly accessing the DateOfObservation
     key: "grenralDetails",
     render: (text) => (
-      <span>{getAllTimes(text.DateOfObservation)?.formattedDate2}</span>
+      <span>{getAllTimes(text?.DateOfObservation)?.formattedDate2}</span>
     ), // Formatting the date
-  },
-
-  {
-    title: "Class",
-    dataIndex: "grenralDetails", // Correctly accessing the DateOfObservation
-    key: "grenralDetails",
-    render: (text) => <span>{text?.className}</span>, // Formatting the date
   },
   {
     title: Role === UserRole[2] ? "Your Status" : "Teacher Status",
@@ -264,17 +259,35 @@ export const Formcolumns2 = [
 
 export const Formcolumns3 = [
   {
-    title: "Form Title",
+    title: UserRole[1]===getUserId()?.access? "Teacher Name":"Observer Name",
     dataIndex: `grenralDetails`, // Accessing the teacher's name
-    key: `grenralDetails`,
-    render: (text) => <a>Notebook Checking For {text.NameofObserver.name}</a>,
+    key: UserRole[1]===getUserId()?.access? "Teaher":"Observer", 
+    render: (text,record) => <a>{UserRole[1]===getUserId()?.access? record.createdBy?.name:text.NameofObserver.name}</a>,
+  },
+  {
+    title: "Grade",
+    dataIndex: `grenralDetails`, // Accessing the teacher's name
+    key: `className`,
+    render: (text,record) => <a>{text.className}</a>,
+  },
+  {
+    title: "Section",
+    dataIndex: `grenralDetails`, // Accessing the teacher's name
+    key: `Section`,
+    render: (text,record) => <a>{text.Section}</a>,
+  },
+  {
+    title: "Subject",
+    dataIndex: `grenralDetails`, // Accessing the teacher's name
+    key: `Subject`,
+    render: (text,record) => <a>{text.Subject}</a>,
   },
   {
     title: "Observation Date",
     dataIndex: "grenralDetails", // Correctly accessing the DateOfObservation
-    key: "grenralDetails",
+    key: "DateOfObservation",
     render: (text) => (
-      <span>{new Date(text.DateOfObservation).toLocaleDateString()}</span>
+      <span>{getAllTimes(text.DateOfObservation).formattedDate2}</span>
     ), // Formatting the date
   },
   {
@@ -315,12 +328,20 @@ export const Formcolumns3 = [
         {(Role === UserRole[1] || Role === UserRole[2]) &&
         record?.isTeacherComplete &&
         record?.isObserverComplete ? (
+          <>
           <Link
             className="btn btn-primary"
             to={`/notebook-checking-proforma/report/${record._id}`}
           >
             View Report
           </Link>
+          <Link
+          className="btn btn-danger"
+          to={`/notebook-checking-proforma/edit/${record._id}`}
+        >
+         Edit
+        </Link>
+          </>
         ) : (
           Role === UserRole[2] && (
             <Button size="large" className="btn-outline-primary">

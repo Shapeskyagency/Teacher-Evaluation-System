@@ -127,35 +127,44 @@ const FortnightlyMonitor = () => {
     });
   };
 
-  // Add filters to columns dynamically
-  const columnsWithFilters = useMemo(() => {
-    const uniqueValues = (key, source) => {
-      return [...new Set(source.flatMap(item => item[key] ? item[key] : []))].map(
-        (value) => ({ text: value, value: value })
-      );
-    };
+// Add filters to columns dynamically
+const columnsWithFilters = useMemo(() => {
+  const uniqueValues = (key, source) => {
+    return [...new Set(source.flatMap((item) => (item[key] ? item[key] : [])))].map((value) => ({
+      text: value,
+      value: value,
+    }));
+  };
 
-    return FormcolumnsForm1.map((column) => {
-      if (["className", "section", "teacherID", "observerName"].includes(column.dataIndex)) {
-        return {
-          ...column,
-          filters: uniqueValues(column.dataIndex, CombinedData),
-          onFilter: (value, record) => record[column.dataIndex] === value,
-        };
-      }
-      if (column.dataIndex === "isTeacherComplete") {
-        return {
-          ...column,
-          filters: [
-            { text: "COMPLETED", value: "COMPLETED" },
-            { text: "NOT COMPLETED", value: "NOT COMPLETED" },
-          ],
-          onFilter: (value, record) => (record.isTeacherComplete ? "COMPLETED" : "NOT COMPLETED") === value,
-        };
-      }
-      return column;
-    });
-  }, [CombinedData]);
+  return FormcolumnsForm1.map((column) => {
+    if (["className", "section", "teacherID", "observerName"].includes(column.dataIndex)) {
+      return {
+        ...column,
+        // filters: uniqueValues(column.dataIndex, CombinedData),
+        onFilter: (value, record) => record[column.dataIndex] === value,
+      };
+    }
+
+    if (column.dataIndex === "date") {
+      return {
+        ...column,
+        sorter: (a, b) => new Date(a.date) - new Date(b.date),
+        sortDirections: ["ascend", "descend"],
+      };
+    }
+
+    if (column.dataIndex === "isTeacherComplete") {
+      return {
+        ...column,
+       
+        onFilter: (value, record) =>
+          (record.isTeacherComplete ? "COMPLETED" : "NOT COMPLETED") === value,
+      };
+    }
+
+    return column;
+  });
+}, [CombinedData]);
 
   // Render table with filters and pagination
   const renderTable = (title, data) => (
