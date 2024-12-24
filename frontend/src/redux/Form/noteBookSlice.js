@@ -72,7 +72,7 @@ export const CreateNoteBookForm = createAsyncThunk('CreateNoteBookForm',async (p
         })
         .addCase(GetcreatedByUser.fulfilled, (state, action) => {
           state.isLoading = false; // Set loading to false when the request is fulfilled
-          state.GetForms = action.payload; // Store the received form data
+          state.GetForms2 = action.payload; // Store the received form data
         })
         .addCase(GetcreatedByUser.rejected, (state, action) => {
           state.isLoading = false; // Set loading to false when the request fails

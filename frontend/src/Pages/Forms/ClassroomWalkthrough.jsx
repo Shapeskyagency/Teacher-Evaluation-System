@@ -104,7 +104,7 @@ function ClassroomWalkthrough() {
 
   const columnsWithFilters = useMemo(() => {
     const uniqueValues = (key, source) => {
-      return [...new Set(source.flatMap(item => item[key] ? item[key] : []))].map(
+      return [...new Set(source.flatMap((item) => (item[key] ? item[key] : [])))].map(
         (value) => ({ text: value, value: value })
       );
     };
@@ -123,18 +123,39 @@ function ClassroomWalkthrough() {
               return record.grenralDetails[column.dataIndex] === value;
             }
           },
+          sorter: (a, b) => {
+            if (column.dataIndex === "NameoftheVisitingTeacher") {
+              return a.grenralDetails.NameoftheVisitingTeacher.name.localeCompare(
+                b.grenralDetails.NameoftheVisitingTeacher.name
+              );
+            } else if (column.dataIndex === "createdBy") {
+              return a.createdBy.name.localeCompare(b.createdBy.name);
+            } else {
+              return a.grenralDetails[column.dataIndex]?.localeCompare(
+                b.grenralDetails[column.dataIndex]
+              );
+            }
+          },
+          sortDirections: ["ascend", "descend"],
+        };
+      }
+      if (column.dataIndex === "DateOfObservation") {
+        return {
+          ...column,
+          sorter: (a, b) => new Date(a.grenralDetails.DateOfObservation) - new Date(b.grenralDetails.DateOfObservation),
+          sortDirections: ["ascend", "descend"],
         };
       }
       if (column.dataIndex === "isTeacherCompletes") {
         return {
           ...column,
-          filters: [
-            { text: "COMPLETED", value: "COMPLETED" },
-            { text: "NOT COMPLETED", value: "NOT COMPLETED" },
-          ],
-          onFilter: (value, record) => (record.isTeacherCompletes ? "COMPLETED" : "NOT COMPLETED") === value,
+          onFilter: (value, record) =>
+            (record.isTeacherCompletes ? "COMPLETED" : "NOT COMPLETED") === value,
+          sorter: (a, b) => a.isTeacherCompletes - b.isTeacherCompletes,
+          sortDirections: ["ascend", "descend"],
         };
       }
+    
       return column;
     });
   }, [GetForms]);

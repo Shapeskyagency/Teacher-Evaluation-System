@@ -51,6 +51,15 @@ const NoteBookDetails = () => {
 
   },[dispatch])
 
+  const disableFutureDates = (current) => {
+    // Get the current date without the time part
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to 00:00:00 to compare only the date
+
+    // Disable dates that are in the future
+    return current && current.toDate() > today;
+  };
+
   const steps = [
     { title: "General Details" },
     { title: "Proforma Details" },
@@ -118,6 +127,7 @@ const NoteBookDetails = () => {
           size="large"
           className="w-100"
           placeholder={`Select ${label.toLowerCase()}`}
+          disabledDate={disableFutureDates}
         />
       ),
       input: (
@@ -360,6 +370,8 @@ const NoteBookDetails = () => {
       message.success(data?.payload?.message);
     }
   };
+
+
 
   return (
     <div className="container">
