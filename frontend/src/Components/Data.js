@@ -197,12 +197,15 @@ export const Formcolumns1 = [
           >
             View Report
           </Link>
+          { Role === UserRole[1] &&
           <Link
           className="btn btn-danger"
           to={`/classroom-walkthrough/edit/${record._id}`}
         >
          Edit
         </Link>
+          }
+          
          </>
         ) : (
           Role === UserRole[1] && (
