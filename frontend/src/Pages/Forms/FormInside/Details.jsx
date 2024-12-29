@@ -208,6 +208,10 @@ const Details = () => {
     return current && current.toDate() > today;
   };
 
+  const SideQuestion = document.querySelectorAll("#SideQuestion");
+  const heights = Array.from(SideQuestion).map((element) => element.offsetHeight);
+  console.log(heights);
+
   return (
     <div className="container mt-3">
       {isLoading ? (
@@ -306,7 +310,7 @@ const Details = () => {
               )}
                 {questions.map((field, index) => {
                   return (
-                    <div className="mb-3 border p-3 rounded shadow-sm" key={field?.key}>
+                    <div id="SideQuestion" className="mb-3 border p-3 py-2 rounded shadow-sm p-2" key={field?.key}>
                       <Form.Item
                          className="w-75 mb-2"
                         name={field?.key}
@@ -328,6 +332,7 @@ const Details = () => {
                         ]}
                       >
                         <Radio.Group
+                        size="small"
                           block
                           options={yesNoNAOptions}
                           optionType="button"
@@ -356,22 +361,23 @@ const Details = () => {
                        
                             return (
                               <>
-                              <div  className="mb-3 border p-3 rounded shadow-sm" key={index+1}>
-                              <h3
-                            className="mb-0 fs-6"
+                              <div  style={{heighteight:heights[index]}} className="mb-3 border p-3 py-2 rounded shadow-sm p-2" key={index+1}>
+                              <div style={{marginBottom:"0.6rem"}}>
+                              <p
+                            className="mb-0 fs-6 "
                             style={{ color: "rgb(52 52 52 / 64%)" }}
                           >
                             {item?.name
                               .replace(/([A-Z])/g, " $1")
                               .replace(/^./, (str) => str.toUpperCase())}
-                          </h3>
-                          <div className={`alert ${formDetails?.teacherForm[item.key] === "Yes" ? "alert-success": formDetails?.teacherForm[item.key] === "No" ? "alert-danger" : formDetails?.teacherForm[item.key] === "N/A"?"alert-primary":formDetails?.teacherForm[item.key] === "0.5"&&"alert-warning"} py-0 mt-3 mb-0`}
+                          </p>
+                          <div className={`alert ${formDetails?.teacherForm[item.key] === "Yes" ? "alert-success": formDetails?.teacherForm[item.key] === "No" ? "alert-danger" : formDetails?.teacherForm[item.key] === "N/A"?"alert-primary":formDetails?.teacherForm[item.key] === "Sometimes"&&"alert-warning"} 
+                          py-1  mb-0`}
                           
-                          style={{width:"fit-content"}}>
-
+                          style={{width:"fit-content",fontSize:"16px"}}>
                             <span> {formDetails?.teacherForm[item.key]}</span></div>
                               </div>
-                             
+                              </div>
                              
                               </>
                             );

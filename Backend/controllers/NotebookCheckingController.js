@@ -233,3 +233,84 @@ exports.GetObseverForm = async (req, res) => {
         res.status(500).json({ message: "Error Getting Classroom Walkthrough.", error });
     }
 }
+
+const updatePayload = (existingForm, userId, changes) => {
+    const rolePrefix = userId === "Observer" ? "NotebooksObserver" : "NotebooksTeacher";
+    const rolePrefix2 = userId === "Observer" ? "ObserverForm" : "TeacherForm";
+
+    const fieldMappings = {
+        [`${rolePrefix}.ClassStrength`]: changes.ClassStrength,
+        [`${rolePrefix}.NotebooksSubmitted`]: changes.NotebooksSubmitted,
+        [`${rolePrefix}.Absentees`]: changes.Absentees,
+        [`${rolePrefix}.Defaulters`]: changes.Defaulters,
+        [`observerFeedback`]: changes.observerFeedback,
+        [`${rolePrefix2}`]: changes.isObserverComplete,
+        [`${rolePrefix2}.maintenanceOfNotebooks`]: changes.maintenanceOfNotebooks,
+        [`${rolePrefix2}.qualityOfOppurtunities`]: changes.qualityOfOppurtunities,
+        [`${rolePrefix2}.qualityOfTeacherFeedback`]: changes.qualityOfTeacherFeedback,
+        [`${rolePrefix2}.qualityOfLearner`]: changes.qualityOfLearner,
+    };
+
+    const payload = {};
+
+    for (const [key, currentValue] of Object.entries(fieldMappings)) {
+        if (currentValue !== undefined) {
+            const existingValue = key.split('.').reduce((acc, part) => acc?.[part], existingForm);
+            const hasChanged = typeof currentValue === "object" 
+                ? JSON.stringify(currentValue) !== JSON.stringify(existingValue) 
+                : currentValue !== existingValue;
+
+            if (hasChanged) {
+                payload[key] = currentValue;
+            }
+        }
+    }
+
+    return payload;
+};
+
+exports.EditUpdateNotebook = async (req, res) => {
+    const formId = req.params.id;
+    const userId = req?.user?.access;
+
+    if (!formId) {
+        return res.status(400).json({ message: "Form ID is required" });
+    }
+
+    try {
+        const changes = {
+            ClassStrength: req.body.ClassStrength,
+            NotebooksSubmitted: req.body.NotebooksSubmitted,
+            Absentees: req.body.Absentees,
+            Defaulters: req.body.Defaulters,
+            observerFeedback: req.body.observerFeedback,
+            isObserverComplete: req.body.isObserverComplete,
+            maintenanceOfNotebooks: req.body.maintenanceOfNotebooks,
+            qualityOfOppurtunities: req.body.qualityOfOppurtunities,
+            qualityOfTeacherFeedback: req.body.qualityOfTeacherFeedback,
+            qualityOfLearner: req.body.qualityOfLearner,
+        };
+
+        const existingForm = await Form3.findById(formId);
+
+        if (!existingForm) {
+            return res.status(404).json({ message: "Form not found", success: false });
+        }
+
+        const payload = updatePayload(existingForm, userId, changes);
+
+        const updatedForm = await Form3.findByIdAndUpdate(formId, { $set: payload }, { new: true });
+
+        res.status(200).json({
+            message: "Form updated successfully!",
+            success: true,
+            updatedForm,
+        });
+    } catch (error) {
+        console.error("Error updating form:", error);
+        res.status(500).json({
+            message: "Error updating the form.",
+            error: error.message,
+        });
+    }
+};

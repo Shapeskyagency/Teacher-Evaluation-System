@@ -60,7 +60,7 @@ function WalkthroughDoc({ data }) {
                 width: "20%",
               }}
             >
-              <Text style={styles.Question}>{item?.answer}</Text>
+              <Text style={[styles.Question,{fontFamily: "Open Sans" , fontWeight:"800"}]}> {item?.answer}</Text>
             </View>
           </View>
         ))}
@@ -71,7 +71,7 @@ function WalkthroughDoc({ data }) {
   const RenderFeedbackQuestion =({keyName}) =>{
     return(
         <View style={{flexDirection:"row", flexWrap:"wrap",borderTop:1, borderBottom:0}}>
-            {data?.[keyName].map((item,key)=>(
+            {data?.[keyName]?.map((item,key)=>(
                 <>
                 <View
                 style={{
@@ -93,8 +93,8 @@ function WalkthroughDoc({ data }) {
                   width: "80%",
                 }}
               >
-                <Text style={[styles.Question, styles.boldAns]}>{item?.question}</Text>
-                <Text style={[styles.Question,]}>{item?.answer}</Text>
+                <Text style={[styles.Question]}>{item?.question}</Text>
+                <Text style={[styles.Question,{fontFamily: "Open Sans" , fontWeight:"800",marginTop:8,fontSize:10}]}>{item?.answer}</Text>
               </View>
                 </>
             ))}
@@ -141,7 +141,7 @@ function WalkthroughDoc({ data }) {
             ].map((item) => (
               <View style={{ width: "50%", marginBottom: 8 }}>
                 <Text style={[styles.basictext, styles.Question]}>
-                  {item?.question}:{item?.ans}
+                  {item?.question}: <Text style={[styles.Question,{fontFamily: "Open Sans" , fontWeight:"800"}]}>{item?.ans}</Text>
                 </Text>
               </View>
             ))}
@@ -419,6 +419,7 @@ const styles = StyleSheet.create({
   },
   Question: {
     // fontFamily: "Gilda Display",
+    
     fontSize: 12,
   },
   testCenter: {

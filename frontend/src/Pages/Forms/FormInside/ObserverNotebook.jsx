@@ -34,7 +34,7 @@ function ObserverNotebook() {
       const data = await dispatch(GetNoteBookForm(FormId));
       const { isObserverComplete } = data?.payload;
       if (isObserverComplete) {
-        navigate(`/classroom-walkthrough/report/${FormId}`);
+        navigate(`/notebook-checking-proforma/report/${FormId}`);
       } else {
         message.success("Add your feedback");
       }

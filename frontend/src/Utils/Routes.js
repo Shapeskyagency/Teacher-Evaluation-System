@@ -32,6 +32,8 @@ import InitiateBasicDetails from "../Components/InitiateBasicDetails";
 import FortnightlyMonitorEdit from "../Pages/Teachers/FortnightlyMonitorEdit";
 import OB_FortnightlyMonitorEdit from "../Pages/Observer/OB_FortnightlyMonitorEdit";
 import OB_WalkthroughEdit from "../Pages/Observer/OB_WalkthroughEdit";
+import OB_Notebook from "../Pages/Observer/OB_Notebook";
+import TC_Notebook from "../Pages/Teachers/TC_Notebook";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken()  : null;
@@ -56,7 +58,8 @@ const protects = {
         {path:'/notebook-checking-proforma/create', element:<NoteBookDetails/>},
         {path:'/notebook-checking-proforma/create/:id', element:<NoteBookDetails/>},
         {path:'/fortnightly-monitor/edit/:id', element:<FortnightlyMonitorEdit/>},
-        {path:"/classroom-walkthrough/edit/:id",element:<OB_WalkthroughEdit/>},
+        // {path:"/classroom-walkthrough/edit/:id",element:<OB_WalkthroughEdit/>},
+        {path:"/notebook-checking-proforma/edit/:id",element:<TC_Notebook/>},
         { path: "*", element: <NotFound404/>},
       ],
     },
@@ -106,6 +109,7 @@ const protects = {
         { path: "/fortnightly-monitor/form-initiation", element:<FortnightlyMonitorInitiation /> },
         {path:'/fortnightly-monitor/edit/:id', element:<OB_FortnightlyMonitorEdit/>},
         {path:"/classroom-walkthrough/edit/:id",element:<OB_WalkthroughEdit/>},
+        {path:"/notebook-checking-proforma/edit/:id",element:<OB_Notebook/>},
         { path: "*", element: <NotFound404/> },
 
       ],
@@ -119,7 +123,6 @@ const protects = {
         { path: "/", element: <Login />},
         { path: "/login", element: <Login /> },
         { path: "/signup", element:<Register /> },
-        
         { path: "*", element: <NotFound404/> },
       ],
     },

@@ -137,8 +137,9 @@ const calculateScore = () => {
   const renderRadioFormItem = ({ name, label, question, isTextArea }) => (
     <>
       <Form.Item
+      className="mb-0"
         name={[...name, "answer"]}
-        label={<h5 className="text-gray">{label}</h5>}
+        label={<h6 className="text-gray mb-0">{label}</h6>}
         rules={[{ required: true, message: "Please select an answer!" }]}
       >
         {isTextArea ? (
@@ -147,6 +148,7 @@ const calculateScore = () => {
           </>
         ) : (
           <Radio.Group
+          size="small"
             options={yesNoNAOptions.map((value) => ({
               label: value,
               value: value,
@@ -171,7 +173,7 @@ const calculateScore = () => {
       </Col>
       {questions.map((question, index) => (
         <Col md={12} key={`${namePrefix}${index}`}>
-          <Card className="mb-3 shadow-sm">
+          <Card className="mb-3 shadow-sm p-0">
             {renderRadioFormItem({
               name: [namePrefix, index],
               label: question,
