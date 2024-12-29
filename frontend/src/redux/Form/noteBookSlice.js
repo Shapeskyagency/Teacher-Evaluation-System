@@ -29,6 +29,12 @@ export const CreateNoteBookForm = createAsyncThunk('CreateNoteBookForm',async (p
       return response.data;
   })
 
+  export const EditNoteBook = createAsyncThunk('EditNoteBook',async (payload) => {
+    const response = await axiosInstanceToken.put(`${prefixURL}/observer/edit/${payload?.id}`,payload.data);
+      return response.data;
+  })
+
+
 
 
 

@@ -340,8 +340,7 @@ export const Formcolumns3 = [
           </Link>
           <Link
           className="btn btn-danger"
-          to={`/notebook-checking-proforma/edit/${record._id}`}
-        >
+          to={`/notebook-checking-proforma/edit/${record._id}`} >
          Edit
         </Link>
           </>
