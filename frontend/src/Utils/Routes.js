@@ -34,6 +34,8 @@ import OB_FortnightlyMonitorEdit from "../Pages/Observer/OB_FortnightlyMonitorEd
 import OB_WalkthroughEdit from "../Pages/Observer/OB_WalkthroughEdit";
 import OB_Notebook from "../Pages/Observer/OB_Notebook";
 import TC_Notebook from "../Pages/Teachers/TC_Notebook";
+import NotebookPDF from "../Pages/Reports/NotebookPDF";
+import ClassSectionPage from "../Pages/Admin/ClassSectionPage";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken()  : null;
@@ -80,6 +82,7 @@ const protects = {
         {path:'/fortnightly-monitor/create/:id', element:<Details/>},
         {path:'/fortnightly-monitor/report/:id', element:<Reader/>},
         {path:"/classroom-walkthrough/report/:id",element:<ClassroomWalkthroughReader/>},
+        {path:"/class-section",element:<ClassSectionPage/>},
         { path: "*", element: <NotFound404/> },
       ],
     },
@@ -110,6 +113,8 @@ const protects = {
         {path:'/fortnightly-monitor/edit/:id', element:<OB_FortnightlyMonitorEdit/>},
         {path:"/classroom-walkthrough/edit/:id",element:<OB_WalkthroughEdit/>},
         {path:"/notebook-checking-proforma/edit/:id",element:<OB_Notebook/>},
+
+        { path: "/notebook-checking-proforma/report/:id", element:<NotebookPDF/> },
         { path: "*", element: <NotFound404/> },
 
       ],

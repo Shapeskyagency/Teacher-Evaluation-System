@@ -60,6 +60,17 @@ export const UserLogin = createAsyncThunk('UserLogin',async (payload) => {
 
 
 
+  export const CReateClassSection = createAsyncThunk('CReateClassSection',async (payload) => {
+    const response = await axiosInstanceToken.post(`/class/create`,payload);
+      return response.data;
+  })
+
+  export const getCreateClassSection = createAsyncThunk('getCreateClassSection',async () => {
+    const response = await axiosInstanceToken.get(`/class/get`);
+      return response.data;
+  })
+
+
 
 
 

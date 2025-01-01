@@ -8,7 +8,7 @@ export const CreateNoteBookForm = createAsyncThunk('CreateNoteBookForm',async (p
       return response.data;
   })
 
-  export const GetNoteBookForm = createAsyncThunk('GetWalkThroughForm',async (payload) => {
+  export const GetNoteBookForm = createAsyncThunk('GetNoteBookForm',async (payload) => {
     const response = await axiosInstanceToken.get(`${prefixURL}/get/${payload}`);
       return response.data;
   })

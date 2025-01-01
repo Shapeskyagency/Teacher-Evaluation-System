@@ -46,9 +46,9 @@ function ObserverNotebook() {
     }, [dispatch, FormId]);
 
     const yesNoNAOptions = [
-        { value: "0", label: <BsEmojiSmile size={25} /> },
-        { value: "1", label: <BsEmojiNeutral size={25} /> },
-        { value: "-1", label: <BsEmojiFrown size={25} /> },
+        { value: "0", label: <BsEmojiSmile size={25} />,Color:'orange' },
+        { value: "1", label: <BsEmojiNeutral size={25} /> , Color:'green'},
+        { value: "-1", label: <BsEmojiFrown size={25} />,Color:'red' },
       ];
 
       const generalDetailsConfig = [
@@ -224,7 +224,7 @@ function ObserverNotebook() {
         </div>
       )}
       <Row>
-        <Col md={6}>
+        {/* <Col md={6}>
           <Form form={form} layout="vertical">
             <div className="mb-5">
               <h3 className="mb-4">Maintenance Of Notebooks</h3>
@@ -294,10 +294,12 @@ function ObserverNotebook() {
               Submit
             </Button>
           </Form>
-        </Col>
-        <Col md={6}>
+        </Col> */}
+        <Col md={12}>
           <Card title={<h4>Teacher Response</h4>}>
-          <h5 className='mt-4'>Basic Details</h5>
+              <div className='d-flex gap-3'>
+                <div>
+                <h5 className='mt-4'>Basic Details</h5>
             <div className=" Grid-Columns  p-3 shadow-sm border-0 rounded-2">
               <div className="quetsionWrapper ">
                 <h6 className="Question-Title fw-normal">
@@ -333,8 +335,10 @@ function ObserverNotebook() {
                 </h6>
               </div>
             </div>
-            <h5 className='mt-4'>Notebooks</h5>
-            <div className="Grid-Columns p-3 shadow-sm border-0 rounded-2">
+                </div>
+                  <div className='w-50 d-flex flex-column'>
+                  <h5 className='mt-4'>Notebooks</h5>
+            <div className="Grid-Columns p-3 shadow-sm border-0 rounded-2 w-100">
               <div className="quetsionWrapper">
                 <h6 className="Question-Title fw-normal">
                   <b>Absentees: </b>
@@ -360,6 +364,8 @@ function ObserverNotebook() {
                 </h6>
               </div>
             </div>
+                  </div>
+              </div>
             <h5 className='mt-4'>Maintenance Of Notebooks</h5>
             {formDataList?.TeacherForm?.maintenanceOfNotebooks?.map(
               (item, index) => (
@@ -372,7 +378,7 @@ function ObserverNotebook() {
                       <b>Ans: </b>
                       {yesNoNAOptions.map((Item)=>(
                         Item.value === item?.answer &&
-                      <Tag size="large" color={"green"}>
+                      <Tag size="large" color={Item.Color}>
                       {Item.label}
                     </Tag>
                      ))}
@@ -399,7 +405,9 @@ function ObserverNotebook() {
                       <b>Ans: </b>
                       {yesNoNAOptions.map((Item)=>(
                         Item.value === item?.answer &&
-                      Item.label
+                      <Tag size="large" color={Item.Color}>
+                      {Item.label}
+                    </Tag>
                      ))}
                     </h6>
                     {item?.remark && <h6 className="Question-Title fw-normal">
@@ -422,7 +430,9 @@ function ObserverNotebook() {
                       <b>Ans: </b>
                       {yesNoNAOptions.map((Item)=>(
                         Item.value === item?.answer &&
-                      Item.label
+                      <Tag size="large" color={Item.Color}>
+                      {Item.label}
+                    </Tag>
                      ))}
                     </h6>
                     {item?.remark && <h6 className="Question-Title fw-normal">
@@ -445,7 +455,9 @@ function ObserverNotebook() {
                       <b>Ans: </b>
                       {yesNoNAOptions.map((Item)=>(
                         Item.value === item?.answer &&
-                      Item.label
+                      <Tag size="large" color={Item.Color}>
+                      {Item.label}
+                    </Tag>
                      ))}
                     </h6>
                    {item?.remark && <h6 className="Question-Title fw-normal">
