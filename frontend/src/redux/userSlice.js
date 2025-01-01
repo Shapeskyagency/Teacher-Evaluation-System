@@ -72,6 +72,25 @@ export const UserLogin = createAsyncThunk('UserLogin',async (payload) => {
 
 
 
+  // weekly 4 form
+
+  export const initiateFromObserver = createAsyncThunk('initiateFromObserver',async (payload) => {
+    const response = await axiosInstanceToken.post(`/weekly4Form/create`,payload);
+      return response.data;
+  })
+
+  export const UpdateFromObserver = createAsyncThunk('UpdateFromObserver',async (payload) => {
+    const response = await axiosInstanceToken.put(`/weekly4Form/${payload.id}`,payload.data);
+      return response.data;
+  })
+
+  export const getAllWeeklyFrom = createAsyncThunk('getAllWeeklyFrom',async () => {
+    const response = await axiosInstanceToken.get(`/weekly4Forms`);
+      return response.data;
+  })
+
+
+
 
 
 
@@ -82,10 +101,12 @@ const userSlice = createSlice({
     GetUsers: null,
     GetTeachersLists: null,
     GetObserverLists: null,
+    getAllWeeklyFroms:null,
     loading: false,
     error: null,
     signupSuccess: false, 
     message: '', 
+
   },
   reducers: {
     resetError: (state) => {
@@ -153,6 +174,22 @@ const userSlice = createSlice({
         state.error=action.payload;
       })
       .addCase(GetObserverList.rejected,(state,action)=>{
+        state.loading = false;
+        state.error = action.payload;
+      })
+      
+
+      // weekly form
+      .addCase(getAllWeeklyFrom.pending,(state,action)=>{
+        state.loading =true;
+        state.error =null
+      })
+      .addCase(getAllWeeklyFrom.fulfilled,(state,action)=>{
+        state.loading=false;
+        state.getAllWeeklyFroms =action.payload;
+        state.error=action.payload;
+      })
+      .addCase(getAllWeeklyFrom.rejected,(state,action)=>{
         state.loading = false;
         state.error = action.payload;
       })

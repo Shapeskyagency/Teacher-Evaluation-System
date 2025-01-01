@@ -8,6 +8,7 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const notebookRoutes = require('./routes/notebookRoutes');
 const finalFormRoutes = require('./routes/finalFormRoutes');
 const ClassRoutes = require('./routes/ClassRoutes');
+const Weekly4Routes = require('./routes/Weekly4Routes');
 require('dotenv').config();
 const cors = require('cors')
 const app = express();
@@ -36,5 +37,6 @@ app.use('/api/classroom-walkthrough', classRoomRoutes)
 app.use('/api/notebook-checking-proforma',notebookRoutes)
 app.use('/api/wing-coordinator',finalFormRoutes)
 app.use('/api/class',ClassRoutes)
+app.use('/api', Weekly4Routes);
 
 module.exports = app;
