@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import {
   AppstoreAddOutlined,
   BookFilled,
+  DatabaseFilled,
+  FormatPainterFilled,
   FormOutlined,
   PieChartOutlined,
   SignatureOutlined,
@@ -73,6 +75,11 @@ export const Menu = {
       route: "/wing-coordinator",
       icon: <BookFilled />,
     },
+    {
+      name: "Weekly Form",
+      route: "weekly4form",
+      icon: <DatabaseFilled />,
+    },
   ],
   Teacher: [
     { name: "Dashboard", route: "/dashboard", icon: <AppstoreAddOutlined /> },
@@ -93,6 +100,11 @@ export const Menu = {
       name: "Notebook Checking",
       route: "/notebook-checking-proforma",
       icon: <BookFilled />,
+    },
+    {
+      name: "Weekly Form",
+      route: "weekly4form",
+      icon: <DatabaseFilled />,
     },
   ],
 };

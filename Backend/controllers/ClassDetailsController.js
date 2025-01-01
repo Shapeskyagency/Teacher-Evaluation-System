@@ -16,7 +16,6 @@ exports.createClassDetail = async (req, res) => {
 // Get all class details
 exports.getAllClassDetails = async (req, res) => {
     try {
-        req.user.access !== 'Superadmin' ? res.status(401).send({ error: 'Unauthorized' }) : null;
         const classDetails = await ClassDetails.find({});
         res.status(200).send({success:true, message:"Class Fetch successfully", classDetails});
     } catch (error) {

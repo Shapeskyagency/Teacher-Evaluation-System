@@ -36,6 +36,8 @@ import OB_Notebook from "../Pages/Observer/OB_Notebook";
 import TC_Notebook from "../Pages/Teachers/TC_Notebook";
 import NotebookPDF from "../Pages/Reports/NotebookPDF";
 import ClassSectionPage from "../Pages/Admin/ClassSectionPage";
+import Weely4Page from "../Pages/Observer/Weely4Page";
+import Weely4Form from "../Pages/Forms/Weely4Form";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken()  : null;
@@ -62,6 +64,10 @@ const protects = {
         {path:'/fortnightly-monitor/edit/:id', element:<FortnightlyMonitorEdit/>},
         // {path:"/classroom-walkthrough/edit/:id",element:<OB_WalkthroughEdit/>},
         {path:"/notebook-checking-proforma/edit/:id",element:<TC_Notebook/>},
+
+        { path: "/weekly4form", element:<Weely4Page/> },
+        { path: "/weekly4form/create", element:<Weely4Form/> },
+        { path: "/weekly4form/create/:id", element:<Weely4Form/> },
         { path: "*", element: <NotFound404/>},
       ],
     },
@@ -115,6 +121,10 @@ const protects = {
         {path:"/notebook-checking-proforma/edit/:id",element:<OB_Notebook/>},
 
         { path: "/notebook-checking-proforma/report/:id", element:<NotebookPDF/> },
+        { path: "/weekly4form", element:<Weely4Page/> },
+        { path: "/weekly4form/create", element:<Weely4Form/> },
+        { path: "/weekly4form/edit/:id", element:<Weely4Form/> },
+        { path: "/weekly4form/report/:id", element:<Weely4Form/> },
         { path: "*", element: <NotFound404/> },
 
       ],
