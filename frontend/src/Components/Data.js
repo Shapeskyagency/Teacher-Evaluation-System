@@ -14,6 +14,7 @@ import { getAllTimes, getUserId } from "../Utils/auth";
 import { UserRole } from "../config/config";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { BsCloudSlash } from "react-icons/bs";
 
 // import { SiGoogleclassroom } from "react-icons/si";
 
@@ -25,6 +26,11 @@ export const Menu = {
     { name: "Reports", route: "/reports", icon: <PieChartOutlined /> },
     { name: "User", route: "/users", icon: <UserAddOutlined /> },
     { name: "Profile", route: "/profile", icon: <UserOutlined /> },
+    {
+      name: "Class / Section",
+      route: "/class-section",
+      icon: <BsCloudSlash />,
+    },
     { label: "Forms" },
     {
       name: "Fortnightly Monitor",
@@ -40,7 +46,7 @@ export const Menu = {
       name: "Notebook Checking",
       route: "/notebook-checking-proforma",
       icon: <BookFilled />,
-    },
+    }
   ],
   Observer: [
     { name: "Dashboard", route: "/dashboard", icon: <AppstoreAddOutlined /> },
