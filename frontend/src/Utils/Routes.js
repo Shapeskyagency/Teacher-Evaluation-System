@@ -64,7 +64,7 @@ const protects = {
         {path:'/fortnightly-monitor/edit/:id', element:<FortnightlyMonitorEdit/>},
         // {path:"/classroom-walkthrough/edit/:id",element:<OB_WalkthroughEdit/>},
         {path:"/notebook-checking-proforma/edit/:id",element:<TC_Notebook/>},
-
+        { path: "/notebook-checking-proforma/report/:id", element:<NotebookPDF/> },
         { path: "/weekly4form", element:<Weely4Page/> },
         { path: "/weekly4form/create", element:<Weely4Form/> },
         { path: "/weekly4form/create/:id", element:<Weely4Form/> },

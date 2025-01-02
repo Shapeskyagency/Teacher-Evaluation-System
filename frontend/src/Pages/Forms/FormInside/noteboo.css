@@ -1,0 +1,25 @@
+.radio-button-box {
+    display: flex;
+    justify-content: space-between; /* Ensures spacing between buttons */
+    align-items: center;           /* Centers content vertically */
+    height: 100%;                  /* Matches parent height */
+  }
+  
+  .radio-button-box .ant-radio-button-wrapper {
+    height: 60px;                  /* Set a fixed height for uniformity */
+    line-height: 60px;             /* Vertically centers text/icons */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;            /* Optional: Add rounded corners */
+  }
+  
+  .radio-button-box .ant-radio-button-wrapper-checked {
+    background-color: #f0f0f0;     /* Optional: Highlight checked state */
+    border-color: #1890ff;         /* Optional: Highlight border for checked */
+  }
+  
+  .radio-button-box .ant-radio-button-wrapper:first-child {
+    margin-right: 8px;             /* Add space between buttons */
+  }
+  

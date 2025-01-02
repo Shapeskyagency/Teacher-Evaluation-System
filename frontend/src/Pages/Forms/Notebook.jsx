@@ -159,7 +159,7 @@ function Notebook() {
                     <Spin size="large" className="position-absolute" />
                 </div>
             )}
-            <div className='pb-0 pt-0' style={{ padding: '16px' }}>
+            <div className='mb-3' >
                 {getUserId().access === UserRole[2] &&
                     <Button
                         onClick={() => navigate('/notebook-checking-proforma/create')}

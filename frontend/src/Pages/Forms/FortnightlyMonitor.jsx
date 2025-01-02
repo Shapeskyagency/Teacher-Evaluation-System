@@ -74,12 +74,15 @@ const FortnightlyMonitor = () => {
 
       if(key==='observerName'){
             values.push(item?.userID?.name || item?.coordinatorID?.name);
-       }else{
+       }else if(key==='teacherID')
+        {
+          values.push(item?.teacherID?.name || item?.userID?.name);
+        }
+        else{
         if (item[key]) {
           values.push(item[key])
         }
        }
-      
     });
     return [...new Set(values)];
   };
@@ -112,16 +115,17 @@ const FortnightlyMonitor = () => {
   // Apply the filters to the data
   const applyFilters = (data) => {
     const { className, section, teacherID, status, date, observerName } = filters;
-
     return data.filter((item) => {
+      console.log(teacherID,item)
+
       const matchesClassName = className.length ? className.includes(item.className) : true;
       const matchesSection = section.length ? section.includes(item.section) : true;
-      const matchesTeacherID = teacherID.length ? teacherID.includes(item.teacherID) : true;
+      const matchesTeacherID = teacherID.length ? teacherID.includes(item?.teacherID?.name || item?.userId?.name ) : true;
       const matchesStatus = status.length ? status.includes(item.isTeacherComplete ? "COMPLETED" : "NOT COMPLETED") : true;
       const matchesDate = date.length
         ? date.some((d) => moment(item.date).isSame(d, "day"))
         : true;
-      const matchesObserverName = observerName.length ? observerName.includes(item.observerName) : true;
+      const matchesObserverName = observerName.length ? observerName.includes(item?.coordinatorID?.name || item?.userId?.name ) : true;
 
       return matchesClassName && matchesSection && matchesTeacherID && matchesStatus && matchesDate && matchesObserverName;
     });
@@ -181,6 +185,7 @@ const columnsWithFilters = useMemo(() => {
     </div>
   );
 
+
   return (
     <div className="container py-4">
       <Row>
@@ -228,6 +233,7 @@ const columnsWithFilters = useMemo(() => {
                        label: teacher,
                      }))}
                    />
+                
                  </Col>
                 }
                     {UserRole[2]=== getUserId().access &&
@@ -240,11 +246,12 @@ const columnsWithFilters = useMemo(() => {
                     placeholder="Select Observer"
                     value={filters.observerName}
                     onChange={(value) => handleFilter("observerName", value)}
-                    options={getObserverNames().map((observer) => ({
+                    options={getObserverNames()?.map((observer) => ({
                       value: observer,
                       label: observer,
                     }))}
                   />
+                  
                 </Col>
                   }
                 <Col md={2}>
