@@ -5,7 +5,7 @@ import { DatePicker, Select, Button, Form, message, Input, Card, Radio, Spin } f
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { CreateWalkThrough, GetWalkThroughForm } from "../../../redux/Form/classroomWalkthroughSlice";
-import { GetTeacherList } from "../../../redux/userSlice";
+import { getCreateClassSection, GetTeacherList } from "../../../redux/userSlice";
 import { getUserId } from "../../../Utils/auth";
 import "./DetailsWalkthrough.css";
 import { max } from "moment";
@@ -22,6 +22,21 @@ function DetailsWalkthrough() {
   const FormId = useParams()?.id;
   const { loading, GetTeachersLists } = useSelector((state) => state?.user);
   const { isLoading, formDataList } = useSelector((state) => state?.walkThroughForm);
+  const [newData, setNewData] = useState([]);
+
+    const fetchClassData = async () => {
+      try {
+        const res = await dispatch(getCreateClassSection());
+        if (res?.payload?.success) {
+          setNewData(res?.payload?.classDetails.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+        } else {
+          message.error('Failed to fetch class data.');
+        }
+      } catch (error) {
+        console.error('Error fetching class data:', error);
+        message.error('An error occurred while fetching class data.');
+      } 
+    };
 
   // Fetching Data
   useEffect(() => {
@@ -36,6 +51,7 @@ function DetailsWalkthrough() {
       });
     } else {
       dispatch(GetTeacherList());
+      fetchClassData();
     }
   }, [FormId, dispatch]);
 
@@ -188,43 +204,78 @@ const calculateScore = () => {
 
   const generalDetails = useMemo(
     () => [
-      { name: "NameoftheVisitingTeacher", label: "Name of the Visiting Teacher", type: "select", options: GetTeachersLists },
+      {
+        name: "NameoftheVisitingTeacher",
+        label: "Name of the Visiting Teacher",
+        type: "select",
+        options: GetTeachersLists?.map((item) => ({
+          id: item?._id,
+          name: item?.name,
+        })),
+      },
       { name: "DateOfObservation", label: "Date of Observation", type: "date" },
-      { name: "className", label: "Class Name", type: "select", options: ["Class 1", "Class 2", "Class 3"] },
-      { name: "Section", label: "Section", type: "select", options: ["A", "B", "C"] },
+      {
+        name: "className",
+        label: "Class Name / Section",
+        type: "select",
+        options: newData.map((item) => ({
+          id: item._id,
+          name: item.className,
+        })),
+      },
       { name: "Subject", label: "Subject", type: "select", options: ["Math", "Science", "History"] },
       { name: "Topic", label: "Topic", type: "input" },
     ],
-    [GetTeachersLists]
+    [GetTeachersLists, newData]
   );
+  
 
   const renderGeneralDetails = () => (
-    <>
-    <Col md={12} className="mt-5">
+    <Col md={12} className="mt-5 general-details">
       {generalDetails.map(({ name, label, type, options }) => (
-          <Form.Item
+        <Form.Item
           key={name}
-            name={name}
-            label={<h5 className="text-gray">{label}</h5>}
-            rules={[{ required: true, message: `Please provide a valid ${label.toLowerCase()}!` }]}
-          >
-            {type === "select" ? (
-              <Select size="large" placeholder={`Select ${label.toLowerCase()}`}>
-                {options?.map((option) => (
-                  <Option key={option?._id || option} value={option?._id || option}>
-                    {option?.name || option}
-                  </Option>
-                ))}
-              </Select>
-            ) : type === "date" ? (
-              <DatePicker size="large" className="w-100" placeholder={`Select ${label.toLowerCase()}`} disabledDate={disableFutureDates} />
-            ) : (
-              <Input size="large" placeholder={`Enter ${label.toLowerCase()}`} />
-            )}
-          </Form.Item>
+          name={name}
+          label={<h5 className="text-gray">{label}</h5>}
+          rules={[
+            {
+              required: true,
+              message: `Please provide a valid ${label.toLowerCase()}!`,
+            },
+          ]}
+        >
+          {type === "select" ? (
+            <Select
+              size="large"
+              className="general-details-select"
+              placeholder={`Select ${label.toLowerCase()}`}
+            >
+              {options?.map((option) => (
+                <Option
+                  key={option?.id || option}
+                  value={option?.id || option}
+                >
+                  {option?.name || option}
+                </Option>
+              ))}
+            </Select>
+          ) : type === "date" ? (
+            <DatePicker
+              size="large"
+              className="general-details-datepicker w-100"
+              placeholder={`Select ${label.toLowerCase()}`}
+              disabledDate={disableFutureDates}
+            />
+          ) : (
+            <Input
+              size="large"
+              className="general-details-input"
+              placeholder={`Enter ${label.toLowerCase()}`}
+            />
+          )}
+        </Form.Item>
       ))}
-      </Col>
-    </>
+    </Col>
   );
 
   const renderWalkthroughDetails = () => (

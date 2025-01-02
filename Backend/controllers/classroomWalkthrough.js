@@ -200,6 +200,9 @@ exports.GetTeahearsForm = async (req, res) => {
         .populate({
             path: 'grenralDetails.NameoftheVisitingTeacher',
             select: '-password -mobile -employeeId -customId'
+        })
+        .populate({
+            path: 'grenralDetails.className',
         });
 
         if(!FormID && !Form?._id){
@@ -225,6 +228,9 @@ exports.GetcreatedBy = async (req, res) => {
         .populate({
             path: 'grenralDetails.NameoftheVisitingTeacher',
             select: '-password -mobile -employeeId -customId'
+        })
+        .populate({
+            path: 'grenralDetails.className',
         });
 
         if(!userId && !userId?.id){
@@ -251,6 +257,9 @@ exports.GetTeacherForm = async (req, res) => {
         .populate({
             path: 'grenralDetails.NameoftheVisitingTeacher',
             select: '-password -mobile -employeeId -customId'
+        })
+        .populate({
+            path: 'grenralDetails.className',
         });
 
         if(!userId && !userId?.id){

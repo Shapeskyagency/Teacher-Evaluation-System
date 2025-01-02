@@ -4,8 +4,8 @@ const { Schema } = mongoose;
 const BasicDetails = new Schema({
     NameoftheVisitingTeacher:{ type: Schema.Types.ObjectId, ref: 'User', required:true },
     DateOfObservation :{type:Date},
-    className:{type:String, required:true},
-    Section:{type:String, required:true},
+    className:{type: Schema.Types.ObjectId, ref: 'ClassDetails', required:true},
+    // Section:{type:String, required:true},
     Subject:{type:String, required:true},
     Topic:{type:String, required:true},
     LessonTakenBy:{type:String},
