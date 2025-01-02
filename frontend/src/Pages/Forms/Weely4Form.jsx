@@ -1,26 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCreateClassSection, GetTeacherList, initiateFromObserver, UpdateFromObserver } from '../../redux/userSlice';
+import { getCreateClassSection, GetObserverList, GetTeacherList, initiateFromObserver, UpdateFromObserver } from '../../redux/userSlice';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { Form, Select, Button, Input, Radio, message } from 'antd';
 import { Col, Container, Row } from 'react-bootstrap';
 import { getUserId } from '../../Utils/auth';
 import './Weekly4Form.css'; // Import custom CSS for animation
 import { UserRole } from '../../config/config';
+import TextArea from 'antd/es/input/TextArea';
 
 function Weekly4Form() {
   const [isInitiate, setIsInitiate] = useState(false);
   const [thankYou, setThankYou] = useState(false);
   const dispatch = useDispatch();
-  const { GetTeachersLists } = useSelector((state) => state.user);
+  const { GetTeachersLists, GetObserverLists } = useSelector((state) => state.user);
   const [searchParams] = useSearchParams();
   const [form] = Form.useForm();
   const [classList, setClassList] = useState();
+  const [ObsereverId, setObsereverId] = useState();
   const FormId = useParams().id
 
   const GetImportantDetails = async () => {
     const cls = await dispatch(getCreateClassSection());
-    if(cls.payload.success){
+    if (cls.payload.success) {
       setClassList(cls?.payload?.classDetails);
     }
   }
@@ -29,7 +31,7 @@ function Weekly4Form() {
     const initiateValue = searchParams.get('Initiate');
     if (UserRole[1] === getUserId().access && initiateValue === 'true') {
       setIsInitiate(true);
-    }else{
+    } else {
       GetImportantDetails();
     }
   }, [searchParams]);
@@ -37,6 +39,8 @@ function Weekly4Form() {
   useEffect(() => {
     if (isInitiate) {
       dispatch(GetTeacherList());
+    }else{
+      dispatch(GetObserverList());
     }
   }, [isInitiate, dispatch]);
 
@@ -46,41 +50,53 @@ function Weekly4Form() {
     { value: "N/A", label: "N/A" },
   ];
 
-  const RenderRadioFormItem = ({ name, label, question,selectBox }) => (
+  const RenderRadioFormItem = ({ name, label, question, selectBox,inputBox}) => (
     <>
-    <h5 className="text-gray">{label}</h5>
+      <h5 className="text-gray">{label}</h5>
       {selectBox &&
-      <Form.Item name={[...name, "classId"]} >
-              <Select
-                    allowClear
-                    showSearch
-                    placeholder="Select an Class"
-                    options={classList?.map((item) => ({
-                      value: item?._id,
-                      label: `Class ${item?.className}`,
-                    }))}
-                  />
-      </Form.Item>
+        <Form.Item name={[...name, "classId"]} >
+          <Select
+            allowClear
+            showSearch
+            placeholder="Select an Class"
+            options={classList?.map((item) => ({
+              value: item?._id,
+              label: `Class ${item?.className}`,
+            }))}
+          />
+        </Form.Item>
       }
-
-      <Form.Item
+      {inputBox ? 
+        <Form.Item
         className="mb-0"
         name={[...name, "answer"]}
         // label={}
         rules={[{ required: true, message: "Please select an answer!" }]}
       >
-        <Radio.Group
-          size="large"
-          options={yesNoNAOptions}
-          optionType="button"
-          buttonStyle="solid"
-        />
+        <TextArea placeholder=''/>
       </Form.Item>
+      :
+      <Form.Item
+      className="mb-0"
+      name={[...name, "answer"]}
+      // label={}
+      rules={[{ required: true, message: "Please select an answer!" }]}
+    >
+      <Radio.Group
+        size="large"
+        options={yesNoNAOptions}
+        optionType="button"
+        buttonStyle="solid"
+      />
+    </Form.Item>
+      }
+
+    
       <Form.Item className="hidden" hidden name={[...name, "question"]} initialValue={question}>
         <Input />
       </Form.Item>
 
-    
+
     </>
   );
 
@@ -94,7 +110,7 @@ function Weekly4Form() {
       {questions.map((question, index) => (
         <Col md={12} key={`${namePrefix}${index}`}>
           <div className="mb-3 shadow-sm p-3">
-            <RenderRadioFormItem selectBox={index=== 2 ?true:false} name={[namePrefix, index]} label={question} question={question} />
+            <RenderRadioFormItem inputBox={index === 3 ? true : false} selectBox={index === 2 ? true : false} name={[namePrefix, index]} label={question} question={question} />
           </div>
         </Col>
       ))}
@@ -102,40 +118,74 @@ function Weekly4Form() {
   );
 
   const handleSubmit = async (values) => {
-    if (isInitiate) {
-      const payload = {
-        ...values,
-        date: new Date(),
-        isInitiated: {
-          status: true,
-          Observer: getUserId()?.id,
-        },
-      };
-      const res = await dispatch(initiateFromObserver(payload));
-      if (res.payload.success) {
-        setThankYou(true);
-        setTimeout(() => {
+    const basePayload = {
+      ...values,
+      date: new Date(),
+    };
+  
+    try {
+      if (isInitiate) {
+        // Case: Initiate
+        const payload = {
+          ...basePayload,
+          isInitiated: {
+            status: true,
+            Observer: getUserId()?.id,
+          },
+        };
+  
+        const res = await dispatch(initiateFromObserver(payload));
+        if (res.payload.success) {
+          setThankYou(true);
+          setTimeout(() => (window.location.href = '/weekly4form'), 3000);
+        } else {
+          message.error('Something went wrong!');
+        }
+      } else if (FormId === undefined) {
+        // Case: Create new entry when FormId is undefined
+        const payload = {
+            ...basePayload,
+            dateOfSubmission: new Date(),
+            isCompleted: true,
+            isInitiated: {
+              status: false,
+              Observer: ObsereverId,
+          },
+        };
+  
+        const res = await dispatch(initiateFromObserver(payload));
+        if (res.payload.success) {
+          setThankYou(true);
+          setTimeout(() => (window.location.href = '/weekly4form'), 3000);
+        } else {
+          message.error('Something went wrong!');
+        }
+      } else {
+        // Case: Update existing entry
+        const payload = {
+          id: FormId,
+          data: {
+            ...basePayload,
+            dateOfSubmission: new Date(),
+            isCompleted: true,
+          },
+        };
+  
+        const res = await dispatch(UpdateFromObserver(payload));
+        if (res?.payload?.isCompleted) {
           window.location.href = '/weekly4form';
-        }, 3000);
-      }else{
-        message.error('Something went wrong!');
+        } else {
+          message.error('Something went wrong!');
+        }
       }
-    } else {
-      const payload = {
-        id: FormId,
-        data:{...values,
-        dateOfSubmission: new Date(),
-        isCompleted: true,}
-      };
-      const res = await dispatch(UpdateFromObserver(payload));
-      if (res?.payload?.isCompleted) {
-          window.location.href = '/weekly4form';
-      }else{
-        message.error('Something went wrong!');
-      }
+    } catch (error) {
+      console.error('Error in handleSubmit:', error);
+      message.error('An unexpected error occurred!');
     }
   };
+  
 
+  
   return (
     <div>
       <Form form={form} onFinish={handleSubmit} layout="vertical">
@@ -158,6 +208,7 @@ function Weekly4Form() {
                     rules={[{ required: true, message: 'Please select a Teacher!' }]}
                   >
                     <Select
+                    mode='multiple'
                       allowClear
                       showSearch
                       placeholder="Select a Teacher"
@@ -170,6 +221,9 @@ function Weekly4Form() {
                       }
                     />
                   </Form.Item>
+                  <Button type="primary" htmlType="submit" className="mt-0">
+                    Submit
+                  </Button>
                 </Col>
               </Row>
             )}
@@ -178,6 +232,28 @@ function Weekly4Form() {
           <Container>
             <Row>
               <Col md={6}>
+              {FormId === undefined  && (
+                <>
+                <h6>Select Observer</h6>
+                    <Select
+                    className='w-100 mb-4'
+                      allowClear
+                      showSearch
+                      placeholder="Select a Observer"
+                      onChange={(value) => setObsereverId(value)}
+                      options={GetObserverLists?.map((item) => ({
+                        value: item._id,
+                        label: item.name,
+                      }))}
+                      filterOption={(input, option) =>
+                        option.label.toLowerCase().includes(input.toLowerCase())
+                      }
+                    />
+                    </>
+                )}
+              
+
+
                 {renderSections(
                   "Learning Progress Checklist",
                   [
@@ -190,12 +266,13 @@ function Weekly4Form() {
                 )}
 
               </Col>
+              <Button type="primary" htmlType="submit" className="mt-0">
+                Submit
+              </Button>
             </Row>
           </Container>
         )}
-        <Button type="primary" htmlType="submit" className="mt-4">
-          Submit
-        </Button>
+
       </Form>
     </div>
   );
