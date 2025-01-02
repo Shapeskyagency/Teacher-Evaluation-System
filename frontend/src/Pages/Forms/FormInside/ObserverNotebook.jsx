@@ -17,7 +17,6 @@ import {
   import TextArea from "antd/es/input/TextArea";
 import { getAllTimes } from '../../../Utils/auth';
 import { BsEmojiFrown, BsEmojiNeutral, BsEmojiSmile } from 'react-icons/bs';
-  
 
 function ObserverNotebook() {
 
@@ -127,6 +126,7 @@ function ObserverNotebook() {
   >
     <>
     <Radio.Group
+    className="radio-button-box"
     size='large'
     options={yesNoNAOptions.map((value) => ({
       label: value.label,
@@ -223,8 +223,9 @@ function ObserverNotebook() {
           <Spin size="large" className="position-absolute" />
         </div>
       )}
+        <Form form={form} layout="vertical">
       <Row>
-        {/* <Col md={6}>
+        <Col md={6}>
           <Form form={form} layout="vertical">
             <div className="mb-5">
               <h3 className="mb-4">Maintenance Of Notebooks</h3>
@@ -294,8 +295,8 @@ function ObserverNotebook() {
               Submit
             </Button>
           </Form>
-        </Col> */}
-        <Col md={12}>
+        </Col>
+        <Col md={6}>
           <Card title={<h4>Teacher Response</h4>}>
               <div className='d-flex gap-3'>
                 <div>
@@ -367,6 +368,8 @@ function ObserverNotebook() {
                   </div>
               </div>
             <h5 className='mt-4'>Maintenance Of Notebooks</h5>
+
+
             {formDataList?.TeacherForm?.maintenanceOfNotebooks?.map(
               (item, index) => (
                 <div className='p-3 shadow-sm mb-4 rounded-2'>
@@ -473,6 +476,7 @@ function ObserverNotebook() {
           </Card>
         </Col>
       </Row>
+      </Form>
     </Container>
   );
 }
