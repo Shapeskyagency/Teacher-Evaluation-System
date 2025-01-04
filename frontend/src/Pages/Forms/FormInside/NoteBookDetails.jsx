@@ -28,28 +28,28 @@ const NoteBookDetails = () => {
   const navigate = useNavigate();
   const FormId = useParams()?.id
   const { loading, GetObserverLists } = useSelector((state) => state?.user);
-//   const {isLoading,formDataList} = useSelector((state)=>state?.walkThroughForm)
+  //   const {isLoading,formDataList} = useSelector((state)=>state?.walkThroughForm)
 
-  const Fectch = async () =>{
+  const Fectch = async () => {
     const data = await dispatch(GetNoteBookForm(FormId));
-    const {isTeacherComplete,createdBy,isObserverComplete } = data?.payload
-    if(isTeacherComplete && createdBy?._id === getUserId().id && getUserId().access === UserRole[2]){
+    const { isTeacherComplete, createdBy, isObserverComplete } = data?.payload
+    if (isTeacherComplete && createdBy?._id === getUserId().id && getUserId().access === UserRole[2]) {
       navigate(`/notebook-checking-proforma/report/${FormId}`)
-    }else if(isObserverComplete && createdBy?._id === getUserId().id && getUserId().access === UserRole[1]){
-        navigate(`/notebook-checking-proforma/report/${FormId}`)
-    }else{
-     message.error("Somthing went worng!")
+    } else if (isObserverComplete && createdBy?._id === getUserId().id && getUserId().access === UserRole[1]) {
+      navigate(`/notebook-checking-proforma/report/${FormId}`)
+    } else {
+      message.error("Somthing went worng!")
     }
-   }
+  }
 
-  useEffect(()=>{
-    if(FormId){
+  useEffect(() => {
+    if (FormId) {
       Fectch()
-    } else{
-    dispatch(GetObserverList());
+    } else {
+      dispatch(GetObserverList());
     }
 
-  },[dispatch])
+  }, [dispatch])
 
   const disableFutureDates = (current) => {
     // Get the current date without the time part
@@ -271,7 +271,7 @@ const NoteBookDetails = () => {
           className="mb-3 px-3 py-3 rounded-3 text-primary"
           style={{ background: "#f7f7f7" }}
         >
-         Quality Of Oppurtunities
+          Quality Of Oppurtunities
         </h2>
       </Col>
       {Questions["qualityOfOppurtunities"].map((question, index) => (
@@ -295,7 +295,7 @@ const NoteBookDetails = () => {
           className="mb-3 px-3 py-3 rounded-3 text-primary"
           style={{ background: "#f7f7f7" }}
         >
-         Quality Of TeacherFeedback
+          Quality Of TeacherFeedback
         </h2>
       </Col>
       {Questions["qualityOfTeacherFeedback"].map((question, index) => (
@@ -318,7 +318,7 @@ const NoteBookDetails = () => {
           className="mb-3 px-3 py-3 rounded-3 text-primary"
           style={{ background: "#f7f7f7" }}
         >
-         Quality Of Learner
+          Quality Of Learner
         </h2>
       </Col>
       {Questions["qualityOfLearner"].map((question, index) => (
@@ -363,10 +363,10 @@ const NoteBookDetails = () => {
 
   const handleSubmit = async (finalData) => {
     const data = await dispatch(CreateNoteBookForm(finalData))
-    if(data?.payload?.status){
+    if (data?.payload?.status) {
       message.success(data?.payload?.message);
       navigate(`/notebook-checking-proforma/report/${data?.payload?.form?._id}`)
-    }else{
+    } else {
       message.success(data?.payload?.message);
     }
   };
@@ -382,9 +382,9 @@ const NoteBookDetails = () => {
           </div>
         </Col>
         <Col md={12} className="scrollable-form position-relative">
-        {loading && <div className="LoaderWrapper" >
-<Spin size="large" className="position-absolute" />
-</div>}
+          {loading && <div className="LoaderWrapper" >
+            <Spin size="large" className="position-absolute" />
+          </div>}
           <Form form={form} layout="vertical" className="w-100">
             <Container className="mt-5">
               <Row className="justify-content-start flex-column align-items-start">
@@ -393,15 +393,15 @@ const NoteBookDetails = () => {
                   <>
                     {renderMaintenanceQuestions()}
                     {renderQualityOfOppurtunities()}
-                    
+
                   </>
                 )}
 
-                {currStep===2&&(
-                    <>
+                {currStep === 2 && (
+                  <>
                     {renderQualityOfTeacherFeedback()}
                     {renderQualityOfLearner()}
-                    </>
+                  </>
                 )}
 
                 <Col
