@@ -29,12 +29,14 @@ const NotebookCheckingProforma = new Schema({
     grenralDetails:BasicDetails,
     NotebooksTeacher:NoteBookSction,
     NotebooksObserver:NoteBookSction,
-    createdBy: { type: Schema.Types.ObjectId, ref: 'User', required:true },
+    isObserverInitiation:{ type: Boolean },
+    createdBy: { type: Schema.Types.ObjectId, ref: 'User', required:false },
     isObserverComplete: {type:Boolean, default:false},
     ObserverForm:questionForm,
     isTeacherComplete:{type:Boolean, default:false},
     TeacherForm:questionForm,
-    observerFeedback:{type:String}
+    observerFeedback:{type:String},
+
 })
 const Form3 = mongoose.model('Form3',  NotebookCheckingProforma);
 module.exports = Form3;

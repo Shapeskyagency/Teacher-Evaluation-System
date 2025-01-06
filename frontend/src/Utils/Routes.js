@@ -38,6 +38,7 @@ import NotebookPDF from "../Pages/Reports/NotebookPDF";
 import ClassSectionPage from "../Pages/Admin/ClassSectionPage";
 import Weely4Page from "../Pages/Observer/Weely4Page";
 import Weely4Form from "../Pages/Forms/Weely4Form";
+import NoteBookInisiate from "../Pages/Observer/NoteBookInisiate";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken() : null;
@@ -119,6 +120,7 @@ const protects = {
         { path: '/fortnightly-monitor/edit/:id', element: <OB_FortnightlyMonitorEdit /> },
         { path: "/classroom-walkthrough/edit/:id", element: <OB_WalkthroughEdit /> },
         { path: "/notebook-checking-proforma/edit/:id", element: <OB_Notebook /> },
+        { path: "/notebook-checking-proforma/form-initiation", element: <NoteBookInisiate /> },
 
         { path: "/notebook-checking-proforma/report/:id", element: <NotebookPDF /> },
         { path: "/weekly4form", element: <Weely4Page /> },

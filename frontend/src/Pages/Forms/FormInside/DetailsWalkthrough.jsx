@@ -81,12 +81,16 @@ function DetailsWalkthrough() {
   const [percentageScore, setPercentageScore] = useState(0);
   const [getOutOfScore, setGetOutOfScore] = useState(0);
   const [grade, setGrade] = useState("");
-
+  const [section, setSection]= useState([]);
+  const [subject, setSubject]= useState([]);
+  
 
 
   const sections = ["essentialAggrements", "planingAndPreparation", "classRoomEnvironment", "instruction"];
 
   const validValues = ["1", "2", "3", "4"]; 
+
+
 
   // Calculate self-assessment score
  // Calculate Total Score and Out Of Score
@@ -147,6 +151,35 @@ const calculateScore = () => {
 };
 
 
+const resetState = () => {
+  setSection([]);
+  setSubject([]);
+};
+
+const updateState = (item) => {
+  setSection(item?.sections);
+  setSubject(item?.subjects);
+};
+
+const SectionSubject = () => {
+  const formValues = form.getFieldsValue();
+
+  newData?.forEach((item) => {
+    if (item?._id === formValues?.className) {
+      if (section) {
+        resetState();
+        updateState(item);
+        return;
+      }
+      updateState(item);
+    }
+  });
+};
+
+useEffect(() => {
+  SectionSubject();
+}, [calculateScore, form, newData, section]);
+
 
 
   // Dynamic Rendering Helpers
@@ -201,7 +234,6 @@ const calculateScore = () => {
       ))}
     </>
   );
-
   const generalDetails = useMemo(
     () => [
       {
@@ -210,6 +242,7 @@ const calculateScore = () => {
         type: "select",
         options: GetTeachersLists?.map((item) => ({
           id: item?._id,
+          value: item?._id,
           name: item?.name,
         })),
       },
@@ -220,15 +253,20 @@ const calculateScore = () => {
         type: "select",
         options: newData.map((item) => ({
           id: item._id,
+          value: item?.className,
           name: item.className,
         })),
+      },
+      { name: "Section", label: "Section", type: "select", 
+        options:  ["A", "B", "C"]
       },
       { name: "Subject", label: "Subject", type: "select", options: ["Math", "Science", "History"] },
       { name: "Topic", label: "Topic", type: "input" },
     ],
-    [GetTeachersLists, newData]
+    [GetTeachersLists, newData,section]
   );
-  
+
+
 
   const renderGeneralDetails = () => (
     <Col md={12} className="mt-5 general-details">
@@ -253,7 +291,7 @@ const calculateScore = () => {
               {options?.map((option) => (
                 <Option
                   key={option?.id || option}
-                  value={option?.id || option}
+                  value={option?.value || option}
                 >
                   {option?.name || option}
                 </Option>

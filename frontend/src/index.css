@@ -48,3 +48,17 @@ color: #0b5ed7 !important;
 {
   color: #9c9c9c;
 }
+
+:where(.css-dev-only-do-not-override-ipyc9m).ant-btn-variant-solid
+{
+  background: #1a4d2e !important;
+}
+.btn-primary{
+  --bs-btn-bg:#1a4d2e !important;
+  --bs-btn-hover-bg:#4f6f52 !important;
+  --bs-btn-hover-border-color:#4f6f52 !important;
+}
+.btn:hover{
+  background-color: var(--bs-btn-hover-bg);
+    border-color: var(--bs-btn-hover-border-color);
+}

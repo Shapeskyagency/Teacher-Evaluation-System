@@ -25,8 +25,8 @@ root.render(
         },
         Input:{
           activeBorderColor:"#1677ff",
-          hoverBorderColor:"#4096ff",
-          activeShadow:"#4096ff"
+          hoverBorderColor:"#4f6f52",
+          activeShadow:"#4f6f52"
         },
         Button:{
           // colorPrimary: "linear-gradient(135deg, #6253e1, #04befe)",
