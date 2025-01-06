@@ -70,11 +70,11 @@ export const Menu = {
       route: "/notebook-checking-proforma",
       icon: <BookFilled />,
     },
-    {
-      name: "Wing Coordinator",
-      route: "/wing-coordinator",
-      icon: <BookFilled />,
-    },
+    // {
+    //   name: "Wing Coordinator",
+    //   route: "/wing-coordinator",
+    //   icon: <BookFilled />,
+    // },
     {
       name: "Weekly Form",
       route: "weekly4form",
@@ -132,7 +132,7 @@ export const columnsCreate = [
     render: (_, record) => (
       <Space size="middle">
         <Link to={`${record._id}`}>
-          <Tag color="#4096ff" key={record._id}>
+          <Tag color="#4f6f52" key={record._id}>
             Send Email
           </Tag>
         </Link>

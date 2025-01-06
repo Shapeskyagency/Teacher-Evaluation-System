@@ -2,8 +2,9 @@ import React from 'react';
 import { getUserId } from '../Utils/auth';
 import { useSelector } from 'react-redux';
 import { Dropdown, Menu, message } from 'antd';
-import { BellFilled } from '@ant-design/icons';
+import { BellFilled, MenuOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { BsHammer } from 'react-icons/bs';
 
 function Navbar() {
   const role = getUserId().access;
@@ -26,6 +27,7 @@ const navigate = useNavigate()
   return (
     <div>
       <div className="d-flex gap-3">
+        <div><MenuOutlined/></div>
         <p className="fs-5 fw-bold mb-0">
           Hi,
           {role === 'Superadmin' && ' Super admin'}

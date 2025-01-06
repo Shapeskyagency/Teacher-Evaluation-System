@@ -46,7 +46,7 @@ const headerStyle = {
   color: '#fff',
   height: 64,
   paddingInline: 48,
-  backgroundColor: '#4096ff',
+  backgroundColor: '#4f6f52',
 };
 const contentStyle = {
   // textAlign: 'center',
@@ -72,7 +72,7 @@ const siderStyle = {
 const footerStyle = {
   textAlign: 'center',
   color: '#fff',
-  // backgroundColor: '#4096ff',
+  // backgroundColor: '#4f6f52',
 };
 const layoutStyle = {
   // borderRadius: 8,

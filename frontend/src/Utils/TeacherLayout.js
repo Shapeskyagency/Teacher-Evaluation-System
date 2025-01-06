@@ -68,7 +68,7 @@ const headerStyle = {
   color: "#fff",
   height: "auto",
   padding: "8px 16px",
-  backgroundColor: "#4096ff",
+  backgroundColor: "#4f6f52",
   transition: "all 0.3s ease",
 };
 
@@ -92,7 +92,7 @@ const footerStyle = {
   textAlign: "center",
   color: "#fff",
   padding: "8px",
-  backgroundColor: "#4096ff",
+  backgroundColor: "#4f6f52",
 };
 
 const layoutStyle = {
