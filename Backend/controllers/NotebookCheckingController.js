@@ -1,4 +1,5 @@
 const { createNotification } = require('../config/notify');
+const ClassDetails = require('../models/ClassDetails');
 const Form3 = require('../models/Form3');
 const notification = require('../models/notification');
 const User = require('../models/User');
@@ -36,12 +37,17 @@ exports.createForm = async (req, res) => {
         }
 
 
+        const classData =  await ClassDetails.findOne({_id:className});
+        if(!classData){
+         res.status(400).json({success: false, message:" Class and Section is Required!"})
+        }
+
         const newForm = new Form3({
             grenralDetails:
             {
                 NameofObserver,
                 DateOfObservation,
-                className,
+                className:classData?.className,
                 Section,
                 Subject,
             },
@@ -79,8 +85,64 @@ exports.createForm = async (req, res) => {
         res.status(500).send(Error)
     }
 }
-
-
+exports.createInitiate = async (req, res) => {
+    const { isTeacher, teacherIDs } = req.body;
+    const userId = req?.user?.id;
+  
+    try {
+      if (isTeacher && Array.isArray(teacherIDs) && teacherIDs.length > 0) {
+        const teacherForms = await Promise.all(
+          teacherIDs.map(async (teacherId) => {
+            const teacher = await User.findById(teacherId);
+  
+            if (!teacher?.email) return null;
+  
+            // Create and save the form
+            const formData = await new Form3({
+              isObserverInitiation: true,
+              teacherID: teacher._id,
+              grenralDetails:{
+                NameofObserver:userId,
+                DateOfObservation: new Date(),
+              },
+              TeacherForm:{},
+              ObserverForm:{},
+              TeacherForm:{}
+            }).save();
+  
+            // Send email (commented as per original logic)
+            const subject = 'New Notbook Form Initiated';
+            const body = `
+              A new Notbook Form  has been Initiated for:
+              Click here to fill the form: https://abcd.com/form/${formData._id}
+            `;
+            // sendEmail(teacher.email, subject, body);
+  
+            // Create and save the notification
+            await new notification({
+              title: 'You are invited to fill the Notbook Form Initiated',
+              route: `notebook-checking-proforma/initiate/create/${formData._id}`,
+              reciverId: teacher._id,
+              date: new Date(),
+              status: 'unSeen',
+            }).save();
+  
+            return formData;
+          })
+        );
+  
+        // Filter out null forms and send response
+        const validForms = teacherForms.filter(Boolean);
+        return res.status(200).json(validForms);
+      } else {
+        return res.status(400).json({ error: 'Invalid or missing data.' });
+      }
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Internal server error.' });
+    }
+  };
+  
 
 exports.getSignleForm = async (req, res) => {
     const FormID = req?.params?.id;
@@ -121,10 +183,13 @@ exports.updateObserverFields = async (req, res) => {
         maintenanceOfNotebooks,
         qualityOfOppurtunities,
         qualityOfTeacherFeedback,
-        qualityOfLearner
+        qualityOfLearner,
+        
     } = req.body;
 
     try {
+          
+
         // Validate user permissions
         const user = await User.findById(userId).select('-password -mobile -employeeId -customId');
         if (!user || !['Observer', 'SuperAdmin'].includes(user.access)) {
@@ -160,7 +225,7 @@ exports.updateObserverFields = async (req, res) => {
             { $set: payload },
             { new: true, runValidators: true } // Return the updated document
         );
-
+       
         // If no form is found, return an error
         if (!form) {
             return res.status(404).json({ message: 'Form not found.' });
@@ -200,7 +265,16 @@ exports.GetcreatedByID = async (req, res) => {
             return res.status(403).json({ message: "You do not have permission." });
         }
 
-        res.status(200).send(Form)
+        const Form2 = await Form3.find({teacherID:userId}).populate({
+            path: 'createdBy teacherID',
+            select: '-password -mobile -employeeId -customId'
+          })
+          .populate({
+            path: 'grenralDetails.NameofObserver',
+            select: '-password -mobile -employeeId -customId'
+          });
+        const combinedForms = [...Form, ...Form2]; // Using spread operator to merge arrays
+        res.status(200).send(combinedForms)
 
     } catch (error) {
         console.error("Error Getting NoteBook:", error);
@@ -211,29 +285,47 @@ exports.GetcreatedByID = async (req, res) => {
 
 exports.GetObseverForm = async (req, res) => {
     const userId = req?.user?.id;
+  
     try {
-        const Form = await Form3.find({ "grenralDetails.NameofObserver": userId })
+      // Validate userId first
+      if (!userId) {
+        return res.status(403).json({ message: "You do not have permission." });
+      }
+  
+      // Fetch Form data based on observer ID
+      const Form = await Form3.find({ "grenralDetails.NameofObserver": userId })
         .populate({
-            path: 'createdBy',
-            select: '-password -mobile -employeeId -customId'
+          path: 'createdBy teacherID',
+          select: '-password -mobile -employeeId -customId'
         })
         .populate({
-            path: 'grenralDetails.NameofObserver',
-            select: '-password -mobile -employeeId -customId'
+          path: 'grenralDetails.NameofObserver',
+          select: '-password -mobile -employeeId -customId'
         });
-
-        if(!userId && !userId?.id){
-            return res.status(403).json({ message: "You do not have permission." });
-        }
-
-        res.status(200).send(Form)
-
+  
+      // Fetch Form2 data based on observer initiation flag
+      const Form2 = await Form3.find({ isObserverInitiation: true })
+        .populate({
+          path: 'createdBy teacherID',
+          select: '-password -mobile -employeeId -customId'
+        })
+        .populate({
+          path: 'grenralDetails.NameofObserver',
+          select: '-password -mobile -employeeId -customId'
+        });
+  
+      // Combine both Form and Form2 data
+      const combinedForms = [...Form, ...Form2]; // Using spread operator to merge arrays
+  
+      // Send combined data as response
+      res.status(200).json(combinedForms);
+  
     } catch (error) {
-        console.error("Error Getting Classroom Walkthrough:", error);
-        res.status(500).json({ message: "Error Getting Classroom Walkthrough.", error });
+      console.error("Error Getting Classroom Walkthrough:", error);
+      res.status(500).json({ message: "Error Getting Classroom Walkthrough.", error });
     }
-}
-
+  };
+  
 const updatePayload = (existingForm, userId, changes) => {
     const rolePrefix = userId === "Observer" ? "NotebooksObserver" : "NotebooksTeacher";
     const rolePrefix2 = userId === "Observer" ? "ObserverForm" : "TeacherForm";

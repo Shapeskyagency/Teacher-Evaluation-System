@@ -39,6 +39,7 @@ import ClassSectionPage from "../Pages/Admin/ClassSectionPage";
 import Weely4Page from "../Pages/Observer/Weely4Page";
 import Weely4Form from "../Pages/Forms/Weely4Form";
 import NoteBookInisiate from "../Pages/Observer/NoteBookInisiate";
+import Weekly4FormReport from "../Pages/Reports/Weekly4FormReport";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken() : null;
@@ -69,6 +70,7 @@ const protects = {
         { path: "/weekly4form", element: <Weely4Page /> },
         { path: "/weekly4form/create", element: <Weely4Form /> },
         { path: "/weekly4form/create/:id", element: <Weely4Form /> },
+        { path: "/weekly4form/report/:id", element: <Weekly4FormReport /> },
         { path: "*", element: <NotFound404 /> },
       ],
     },

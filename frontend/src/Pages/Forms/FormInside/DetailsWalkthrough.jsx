@@ -81,7 +81,7 @@ function DetailsWalkthrough() {
   const [percentageScore, setPercentageScore] = useState(0);
   const [getOutOfScore, setGetOutOfScore] = useState(0);
   const [grade, setGrade] = useState("");
-  const [section, setSection]= useState([]);
+  const [sectionState, setSectionState]= useState([]);
   const [subject, setSubject]= useState([]);
   
 
@@ -152,33 +152,26 @@ const calculateScore = () => {
 
 
 const resetState = () => {
-  setSection([]);
+  setSectionState([]);
   setSubject([]);
 };
 
-const updateState = (item) => {
-  setSection(item?.sections);
-  setSubject(item?.subjects);
+// const updateState = (item) => {
+//   setSectionState(item?.sections);
+//   setSubject(item?.subjects);
+// };
+
+const SectionSubject = (value) => {
+  if (value) {
+    const filteredData = newData.filter((data) => data?._id === value);
+    resetState()
+    setSectionState(filteredData[0]);
+    // return filteredData; // Return the filtered data if needed
+  }
+  return []; // Return an empty array if value is falsy
 };
 
-const SectionSubject = () => {
-  const formValues = form.getFieldsValue();
 
-  newData?.forEach((item) => {
-    if (item?._id === formValues?.className) {
-      if (section) {
-        resetState();
-        updateState(item);
-        return;
-      }
-      updateState(item);
-    }
-  });
-};
-
-useEffect(() => {
-  SectionSubject();
-}, [calculateScore, form, newData, section]);
 
 
 
@@ -253,17 +246,26 @@ useEffect(() => {
         type: "select",
         options: newData.map((item) => ({
           id: item._id,
-          value: item?.className,
+          value: item?._id,
           name: item.className,
         })),
       },
       { name: "Section", label: "Section", type: "select", 
-        options:  ["A", "B", "C"]
+        options:  sectionState?.sections?.map((item) => ({
+          id: item._id,
+          value: item?.name,
+          name: item.name,
+        })),
+        
       },
-      { name: "Subject", label: "Subject", type: "select", options: ["Math", "Science", "History"] },
+      { name: "Subject", label: "Subject", type: "select", options: sectionState?.subjects?.map((item) => ({
+        id: item._id,
+        value: item?.name,
+        name: item.name,
+      })), },
       { name: "Topic", label: "Topic", type: "input" },
     ],
-    [GetTeachersLists, newData,section]
+    [GetTeachersLists, newData,sectionState]
   );
 
 
@@ -287,6 +289,7 @@ useEffect(() => {
               size="large"
               className="general-details-select"
               placeholder={`Select ${label.toLowerCase()}`}
+              onChange={(value)=>SectionSubject(value)}
             >
               {options?.map((option) => (
                 <Option

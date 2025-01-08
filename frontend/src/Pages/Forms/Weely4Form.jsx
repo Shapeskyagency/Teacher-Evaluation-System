@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCreateClassSection, GetObserverList, GetTeacherList, initiateFromObserver, UpdateFromObserver } from '../../redux/userSlice';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { Form, Select, Button, Input, Radio, message } from 'antd';
+import { Form, Select, Button, Input, Radio, message, Space } from 'antd';
 import { Col, Container, Row } from 'react-bootstrap';
 import { getUserId } from '../../Utils/auth';
 import './Weekly4Form.css'; // Import custom CSS for animation
 import { UserRole } from '../../config/config';
 import TextArea from 'antd/es/input/TextArea';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 
 function Weekly4Form() {
   const [isInitiate, setIsInitiate] = useState(false);
@@ -50,12 +51,16 @@ function Weekly4Form() {
     { value: "N/A", label: "N/A" },
   ];
 
-  const RenderRadioFormItem = ({ name, label, question, selectBox,inputBox}) => (
+  const RenderRadioFormItem = ({ name, label, question, selectBox,inputBox,classSelection}) => (
     <>
       <h5 className="text-gray">{label}</h5>
       {selectBox &&
-        <Form.Item name={[...name, "classId"]} >
-          <Select
+       
+<>
+ <Form.Item name={[...name, "classId"]} >
+        <Select
+        maxCount={5}
+        mode='multiple'
             allowClear
             showSearch
             placeholder="Select an Class"
@@ -65,17 +70,80 @@ function Weekly4Form() {
             }))}
           />
         </Form.Item>
+
+<Form.List
+
+name={[...name, "answer"]}
+rules={[{
+  validator: async (_, sections) => {
+    if (!sections || sections.length < 1) {
+      return Promise.reject(new Error('At least one section is required'));
+    }
+  },
+}]}
+>
+{(fields, { add, remove }) => (
+  <>
+    {fields.map(({ key, name, fieldKey, ...restField }) => (
+      <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+        <Form.Item
+        
+          {...restField}
+          name={[name]}
+          fieldKey={[fieldKey]}
+          rules={[{ required: true, message: 'Please enter a section name' }]}
+        >
+          {/* <Input placeholder="Enter section name" /> */}
+          <Radio.Group
+        size="large"
+        options={yesNoNAOptions}
+        optionType="button"
+        buttonStyle="solid"
+      />
+        </Form.Item>
+        <MinusCircleOutlined onClick={() => remove(name)} />
+      </Space>
+    ))}
+    {fields.length<5&&
+    <Form.Item>
+    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+      Add Section
+    </Button>
+  </Form.Item>
+    }
+    
+  </>
+)}
+</Form.List>
+</>
       }
       {inputBox ? 
+      <>
+       <Form.Item
+      name={[...name, "answer"]}
+      // label={}
+      rules={[{ required: true, message: "Please select an answer!" }]}
+    >
+      <Radio.Group
+        size="large"
+        options={yesNoNAOptions}
+        optionType="button"
+        buttonStyle="solid"
+      />
+    </Form.Item>
+
         <Form.Item
         className="mb-0"
-        name={[...name, "answer"]}
+        name={[...name, "textArea"]}
         // label={}
         rules={[{ required: true, message: "Please select an answer!" }]}
       >
         <TextArea placeholder=''/>
       </Form.Item>
-      :
+      
+      </>
+      :  
+      classSelection &&
       <Form.Item
       className="mb-0"
       name={[...name, "answer"]}
@@ -110,7 +178,7 @@ function Weekly4Form() {
       {questions.map((question, index) => (
         <Col md={12} key={`${namePrefix}${index}`}>
           <div className="mb-3 shadow-sm p-3">
-            <RenderRadioFormItem inputBox={index === 3 ? true : false} selectBox={index === 2 ? true : false} name={[namePrefix, index]} label={question} question={question} />
+            <RenderRadioFormItem classSelection={index < 2 ? true : false} inputBox={index === 3 ? true : false} selectBox={index === 2 ? true : false} name={[namePrefix, index]} label={question} question={question} />
           </div>
         </Col>
       ))}
@@ -118,6 +186,8 @@ function Weekly4Form() {
   );
 
   const handleSubmit = async (values) => {
+
+
     const basePayload = {
       ...values,
       date: new Date(),

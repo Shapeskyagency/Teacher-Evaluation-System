@@ -6,6 +6,7 @@ import { getUserId } from '../../Utils/auth';
 import { useNavigate } from 'react-router-dom';
 import { GetTeacherList } from '../../redux/userSlice';
 import { UserRole } from '../../config/config';
+import { createInitiate } from '../../redux/Form/noteBookSlice';
 
 const { Option } = Select;
 function NoteBookInisiate() {
@@ -40,13 +41,12 @@ function NoteBookInisiate() {
         teacherIDs: values?.teacherIDs || "",
       };
       
-
-  
+  console.log(payload)
       setLoading(true);
       try {
-        // const response = await dispatch(FormInitiationAction(payload)).unwrap();
-        // message.success(response?.message);
-        // form.resetFields(); // Reset the form fields after submission
+        const response = await dispatch(createInitiate(payload)).unwrap();
+        message.success(response?.message);
+        form.resetFields(); // Reset the form fields after submission
         // navigate(`/fortnightly-monitor`);
         // dispatch(GetFormsOne());
       } catch (error) {

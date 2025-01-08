@@ -63,11 +63,11 @@ exports.getWeekly4FormById = async (req, res) => {
     try {
         const form = await Weekly4Form.findById(req.params.id).populate('isInitiated.Observer');
         if (!form) {
-            return res.status(404).json({ message: 'Form not found' });
+            return res.status(404).json({ success:false, message: 'Form not found' });
         }
-        res.status(200).json(form);
+        res.status(200).json({success:true,form});
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ success:false, message: 'Form not found',error: error.message });
     }
 };
 

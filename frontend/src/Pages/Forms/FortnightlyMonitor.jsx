@@ -116,7 +116,6 @@ const FortnightlyMonitor = () => {
   const applyFilters = (data) => {
     const { className, section, teacherID, status, date, observerName } = filters;
     return data.filter((item) => {
-      console.log(teacherID,item)
 
       const matchesClassName = className.length ? className.includes(item.className) : true;
       const matchesSection = section.length ? section.includes(item.section) : true;

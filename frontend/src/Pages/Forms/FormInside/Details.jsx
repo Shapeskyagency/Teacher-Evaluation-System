@@ -210,7 +210,6 @@ const Details = () => {
 
   const SideQuestion = document.querySelectorAll("#SideQuestion");
   const heights = Array.from(SideQuestion).map((element) => element.offsetHeight);
-  console.log(heights);
 
   return (
     <div className="container mt-3">

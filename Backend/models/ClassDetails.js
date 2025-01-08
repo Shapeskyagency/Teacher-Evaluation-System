@@ -4,6 +4,7 @@ const { Schema } = mongoose;
 const ClassDetail = new Schema({
  className: { type: String, required: true },
  sections: [{ name: {type: String, required: true} }],
+ subjects: [{ name: {type: String, required: true} }],
 }, { timestamps: true });
 
 const ClassDetails = mongoose.model('ClassDetails', ClassDetail);

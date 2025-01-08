@@ -45,9 +45,9 @@ function ObserverNotebook() {
   }, [dispatch, FormId]);
 
   const yesNoNAOptions = [
-    { value: "0", label: <BsEmojiSmile size={25} />, Color: 'orange' },
-    { value: "1", label: <BsEmojiNeutral size={25} />, Color: 'green' },
-    { value: "-1", label: <BsEmojiFrown size={25} />, Color: 'red' },
+    { value: "0", label: <BsEmojiSmile size={20} />, Color: 'orange' },
+    { value: "1", label: <BsEmojiNeutral size={20} />, Color: 'green' },
+    { value: "-1", label: <BsEmojiFrown size={20} />, Color: 'red' },
   ];
 
   const generalDetailsConfig = [
@@ -117,15 +117,15 @@ function ObserverNotebook() {
 
       <>
         <Form.Item
-          className='mb-0'
+          className='mb-0 '
           name={[...name, "answer"]}
           label={<h6 className="text-gray" style={{ fontSize: 16 }}>{label}</h6>}
           rules={[{ required: true, message: "Please select an answer!" }]}
         >
           <>
             <Radio.Group
+            size="middle"
               className="radio-button-box"
-              size='large'
               options={yesNoNAOptions.map((value) => ({
                 label: value.label,
                 value: value.value,
@@ -181,7 +181,7 @@ function ObserverNotebook() {
 
         <Col md={6} key={`${namePrefix}${index}`} className=''>
           <div className='Question-Wraaper px-2 mb-5'>
-            <div className='Question-andInput'>
+            <div className='Question-andInput py-2'>
               <RenderRadioFormItem question name={[namePrefix, index]}
                 label={question}
                 isTextArea={true} />
@@ -230,8 +230,8 @@ function ObserverNotebook() {
         <Row>
 
           <Col md={12}>
-            <div className="basicDetailsWrapper mb-4">
-              <h3>Teacher Response</h3>
+            <div className="basicDetailsWrapper mb-4 py-2">
+              <h3 className='mt-2 mb-3'>Teacher Response</h3>
               <div className="grid-wrapper">
                 <div className="sect1">
                   <p><span className="bold">Name:</span> {formDataList?.grenralDetails?.NameofObserver?.name}</p>
