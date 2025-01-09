@@ -89,6 +89,10 @@ export const UserLogin = createAsyncThunk('UserLogin',async (payload) => {
       return response.data;
   })
 
+  export const getAllWeeklyFromById = createAsyncThunk('getAllWeeklyFromById',async (payload) => {
+    const response = await axiosInstanceToken.get(`/weekly4Form/${payload}`);
+      return response.data;
+  })
 
 
 

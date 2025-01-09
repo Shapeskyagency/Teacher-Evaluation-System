@@ -34,6 +34,11 @@ export const CreateNoteBookForm = createAsyncThunk('CreateNoteBookForm',async (p
       return response.data;
   })
 
+  export const createInitiate = createAsyncThunk('createInitiate',async (payload) => {
+    const response = await axiosInstanceToken.post(`${prefixURL}/createInitiate`,payload);
+      return response.data;
+  })
+
 
 
 

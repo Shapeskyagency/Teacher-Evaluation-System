@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Button,
   Card,
@@ -14,15 +14,22 @@ import { Col, Container, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import CommonStepper from "../../../Components/CommonStepper";
-import { GetObserverList } from "../../../redux/userSlice";
+import { getCreateClassSection, GetObserverList } from "../../../redux/userSlice";
 import { BsEmojiFrown, BsEmojiNeutral, BsEmojiSmile } from "react-icons/bs";
 import { CreateNoteBookForm, GetNoteBookForm } from "../../../redux/Form/noteBookSlice";
 import { getUserId } from "../../../Utils/auth";
 import { UserRole } from "../../../config/config";
 
+
+
+const { Option } = Select;
+
+
 const NoteBookDetails = () => {
   const [currStep, setCurrStep] = useState(0);
   const [formData, setFormData] = useState({});
+  const [newData, setNewData] = useState([]);
+  const [sectionState, setSectionState]= useState([]);
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -41,10 +48,24 @@ const NoteBookDetails = () => {
       message.error("Somthing went worng!")
     }
   }
+   const fetchClassData = async () => {
+      try {
+        const res = await dispatch(getCreateClassSection());
+        if (res?.payload?.success) {
+          setNewData(res?.payload?.classDetails.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+        } else {
+          message.error('Failed to fetch class data.');
+        }
+      } catch (error) {
+        console.error('Error fetching class data:', error);
+        message.error('An error occurred while fetching class data.');
+      } 
+    };
 
   useEffect(() => {
+    fetchClassData();
     if (FormId) {
-      Fectch()
+      Fectch();
     } else {
       dispatch(GetObserverList());
     }
@@ -72,12 +93,34 @@ const NoteBookDetails = () => {
     { value: "-1", label: <BsEmojiFrown size={25} /> },
   ];
 
-  const generalDetailsConfig = [
+  
+  const SectionSubject = (value) => {
+    if (value) {
+      const filteredData = newData.filter((data) => data?._id === value);
+      if (filteredData.length > 0) {
+        setSectionState(filteredData[0]);
+      }         
+      
+    }
+  
+    return []; // Return an empty array if value is falsy
+  };
+  
+
+
+
+
+  const generalDetailsConfig = useMemo(
+    () => [
     {
       name: "NameofObserver",
       label: "Name of Observer",
       type: "select",
-      options: GetObserverLists,
+      options: GetObserverLists?.map((item) => ({
+        id: item?._id,
+        value: item?._id,
+        name: item?.name,
+      })),
       list: "Observer",
     },
     { name: "DateOfObservation", label: "Date of Observation", type: "date" },
@@ -85,41 +128,66 @@ const NoteBookDetails = () => {
       name: "className",
       label: "Class Name",
       type: "select",
-      options: ["Class 1", "Class 2", "Class 3"],
+      options: newData.map((item) => ({
+        id: item._id,
+        value: item?._id,
+        name: item.className,
+      })),
     },
     {
       name: "Section",
       label: "Section",
       type: "select",
-      options: ["A", "B", "C"],
+      options:  sectionState?.sections?.map((item) => ({
+        id: item._id,
+        value: item?.name,
+        name: item.name,
+      })),
     },
     {
       name: "Subject",
       label: "Subject",
       type: "select",
-      options: ["Math", "Science", "History"],
+      options: sectionState?.subjects?.map((item) => ({
+        id: item._id,
+        value: item?.name,
+        name: item.name,
+      })),
     },
     { name: "ClassStrength", label: "Class Strength", type: "input" },
     { name: "NotebooksSubmitted", label: "Notebooks Submitted", type: "input" },
     { name: "Absentees", label: "Absentees", type: "input" },
     { name: "Defaulters", label: "Defaulters", type: "input" },
-  ];
+  ], [GetObserverLists, newData, sectionState]
+);
 
   const renderFormItem = ({ name, label, type, options, list }) => {
     const inputProps = {
       select: (
-        <Select size="large" placeholder={`Select ${label.toLowerCase()}`}>
-          {options?.map((option) =>
+        <Select size="large" placeholder={`Select ${label.toLowerCase()}`}  onChange={(value)=>SectionSubject(value)}>
+         {options?.map((option) => (
+                <Option
+                  key={option?.id || option}
+                  value={option?.value || option}
+                >
+                  {name === "Section" && console.log(option)}
+                  {option?.name || option}
+                </Option>
+              ))}
+          {/* {options?.map((option) =>
             list === "Observer" ? (
               <Select.Option key={option?._id} value={option?._id}>
                 {option?.name}
               </Select.Option>
             ) : (
-              <Select.Option key={option} value={option}>
-                {option}
-              </Select.Option>
+              <Select.Option
+              key={option?.id }
+              value={name==="className"? option?.id: option?.id}
+            >
+              {option?.name}
+            </Select.Option>
             )
-          )}
+          )} */}
         </Select>
       ),
       date: (

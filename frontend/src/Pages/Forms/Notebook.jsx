@@ -54,16 +54,16 @@ function Notebook() {
         setSortOrder(order);
         let sortedData = [...sortedForms];
 
-        order.forEach((sortType) => {
-            sortedData = sortedData.sort((a, b) => {
+        order?.forEach((sortType) => {
+            sortedData = sortedData?.sort((a, b) => {
                 if (sortType === 'ascend') {
-                    return new Date(a.grenralDetails.DateOfObservation) - new Date(b.grenralDetails.DateOfObservation);
+                    return new Date(a?.grenralDetails?.DateOfObservation) - new Date(b?.grenralDetails?.DateOfObservation);
                 } else if (sortType === 'descend') {
-                    return new Date(b.grenralDetails.DateOfObservation) - new Date(a.grenralDetails.DateOfObservation);
+                    return new Date(b?.grenralDetails?.DateOfObservation) - new Date(a?.grenralDetails?.DateOfObservation);
                 } else if (sortType === 'AtoZ') {
-                    return a.grenralDetails.className.localeCompare(b.grenralDetails.className);
+                    return a?.grenralDetails?.className.localeCompare(b?.grenralDetails?.className);
                 } else if (sortType === 'ZtoA') {
-                    return b.grenralDetails.className.localeCompare(a.grenralDetails.className);
+                    return b?.grenralDetails?.className.localeCompare(a?.grenralDetails?.className);
                 }
                 return 0;
             });
@@ -80,8 +80,8 @@ function Notebook() {
             } else if (key === 'Teaher') {
                 values.push(item?.createdBy?.name);
             } else {
-                if (item.grenralDetails[key]) {
-                    values.push(item.grenralDetails[key]);
+                if (item?.grenralDetails[key]) {
+                    values.push(item?.grenralDetails[key]);
                 }
             }
         });
@@ -119,14 +119,14 @@ function Notebook() {
     const applyFilters = (data) => {
         const { className, section, teacherID, status, date, observerName } = filters;
         return data.filter((item) => {
-            const matchesClassName = className.length ? className.includes(item?.grenralDetails.className) : true;
-            const matchesSection = section.length ? section.includes(item?.grenralDetails.Section) : true;
-            const matchesTeacherID = teacherID.length ? teacherID.includes(item?.createdBy.name) : true;
-            const matchesStatus = status.length ? status.includes(item.isObserverComplete ? "COMPLETED" : "NOT COMPLETED") : true;
+            const matchesClassName = className.length ? className.includes(item?.grenralDetails?.className) : true;
+            const matchesSection = section.length ? section.includes(item?.grenralDetails?.Section) : true;
+            const matchesTeacherID = teacherID.length ? teacherID.includes(item?.createdBy?.name) : true;
+            const matchesStatus = status.length ? status.includes(item?.isObserverComplete ? "COMPLETED" : "NOT COMPLETED") : true;
             const matchesDate = date.length
-                ? date.some((d) => moment(item.grenralDetails.DateOfObservation).isSame(d, 'day'))
+                ? date.some((d) => moment(item.grenralDetails?.DateOfObservation).isSame(d, 'day'))
                 : true;
-            const matchesObserverName = observerName.length ? observerName.includes(item.observerName) : true;
+            const matchesObserverName = observerName.length ? observerName.includes(item?.observerName) : true;
 
             return matchesClassName && matchesSection && matchesTeacherID && matchesStatus && matchesDate && matchesObserverName;
         });
@@ -228,7 +228,7 @@ function Notebook() {
                             showSearch
                             style={{ width: "100%" }}
                             placeholder="Select Class"
-                            value={filters.className}
+                            value={filters?.className}
                             onChange={(value) => handleFilter("className", value)}
                             options={getClasses().map((className) => ({
                                 value: className,

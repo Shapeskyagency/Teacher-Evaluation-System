@@ -15,14 +15,18 @@ function Weely4Page() {
   }, [])
 
   const ReverseData = () => {
+    if(getAllWeeklyFroms){
     if (Array.isArray(getAllWeeklyFroms)) {
       const reversedData = [...getAllWeeklyFroms].reverse(); // Safely reverse if it's an array
-      console.log(reversedData);
-      return reversedData;
+      return reversedData.map((item) => ({
+        ...item,
+        key: item._id, // Add a unique key for each record
+      }));
     } else {
       console.error("getAllWeeklyFroms is not an array:", getAllWeeklyFroms);
       return []; // Return an empty array as a fallback
     }
+  }
   };
 
 
@@ -48,7 +52,7 @@ function Weely4Page() {
               dataIndex: UserRole[1] === getUserId().access ? `teacherId` : "isInitiated",
               key: UserRole[1] === getUserId().access ? `teacherId` : "isInitiated",
               render: (text, record) => (
-                <span>
+                <span key={record?._id}>
                   {(UserRole[1] === getUserId().access ? text?.name : text?.Observer.name) || "N/A"}
                 </span>
               ),
@@ -58,7 +62,7 @@ function Weely4Page() {
               dataIndex: "date",
               key: "date",
               render: (text, record) => (
-                <span>
+                <span key={record?._id}>
                   {getAllTimes(text).formattedDate2}
                 </span>
               ),
@@ -69,7 +73,7 @@ function Weely4Page() {
               dataIndex: "isCompleted",
               key: "isCompleted",
               render: (text, record) => (
-                <span>
+                <span key={record?._id}>
                   {text ? <Tag color='green'>Completed</Tag> : <Tag color='red'>Pending</Tag>}
                 </span>
               ),
@@ -78,7 +82,7 @@ function Weely4Page() {
               title: "Action",
               key: "action",
               render: (text, record) => (
-                <span>
+                <span key={record?._id}>
                   {record?.isCompleted ? (
                     <Link to={`/weekly4form/report/${record?._id}`}>
                       <Button variant='solid' color='primary' size='large'>View Reports</Button>

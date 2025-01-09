@@ -3,25 +3,25 @@ const { Schema } = mongoose;
 
 
 const BasicDetails = new Schema({
-    NameofObserver:{ type: Schema.Types.ObjectId, ref: 'User'},
-    DateOfObservation :{type:Date},
-    className:{type:String},
-    Section:{type:String},
-    Subject:{type:String},
+    NameofObserver:{ type: Schema.Types.ObjectId, ref: 'User', default:null},
+    DateOfObservation :{type:Date, default:null},
+    className:{type:String, default:null},
+    Section:{type:String, default:null},
+    Subject:{type:String, default:null},
 });
 
 const NoteBookSction = new Schema({
-    ClassStrength:{type:String},
-    NotebooksSubmitted:{type:String},
-    Absentees:{type:String},
-    Defaulters:{type:String}
+    ClassStrength:{type:String, default:null},
+    NotebooksSubmitted:{type:String, default:null},
+    Absentees:{type:String, default:null},
+    Defaulters:{type:String, default:null}
 })
 
 const questionForm =new Schema({
-    maintenanceOfNotebooks:{type:Array},
-    qualityOfOppurtunities:{type:Array},
-    qualityOfTeacherFeedback:{type:Array},
-    qualityOfLearner:{type:Array},
+    maintenanceOfNotebooks:{type:Array, default:null},
+    qualityOfOppurtunities:{type:Array, default:null},
+    qualityOfTeacherFeedback:{type:Array, default:null},
+    qualityOfLearner:{type:Array, default:null},
 })
 
 
@@ -29,13 +29,14 @@ const NotebookCheckingProforma = new Schema({
     grenralDetails:BasicDetails,
     NotebooksTeacher:NoteBookSction,
     NotebooksObserver:NoteBookSction,
-    isObserverInitiation:{ type: Boolean },
-    createdBy: { type: Schema.Types.ObjectId, ref: 'User', required:false },
+    isObserverInitiation:{ type: Boolean , default:false},
+    teacherID:{ type: Schema.Types.ObjectId, ref: 'User', required:false, default:null },
+    createdBy: { type: Schema.Types.ObjectId, ref: 'User', required:false , default:null},
     isObserverComplete: {type:Boolean, default:false},
     ObserverForm:questionForm,
     isTeacherComplete:{type:Boolean, default:false},
     TeacherForm:questionForm,
-    observerFeedback:{type:String},
+    observerFeedback:{type:String, default:null},
 
 })
 const Form3 = mongoose.model('Form3',  NotebookCheckingProforma);

@@ -36,6 +36,7 @@ function ClassSectionPage() {
     const data = {
       className: values.className,
       sections: values.sections.map((name) => ({ name })),
+      subjects: values.subjects.map((name) => ({ name })),
     };
     try {
       const response = await dispatch(CReateClassSection(data));
@@ -109,7 +110,39 @@ function ClassSectionPage() {
             </>
           )}
         </Form.List>
-
+        <Form.List
+          name="subjects"
+          rules={[{
+            validator: async (_, subjects) => {
+              if (!subjects || subjects.length < 1) {
+                return Promise.reject(new Error('At least one subjects is required'));
+              }
+            },
+          }]}
+        >
+          {(fields, { add, remove }) => (
+            <>
+              {fields.map(({ key, name, fieldKey, ...restField }) => (
+                <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                  <Form.Item
+                    {...restField}
+                    name={[name]}
+                    fieldKey={[fieldKey]}
+                    rules={[{ required: true, message: 'Please enter a subjects name' }]}
+                  >
+                    <Input placeholder="Enter subjects name" />
+                  </Form.Item>
+                  <MinusCircleOutlined onClick={() => remove(name)} />
+                </Space>
+              ))}
+              <Form.Item>
+                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                  Add Section
+                </Button>
+              </Form.Item>
+            </>
+          )}
+        </Form.List>
         <Form.Item>
           <Button type="primary" htmlType="submit" block>
             Submit
@@ -134,6 +167,12 @@ function ClassSectionPage() {
                   dataIndex: 'sections',
                   key: 'sections',
                   render: (sections) => sections.map((section) => section.name).join(', '),
+                },
+                {
+                  title: 'Subjects',
+                  dataIndex: 'subjects',
+                  key: 'sections',
+                  render: (subjects) => subjects.map((subject) => subject.name).join(', '),
                 },
               ]}
               rowKey={(record) => record.id || record._id}

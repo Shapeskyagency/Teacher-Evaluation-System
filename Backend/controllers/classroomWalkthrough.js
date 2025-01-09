@@ -1,4 +1,5 @@
 const { createNotification } = require('../config/notify');
+const ClassDetails = require('../models/ClassDetails');
 const Form2 = require('../models/Form2');
 const notification = require('../models/notification');
 const User = require('../models/User');
@@ -41,6 +42,12 @@ exports.createForm = async (req, res) => {
             return res.status(400).json({ message: "Name of the Visiting Teacher is required." });
         }
 
+
+        const classData =  await ClassDetails.findOne({_id:className});
+        if(!classData){
+         res.status(400).json({success: false, message:" Class and Section is Required!"})
+        }
+   
         // Create the new form data
         const newForm = new Form2({
             createdBy: userId,
@@ -50,7 +57,7 @@ exports.createForm = async (req, res) => {
             grenralDetails: {
                 NameoftheVisitingTeacher,
                 DateOfObservation: DateOfObservation || new Date(), // Use current date if not provided
-                className,
+                className:classData,
                 Section,
                 Subject,
                 Topic,

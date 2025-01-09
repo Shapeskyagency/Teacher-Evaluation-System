@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
-const { createForm, getSignleForm, updateObserverFields, GetcreatedByID, GetObseverForm, EditUpdateNotebook } = require('../controllers/NotebookCheckingController');
+const { createForm, getSignleForm, updateObserverFields, GetcreatedByID, GetObseverForm, EditUpdateNotebook, createInitiate } = require('../controllers/NotebookCheckingController');
 
 
 router.post('/create', authMiddleware, createForm);
+router.post('/createInitiate', authMiddleware, createInitiate);
 router.get('/get/:id', authMiddleware, getSignleForm);
 router.post('/observer/:id', authMiddleware, updateObserverFields);
 router.get('/get', authMiddleware, GetcreatedByID);

@@ -2,6 +2,7 @@ const User = require('../models/User');  // Import the User model (for Coordinat
 const sendEmail = require('../utils/emailService');
 const Form1 = require('../models/Form1');
 const Notification = require('../models/notification');
+const ClassDetails = require('../models/ClassDetails');
 
 exports.createForm = async (req, res) => {
   const { className, section, date, isCoordinator, coordinatorID, isTeacher, teacherID } = req.body;
@@ -19,9 +20,14 @@ exports.createForm = async (req, res) => {
         reciverId = coordinator._id;
       }
 
+     const classData =  await ClassDetails.findOne({_id:className});
+     if(!classData){
+      res.status(400).json({success: false, message:" Class and Section is Required!"})
+     }
+
       formData = new Form1({
         userId,
-        className: className,
+        className: classData.className,
         section,
         date: new Date(date),
         isCoordinator,

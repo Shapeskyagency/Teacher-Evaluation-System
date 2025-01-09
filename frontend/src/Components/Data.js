@@ -283,32 +283,32 @@ export const Formcolumns3 = [
     title: UserRole[1]===getUserId()?.access? "Teacher Name":"Observer Name",
     dataIndex: `grenralDetails`, // Accessing the teacher's name
     key: UserRole[1]===getUserId()?.access? "Teaher":"Observer", 
-    render: (text,record) => <a>{UserRole[1]===getUserId()?.access? record.createdBy?.name:text.NameofObserver.name}</a>,
+    render: (text,record) => <a>{UserRole[1]===getUserId()?.access? record.createdBy?.name || record.teacherID?.name : text.NameofObserver.name}</a>,
   },
   {
     title: "Grade",
     dataIndex: `grenralDetails`, // Accessing the teacher's name
     key: `className`,
-    render: (text,record) => <a>{text.className}</a>,
+    render: (text,record) => <a>{text.className || "N/A"}</a>,
   },
   {
     title: "Section",
     dataIndex: `grenralDetails`, // Accessing the teacher's name
     key: `Section`,
-    render: (text,record) => <a>{text.Section}</a>,
+    render: (text,record) => <a>{text.Section  || "N/A"}</a>,
   },
   {
     title: "Subject",
     dataIndex: `grenralDetails`, // Accessing the teacher's name
     key: `Subject`,
-    render: (text,record) => <a>{text.Subject}</a>,
+    render: (text,record) => <a>{text.Subject || "N/A"}</a>,
   },
   {
     title: "Observation Date",
     dataIndex: "grenralDetails", // Correctly accessing the DateOfObservation
     key: "DateOfObservation",
     render: (text) => (
-      <span>{getAllTimes(text.DateOfObservation).formattedDate2}</span>
+      <span>{getAllTimes(text.DateOfObservation).formattedDate2 || "N/A"}</span>
     ), // Formatting the date
   },
   {
@@ -364,9 +364,16 @@ export const Formcolumns3 = [
           </>
         ) : (
           Role === UserRole[2] && (
+            !record?.isTeacherComplete && !record?.isObserverComplete ? 
+            <Link
+            className="btn text-primary"
+            to={`/notebook-checking-proforma/edit/${record._id}`} >
+            Continue Form
+          </Link>
+            :
             <Button size="large" className="btn-outline-primary">
-              Push Notify
-            </Button>
+            Push Notify
+          </Button>
           )
         )}
         {Role === UserRole[1] &&
