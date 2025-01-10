@@ -32,6 +32,7 @@ const createUser = async (req, res) => {
             `Dear ${name},\n\nYour account has been successfully created.\nUsername: ${email}\nYour password is: ${password}\n\nThank you.`
         )
         res.status(201).json({ message: 'User created successfully' });
+
     } catch (error) {
        
         res.status(500).json({ message: 'Server error', error: error.message });
@@ -136,18 +137,32 @@ const deleteUserById = async (req, res) => {
 
 // app.post("/api/users/bulk-upload", async (req, res) => {
     const BulkUserCreate = async (req, res) => {
-        const users = req.body
-    try {
-        const usersWithCustomIds = users.map(user => ({
+        const users = req.body;
+      
+        try {
+          // Map users with custom IDs
+          const usersWithCustomIds = users.map(user => ({
             ...user,
-            customId:  generateCustomerId(),
-        }));
-      await User.insertMany(usersWithCustomIds, { ordered: false }); // `ordered: false` skips duplicates
-      res.status(200).send({ message: "Users uploaded successfully." });
-    } catch (error) {
-      res.status(500).send({ error: error.message });
-    }
-  }
-
+            customId: generateCustomerId(),
+          }));
+      
+          // Send emails asynchronously for each user
+          for (const user of usersWithCustomIds) {
+            await sendEmail(
+              user.email,
+              'Your Account Details',
+              `Dear ${user.name},\n\nYour account has been successfully created.\nUsername: ${user.email}\nYour password is: ${user.password}\n\nThank you.`
+            );
+          }
+      
+          // Insert all users into the database
+          await User.insertMany(usersWithCustomIds, { ordered: false }); // `ordered: false` skips duplicates
+      
+          res.status(200).send({ message: 'Users uploaded and emails sent successfully.' });
+        } catch (error) {
+          res.status(500).send({ error: error.message });
+        }
+      };
+      
 
 module.exports = {createUser, getAllUsers, getUserById, updateUserById, deleteUserById,BulkUserCreate,GetAllTeachers,GetAllObserver};

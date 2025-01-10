@@ -128,6 +128,7 @@ const protects = {
         { path: "/weekly4form", element: <Weely4Page /> },
         { path: "/weekly4form/create", element: <Weely4Form /> },
         { path: "/weekly4form/edit/:id", element: <Weely4Form /> },
+        { path: "/weekly4form/report/:id", element: <Weekly4FormReport /> },
         // { path: "/weekly4form/report/:id", element:<Weely4Form/> },
         { path: "*", element: <NotFound404 /> },
 
