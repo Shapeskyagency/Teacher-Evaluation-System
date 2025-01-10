@@ -53,7 +53,7 @@ function Weely4Page() {
               key: UserRole[1] === getUserId().access ? `teacherId` : "isInitiated",
               render: (text, record) => (
                 <span key={record?._id}>
-                  {(UserRole[1] === getUserId().access ? text?.name : text?.Observer.name) || "N/A"}
+                  {(UserRole[1] === getUserId().access ? text?.name : text?.Observer?.name) || "N/A"}
                 </span>
               ),
             },
