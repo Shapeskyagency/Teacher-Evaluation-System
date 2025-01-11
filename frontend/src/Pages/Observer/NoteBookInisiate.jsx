@@ -47,8 +47,7 @@ function NoteBookInisiate() {
         const response = await dispatch(createInitiate(payload)).unwrap();
         message.success(response?.message);
         form.resetFields(); // Reset the form fields after submission
-        // navigate(`/fortnightly-monitor`);
-        // dispatch(GetFormsOne());
+        navigate(`/notebook-checking-proforma`);
       } catch (error) {
         message.error("Error creating Fortnightly Monitor");
         console.error(error);

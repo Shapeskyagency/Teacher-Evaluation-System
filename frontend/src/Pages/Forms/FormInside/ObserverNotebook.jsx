@@ -186,7 +186,11 @@ function ObserverNotebook() {
                 label={question}
                 isTextArea={true} />
             </div>
-            <div className='responseDiv'>Response: {formDataList?.TeacherForm?.[namePrefix][index]?.answer}</div>
+            <div className='responseDiv'>
+              Response: 
+              {formDataList?.TeacherForm?.[namePrefix]?.[index]?.answer ?? "No response available"}
+            </div>
+
           </div>
         </Col>
       ))}

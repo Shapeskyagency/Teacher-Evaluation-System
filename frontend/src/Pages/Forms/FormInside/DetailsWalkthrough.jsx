@@ -164,7 +164,6 @@ const resetState = () => {
 const SectionSubject = (value) => {
   if (value) {
     const filteredData = newData.filter((data) => data?._id === value);
-    resetState()
     setSectionState(filteredData[0]);
     // return filteredData; // Return the filtered data if needed
   }
@@ -268,6 +267,7 @@ const SectionSubject = (value) => {
     [GetTeachersLists, newData,sectionState]
   );
 
+  console.log(sectionState)
 
 
   const renderGeneralDetails = () => (
@@ -289,7 +289,7 @@ const SectionSubject = (value) => {
               size="large"
               className="general-details-select"
               placeholder={`Select ${label.toLowerCase()}`}
-              onChange={(value)=>SectionSubject(value)}
+              onChange={name === "className" ? (value) => SectionSubject(value) : () => {}}
             >
               {options?.map((option) => (
                 <Option

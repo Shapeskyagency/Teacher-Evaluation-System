@@ -341,6 +341,7 @@ const updatePayload = (existingForm, userId, changes) => {
         [`${rolePrefix2}.qualityOfOppurtunities`]: changes.qualityOfOppurtunities,
         [`${rolePrefix2}.qualityOfTeacherFeedback`]: changes.qualityOfTeacherFeedback,
         [`${rolePrefix2}.qualityOfLearner`]: changes.qualityOfLearner,
+        [`isTeacherComplete`]: changes.isTeacherComplete,
     };
 
     const payload = {};
@@ -381,6 +382,7 @@ exports.EditUpdateNotebook = async (req, res) => {
             qualityOfOppurtunities: req.body.qualityOfOppurtunities,
             qualityOfTeacherFeedback: req.body.qualityOfTeacherFeedback,
             qualityOfLearner: req.body.qualityOfLearner,
+            isTeacherComplete: req.body.isTeacherComplete
         };
 
         const existingForm = await Form3.findById(formId);
