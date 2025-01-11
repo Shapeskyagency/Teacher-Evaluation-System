@@ -385,7 +385,7 @@ export const Formcolumns3 = [
    record?.isTeacherComplete && !record?.isObserverComplete &&
    <Link
    className="btn text-primary"
-   to={`/notebook-checking-proforma/edit/${record._id}`} >
+   to={`/notebook-checking-proforma/create/${record._id} `} >
    Continue Form
  </Link>
 )}
