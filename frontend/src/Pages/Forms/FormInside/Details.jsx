@@ -26,7 +26,7 @@ import {
 import { getUserId } from "../../../Utils/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { UserRole } from "../../../config/config";
-import { GetObserverList } from "../../../redux/userSlice";
+import { getCreateClassSection, GetObserverList } from "../../../redux/userSlice";
 import { questions } from "../../../Components/normalData";
 const { Option } = Select;
 const Details = () => {
@@ -36,19 +36,37 @@ const Details = () => {
   const [isCoordinator, setIsCoordinator] = useState(false);
   const [selfAssessmentScore, setSelfAssessmentScore] = useState(0);
   const [ObserverID, setObserverID] = useState("");
+  const [sectionState,setSectionState] =useState();
   const Id = useParams().id;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const GetUserAccess = getUserId()?.access;
   const isLoading2 = useSelector((state) => state?.Forms?.loading);
   const [betaLoading,setBetaLoading] =useState(false);
+  const [newData,setNewData] =useState(false);
   const CurrectUserRole = getUserId().access;
   const ObserverList = useSelector((state) => state.user.GetObserverLists);
   
+
+
+  const fetchClassData = async () => {
+        try {
+          const res = await dispatch(getCreateClassSection());
+          if (res?.payload?.success) {
+            setNewData(res?.payload?.classDetails.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+          } else {
+            message.error('Failed to fetch class data.');
+          }
+        } catch (error) {
+          console.error('Error fetching class data:', error);
+          message.error('An error occurred while fetching class data.');
+        } 
+      };
+
   // Fetch form details
   useEffect(() => {
     setIsLoading(true);
- 
+    fetchClassData()
     dispatch(GetSingleFormsOne(Id))
       .then((response) => {
         setFormDetails(response?.payload);
@@ -211,6 +229,19 @@ const Details = () => {
   const SideQuestion = document.querySelectorAll("#SideQuestion");
   const heights = Array.from(SideQuestion).map((element) => element.offsetHeight);
 
+
+  const SectionSubject = (value) => {
+    if (value) {
+      const filteredData = newData?.filter((data) => data?._id === value);
+      if (filteredData?.length > 0) {
+        setSectionState(filteredData[0]); // Set the filtered data to sectionState
+      }
+    }
+  
+    return []; // Return an empty array if the value is falsy
+  };
+  
+
   return (
     <div className="container mt-3">
       {isLoading ? (
@@ -234,20 +265,49 @@ const Details = () => {
               {betaLoading && (
                 <>
                  <Form.Item
-              label="Class"
-              name="className"
-              rules={[{ required: true, message: "Please enter a class!" }]}
-            >
-              <Input placeholder="Enter Class (e.g., 10th)" />
-            </Form.Item>
-
-            <Form.Item
-              label="Section"
-              name="section"
-              rules={[{ required: true, message: "Please enter a section!" }]}
-            >
-              <Input placeholder="Enter Section (e.g., A, B)" />
-            </Form.Item>
+                              label="Class"
+                              name="className"
+                              rules={[{ required: true, message: "Please enter a class!" }]}
+                            >
+                              {/* <Input placeholder="Enter Class (e.g., 10th)" /> */}
+                              <Select
+                                      showSearch
+                                      placeholder="Select a Class"
+                                      onChange={(value)=>SectionSubject(value)}
+                                      options={newData?.map((item) => ({
+                                        key: item._id, // Ensure unique key
+                                        id: item._id, 
+                                        value: item._id,
+                                        label: item.className,
+                                      }))}
+                                      filterOption={(input, option) =>
+                                        option.label.toLowerCase().includes(input.toLowerCase())
+                                      }
+                                    />
+                            </Form.Item>
+                
+                            <Form.Item
+                              label="Section"
+                              name="section"
+                              rules={[{ required: true, message: "Please enter a section!" }]}
+                            >
+                              {/* <Input placeholder="Enter Section (e.g., A, B)" /> */}
+                              <Select
+                                  showSearch
+                                  placeholder="Select a Section"
+                                  options={sectionState?.sections?.map((item) => ({
+                                    key: item._id, // Ensure unique key
+                                    id: item._id,
+                                    value: item.name,
+                                    label: item.name,
+                                  }))}
+                                  filterOption={(input, option) =>
+                                    option.label.toLowerCase().includes(input.toLowerCase())
+                                  }
+                                />
+                
+                            </Form.Item>
+                
 
             <div className="d-flex gap-3 align-items-center justify-content-between">
               <Form.Item

@@ -76,7 +76,7 @@ export const Menu = {
     //   icon: <BookFilled />,
     // },
     {
-      name: "Weekly Form",
+      name: " Learning Progress Checklist",
       route: "weekly4form",
       icon: <DatabaseFilled />,
     },
@@ -102,7 +102,7 @@ export const Menu = {
       icon: <BookFilled />,
     },
     {
-      name: "Weekly Form",
+      name: "Learning Progress Checklist",
       route: "weekly4form",
       icon: <DatabaseFilled />,
     },
@@ -346,7 +346,65 @@ export const Formcolumns3 = [
     key: "action",
     render: (_, record) => (
       <Space size="middle">
-        {(Role === UserRole[1] || Role === UserRole[2]) &&
+       {(Role === UserRole[1] || Role === UserRole[2]) &&
+  record?.isTeacherComplete &&
+  record?.isObserverComplete && (
+    <>
+      <Link
+        className="btn btn-primary"
+        to={`/notebook-checking-proforma/report/${record?._id}`}
+      >
+        View Report
+      </Link>
+      <Link
+        className="btn btn-danger"
+        to={`/notebook-checking-proforma/edit/${record?._id}`}
+      >
+        Edit
+      </Link>
+    </>
+  )}
+
+
+{Role === UserRole[2] && (
+   !record?.isTeacherComplete && !record?.isObserverComplete &&
+   <Link
+   className="btn text-primary"
+   to={`/notebook-checking-proforma/edit/${record._id}`} >
+   Continue Form
+ </Link>
+)}
+{Role === UserRole[2] && (
+   record?.isTeacherComplete && !record?.isObserverComplete &&
+   <Button size="large" className="btn-outline-primary">
+   Push Notify
+ </Button>
+)}
+
+{Role === UserRole[1] && (
+   record?.isTeacherComplete && !record?.isObserverComplete &&
+   <Link
+   className="btn text-primary"
+   to={`/notebook-checking-proforma/edit/${record._id}`} >
+   Continue Form
+ </Link>
+)}
+
+{Role === UserRole[1] && (
+   (!record?.isTeacherComplete && !record?.isObserverComplete)  &&
+   <Button size="large" className="btn-outline-primary">
+            Push Notify
+          </Button>
+)}
+
+{Role === UserRole[1] && (
+   (!record?.isTeacherComplete && record?.isObserverComplete)  &&
+   <Button size="large" className="btn-outline-primary">
+            Push Notify
+          </Button>
+)}
+      
+        {/* {(Role === UserRole[1] || Role === UserRole[2]) &&
         record?.isTeacherComplete &&
         record?.isObserverComplete ? (
           <>
@@ -385,7 +443,8 @@ export const Formcolumns3 = [
             >
               Continue Form
             </Link>
-          )}
+          )} */}
+           
       </Space>
     ),
   },

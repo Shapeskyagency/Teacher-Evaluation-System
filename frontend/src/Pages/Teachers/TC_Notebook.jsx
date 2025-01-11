@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -8,6 +8,7 @@ import {
     Input,
     message,
     Radio,
+    Select,
     Tag,
   } from "antd";
 import { Col, Container, Row } from "react-bootstrap";
@@ -15,11 +16,16 @@ import TextArea from "antd/es/input/TextArea";
 import { BsEmojiFrown, BsEmojiNeutral, BsEmojiSmile } from 'react-icons/bs';
 import { EditNoteBook, GetNoteBookForm } from '../../redux/Form/noteBookSlice';
 import { getAllTimes } from '../../Utils/auth';
+import { getCreateClassSection } from '../../redux/userSlice';
+
+const {Option} = Select;
 
 function TC_Notebook() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({});
+   const [sectionState, setSectionState]= useState([]);
+  const [newData,setNewData] = useState()
   const FormId = useParams()?.id;
 
   const { isLoading, formDataList } = useSelector(
@@ -27,24 +33,39 @@ function TC_Notebook() {
   );
 
   const [form] = Form.useForm();
+ const fetchClassData = async () => {
+      try {
+        const res = await dispatch(getCreateClassSection());
+        if (res?.payload?.success) {
+          setNewData(res?.payload?.classDetails.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+        } else {
+          message.error('Failed to fetch class data.');
+        }
+      } catch (error) {
+        console.error('Error fetching class data:', error);
+        message.error('An error occurred while fetching class data.');
+      } 
+    };
 
   const Fectch = async () => {
     const data = await dispatch(GetNoteBookForm(FormId));
     // Set initial form values
     form.setFieldsValue({
       ...data.payload,
-      ...data.payload.grenralDetails,
-      ...data.payload.NotebooksTeacher,
-      maintenanceOfNotebooks: data.payload.TeacherForm.maintenanceOfNotebooks,
-      qualityOfOppurtunities: data.payload.TeacherForm.qualityOfOppurtunities,
-      qualityOfTeacherFeedback: data.payload.TeacherForm.qualityOfTeacherFeedback,
-      qualityOfLearner: data.payload.TeacherForm.qualityOfLearner,
-      observerFeedback: data.payload.observerFeedback,
+      ...data.payload?.grenralDetails,
+      ...data.payload?.NotebooksTeacher,
+      maintenanceOfNotebooks: data.payload?.TeacherForm?.maintenanceOfNotebooks,
+      qualityOfOppurtunities: data.payload?.TeacherForm?.qualityOfOppurtunities,
+      qualityOfTeacherFeedback: data.payload?.TeacherForm?.qualityOfTeacherFeedback,
+      qualityOfLearner: data.payload?.TeacherForm?.qualityOfLearner,
+      observerFeedback: data.payload?.observerFeedback,
+      isTeacherComplete:true
     });
   };
 
   useEffect(() => {
     if (FormId) {
+      fetchClassData();
       Fectch();
     }
   }, [dispatch, FormId]);
@@ -55,19 +76,80 @@ function TC_Notebook() {
     { value: "-1", label: <BsEmojiFrown size={25} /> },
   ];
 
-  const generalDetailsConfig = [
-    { name: "ClassStrength", label: "Class Strength", type: "input" },
+  // const generalDetailsConfig = [
+  //   { name: "ClassStrength", label: "Class Strength", type: "input" },
+  //   { name: "NotebooksSubmitted", label: "Notebooks Submitted", type: "input" },
+  //   { name: "Absentees", label: "Absentees", type: "input" },
+  //   { name: "Defaulters", label: "Defaulters", type: "input" },
+  // ];
+
+  const SectionSubject = (value) => {
+    if (value) {
+      const filteredData = newData?.filter((data) => data?._id === value);
+      if (filteredData?.length > 0) {
+        setSectionState(filteredData[0]); // Set the filtered data to sectionState
+      }
+    }
+  
+    return []; // Return an empty array if the value is falsy
+  };
+  
+
+const generalDetailsConfig = useMemo(
+    () => [
+      {
+        name: "className",
+        label: "Class Name / Section",
+        type: "select",
+        options: newData?.map((item) => ({
+          id: item._id,
+          name: item.className,
+        })),
+      },
+      { name: "Section", label: "Section", type: "select", 
+        options:  sectionState?.sections?.map((item) => ({
+          id: item._id,
+          value: item?.name,
+          name: item.name,
+        })),
+        
+      },
+      { name: "Subject", label: "Subject", type: "select", options: sectionState?.subjects?.map((item) => ({
+        id: item._id,
+        value: item?.name,
+        name: item.name,
+      })), },
+      { name: "Topic", label: "Topic", type: "input" },
+      { name: "ClassStrength", label: "Class Strength", type: "input" },
     { name: "NotebooksSubmitted", label: "Notebooks Submitted", type: "input" },
     { name: "Absentees", label: "Absentees", type: "input" },
     { name: "Defaulters", label: "Defaulters", type: "input" },
-  ];
-
+    ],
+    [newData,sectionState]
+  );
 //   const generalDetailsConfig2 = [
 //     { name: "observerFeedback", label: "Observer Feedback", type: "textarea" },
 //   ];
 
-  const renderFormItem = ({ name, label, type }) => {
+  const renderFormItem = ({ name, label, type,options }) => {
     const inputProps = {
+      select:(
+        <Select
+        size="large"
+        className="general-details-select"
+        placeholder={`Select ${label.toLowerCase()}`}
+        onChange={name === "className" ? (value) => SectionSubject(value) : () => {}}
+      >
+        {options?.map((option) => (
+          <Option
+            key={option?.id || option}
+            value={option?.id || option}
+          >
+            {option?.name || option}
+          </Option>
+        ))}
+      </Select>
+      ),
       input: (
         <Input size="large" placeholder={`Enter ${label.toLowerCase()}`} />
       ),
@@ -97,6 +179,7 @@ function TC_Notebook() {
       <Row key={item.name}>
         <Col md={12}>
           {renderFormItem(item)}
+        
         </Col>
       </Row>
     ));
@@ -197,11 +280,11 @@ function TC_Notebook() {
       data,
       id: FormId,
     };
-console.log(payload)
-const response = await dispatch(EditNoteBook(payload));
-if(response?.payload && response?.payload?.success) {
-  navigate('/notebook-checking-proforma');
-message.success(response?.payload?.message);
+      console.log(payload)
+      const response = await dispatch(EditNoteBook(payload));
+      if(response?.payload && response?.payload?.success) {
+        navigate('/notebook-checking-proforma');
+      message.success(response?.payload?.message);
   };
   };
   return (
@@ -211,6 +294,24 @@ message.success(response?.payload?.message);
           <Form form={form} layout="vertical">
             <div className="mb-5">
               <h3 className="mb-4">Maintenance Of Notebooks</h3>
+              <Form.Item
+              hidden
+          className='mb-0'
+          name="isTeacherComplete"
+          initialValue={true}
+        >
+          <Radio.Group
+          
+            size='large'
+            options={[true, false].map((value) => ({
+              label: value,
+              value: value,
+            }))}
+            optionType="button"
+            buttonStyle="solid"
+          />
+        </Form.Item>
+
               {renderGeneralDetails()}
             </div>
             <div className="mb-5 pb-3">
