@@ -70,14 +70,18 @@ function Weekly4FormReport() {
     },
     {
         title: 'Class Name',
-        dataIndex: 'classId',
-        key: 'classId',
-        render: (classId) =>
-          Array.isArray(classId) ? (
-            <List
+        dataIndex: 'section',
+        key: 'section',
+        render: (classId,record) =>
+        // (<Text>
+        //   {console.log(record)}
+        // </Text>)
+          Array.isArray(record?.section?.classId) ? (
+            <> <List
               dataSource={classId}
               renderItem={(item, index) => <List.Item key={index}>{item}</List.Item>}
-            />
+              />
+              </>
           ) : (
             <Text>{classId}</Text>
           ),

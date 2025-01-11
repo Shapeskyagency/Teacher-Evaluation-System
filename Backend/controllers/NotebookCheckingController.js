@@ -342,6 +342,9 @@ const updatePayload = (existingForm, userId, changes) => {
         [`${rolePrefix2}.qualityOfTeacherFeedback`]: changes.qualityOfTeacherFeedback,
         [`${rolePrefix2}.qualityOfLearner`]: changes.qualityOfLearner,
         [`isTeacherComplete`]: changes.isTeacherComplete,
+        [`grenralDetails.className`]: changes.className,
+        [`grenralDetails.Section`]: changes.Section,
+        [`grenralDetails.Subject`]: changes.Subject,
     };
 
     const payload = {};
@@ -371,6 +374,14 @@ exports.EditUpdateNotebook = async (req, res) => {
     }
 
     try {
+
+        const classNameFind = await ClassDetails.findById(req.body.className);
+
+        console.log(classNameFind)
+        if(!req.body.className && !classNameFind){
+           res.status(400).json({message:"Not Found"})
+        }
+
         const changes = {
             ClassStrength: req.body.ClassStrength,
             NotebooksSubmitted: req.body.NotebooksSubmitted,
@@ -382,7 +393,10 @@ exports.EditUpdateNotebook = async (req, res) => {
             qualityOfOppurtunities: req.body.qualityOfOppurtunities,
             qualityOfTeacherFeedback: req.body.qualityOfTeacherFeedback,
             qualityOfLearner: req.body.qualityOfLearner,
-            isTeacherComplete: req.body.isTeacherComplete
+            isTeacherComplete: req.body.isTeacherComplete,
+            className: classNameFind?.className,
+            Subject: req.body.Subject,
+            Section: req.body.Section
         };
 
         const existingForm = await Form3.findById(formId);

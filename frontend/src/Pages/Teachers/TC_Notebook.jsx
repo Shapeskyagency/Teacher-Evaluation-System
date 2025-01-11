@@ -143,7 +143,7 @@ const generalDetailsConfig = useMemo(
         {options?.map((option) => (
           <Option
             key={option?.id || option}
-            value={option?.id || option}
+            value={name === "className" ? option?.id : option?.name}
           >
             {option?.name || option}
           </Option>
@@ -280,6 +280,7 @@ const generalDetailsConfig = useMemo(
       data,
       id: FormId,
     };
+  
       console.log(payload)
       const response = await dispatch(EditNoteBook(payload));
       if(response?.payload && response?.payload?.success) {

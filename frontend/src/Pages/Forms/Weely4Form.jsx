@@ -23,7 +23,7 @@ function Weekly4Form() {
 
   const GetImportantDetails = async () => {
     const cls = await dispatch(getCreateClassSection());
-    if (cls.payload.success) {
+    if (cls?.payload?.success) {
       setClassList(cls?.payload?.classDetails);
     }
   }
@@ -57,10 +57,10 @@ function Weekly4Form() {
       {selectBox &&
        
 <>
- <Form.Item name={[...name, "classId"]} >
+ {/* <Form.Item name={[...name, "classId"]} >
         <Select
         maxCount={5}
-        mode='multiple'
+        // mode='multiple'
             allowClear
             showSearch
             placeholder="Select an Class"
@@ -69,52 +69,77 @@ function Weekly4Form() {
               label: `Class ${item?.className}`,
             }))}
           />
-        </Form.Item>
-
+        </Form.Item> */}
 <Form.List
-
-name={[...name, "answer"]}
-rules={[{
-  validator: async (_, sections) => {
-    if (!sections || sections.length < 1) {
-      return Promise.reject(new Error('At least one section is required'));
-    }
-  },
-}]}
+  name={[...name, "sections"]}  // The 'sections' will hold both answer and classId
+  rules={[
+    {
+      validator: async (_, sections) => {
+        if (!sections || sections.length < 1) {
+          return Promise.reject(new Error('At least one section is required'));
+        }
+      },
+    },
+  ]}
 >
-{(fields, { add, remove }) => (
-  <>
-    {fields.map(({ key, name, fieldKey, ...restField }) => (
-      <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-        <Form.Item
+  {(fields, { add, remove }) => (
+    <>
+      {fields.map(({ key, name, fieldKey, ...restField }) => (
+        <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+          {console.log(name)}  {/* Debugging */}
+            {/* Form.Item for 'classId' */}
+            <Form.Item
+            {...restField}
+            name={[name, "classId"]}  // Corrected: name should be an array
+            fieldKey={[fieldKey, "classId"]}
+            rules={[{ required: true, message: 'Please enter a class ID' }]}
+          >
+             <Select
+        maxCount={5}
+        // mode='multiple'
+            allowClear
+            showSearch
+            placeholder="Select an Class"
+            options={classList?.map((item) => ({
+              value: item?._id,
+              label: `Class ${item?.className}`,
+            }))}
+          />
+          </Form.Item>
+          
+          {/* Form.Item for 'answer' */}
+          <Form.Item
+            {...restField}
+            name={[name, "answer"]}  // Corrected: name should be an array
+            fieldKey={[fieldKey, "answer"]}
+            rules={[{ required: true, message: 'Please select an answer' }]}
+          >
+            <Radio.Group
+              size="middle"
+              options={yesNoNAOptions}
+              optionType="button"
+              buttonStyle="solid"
+            />
+          </Form.Item>
+
         
-          {...restField}
-          name={[name]}
-          fieldKey={[fieldKey]}
-          rules={[{ required: true, message: 'Please enter a section name' }]}
-        >
-          {/* <Input placeholder="Enter section name" /> */}
-          <Radio.Group
-        size="large"
-        options={yesNoNAOptions}
-        optionType="button"
-        buttonStyle="solid"
-      />
+
+          <MinusCircleOutlined onClick={() => remove(name)} />
+        </Space>
+      ))}
+
+      {/* Add Section Button */}
+      {fields.length < 5 && (
+        <Form.Item>
+          <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+            Add Section
+          </Button>
         </Form.Item>
-        <MinusCircleOutlined onClick={() => remove(name)} />
-      </Space>
-    ))}
-    {fields.length<5&&
-    <Form.Item>
-    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-      Add Section
-    </Button>
-  </Form.Item>
-    }
-    
-  </>
-)}
+      )}
+    </>
+  )}
 </Form.List>
+
 </>
       }
       {inputBox ? 
@@ -226,7 +251,7 @@ rules={[{
         const res = await dispatch(initiateFromObserver(payload));
         if (res.payload.success) {
           setThankYou(true);
-          setTimeout(() => (window.location.href = '/weekly4form'), 3000);
+          setTimeout(() => (window.location.href = '/weekly4form'), 1000);
         } else {
           message.error('Something went wrong!');
         }
