@@ -71,7 +71,7 @@ exports.deleteClassDetailById = async (req, res) => {
         if (!classDetail) {
             return res.status(404).send();
         }
-        res.status(200).send(classDetail);
+        res.status(200).send({success:true,message:"Reacord has beed deleted!"});
     } catch (error) {
         res.status(500).send(error);
     }

@@ -86,7 +86,6 @@ function Weekly4Form() {
     <>
       {fields.map(({ key, name, fieldKey, ...restField }) => (
         <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-          {console.log(name)}  {/* Debugging */}
             {/* Form.Item for 'classId' */}
             <Form.Item
             {...restField}

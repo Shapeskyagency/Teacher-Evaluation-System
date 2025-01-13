@@ -27,7 +27,7 @@ const login = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
-        const token = jwt.sign({ id: user._id, access: user.access }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id, access: user.access,name:user.name }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.json({ token });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
@@ -60,7 +60,6 @@ const requestPasswordReset = async (req, res) => {
         user.resetPasswordToken = undefined;
         user.resetPasswordExpires = undefined;
         await user.save();
-        console.log(error)
         res.status(500).json({ message: 'Email could not be sent' });
     }
 };

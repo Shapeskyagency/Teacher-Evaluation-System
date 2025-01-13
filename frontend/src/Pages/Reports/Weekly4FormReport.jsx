@@ -73,9 +73,7 @@ function Weekly4FormReport() {
         dataIndex: 'section',
         key: 'section',
         render: (classId,record) =>
-        // (<Text>
-        //   {console.log(record)}
-        // </Text>)
+     
           Array.isArray(record?.section?.classId) ? (
             <> <List
               dataSource={classId}

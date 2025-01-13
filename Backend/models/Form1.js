@@ -28,7 +28,7 @@ const formSchema = new Schema({
   digitalCitizenshipRules: { type: String, enum: option, default: 'N/A' },
   meditation: { type: String, enum: option, default: 'N/A' },
   totalScore: { type: Number, min: 0, max: 100 },
-  selfEvaluationScore: { type: Number, min: 0, max: 30 },
+  OutOf: { type: Number, min: 0, max: 30 },
   ObservationDates: { type: Date, default: null },
 }, { timestamps: true });
 

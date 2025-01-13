@@ -20,9 +20,9 @@ function Sidebar() {
 
   return (
     <>
-      <h5 className="pt-3 text-dark px-4 mb-0 mt-3">Evaluation System</h5>
+      <h5 className="pt-3 text-dark px-4 mb-0 mt-3 d-lg-block d-none">Evaluation System</h5>
       <div
-        className="d-flex flex-column pt-5 px-4 justify-content-between align-items-start"
+        className="d-flex flex-column pt-lg-5 px-lg-4 justify-content-between align-items-start"
         style={{ height: '80dvh' }}
       >
         {/* Menu Items */}

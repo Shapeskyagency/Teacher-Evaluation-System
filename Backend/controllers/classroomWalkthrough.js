@@ -43,7 +43,7 @@ exports.createForm = async (req, res) => {
         }
 
 
-        const classData =  await ClassDetails.findOne({_id:className});
+        const classData =  await ClassDetails.findById(className);
         if(!classData){
          res.status(400).json({success: false, message:" Class and Section is Required!"})
         }
@@ -57,7 +57,7 @@ exports.createForm = async (req, res) => {
             grenralDetails: {
                 NameoftheVisitingTeacher,
                 DateOfObservation: DateOfObservation || new Date(), // Use current date if not provided
-                className:classData,
+                className:classData?.className,
                 Section,
                 Subject,
                 Topic,
