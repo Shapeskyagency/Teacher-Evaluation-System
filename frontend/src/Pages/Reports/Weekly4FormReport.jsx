@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getAllWeeklyFromById } from '../../redux/userSlice';
-import { message, Card, Typography, List, Table, Row, Col } from 'antd';
+import { message, Card, Typography, List, Table, Row, Col, Tag } from 'antd';
 
 const { Title, Text } = Typography;
 
@@ -58,37 +58,48 @@ function Weekly4FormReport() {
       title: 'Answer',
       dataIndex: 'answer',
       key: 'answer',
-      render: (answer) =>
-        Array.isArray(answer) ? (
-          <List
-            dataSource={answer}
-            renderItem={(item, index) => <List.Item key={index}>{item}</List.Item>}
-          />
+      render: (answer, record) =>
+        record?.sections ? (
+          <>
+            {record?.sections?.map((item) => (
+                <Tag color={item?.answer === "Yes"? "green": "red"}>
+                  {item?.answer}
+               </Tag>
+            ))}
+          </>
         ) : (
-          <Text>{answer}</Text>
+          <Tag color={answer === "Yes"? "green": "red"}>
+                  {answer}
+               </Tag>
         ),
     },
     {
-        title: 'Class Name',
-        dataIndex: 'section',
-        key: 'section',
-        render: (classId,record) =>
-     
-          Array.isArray(record?.section?.classId) ? (
-            <> <List
-              dataSource={classId}
-              renderItem={(item, index) => <List.Item key={index}>{item}</List.Item>}
-              />
-              </>
-          ) : (
-            <Text>{classId}</Text>
-          ),
-      },
+      title: 'Class Name',
+      dataIndex: 'section',
+      key: 'section',
+      render: (classId, record) =>
+
+        record?.sections ? (
+          <>
+            {record?.sections?.map((item) => (
+                <p className='text-nowrap'>
+                  {item?.className} / {item?.section} 
+                </p>
+            ))}
+          </>
+        ) : (
+          <Text>{classId}</Text>
+        ),
+    },
     {
       title: 'Additional Info',
       dataIndex: 'textArea',
       key: 'textArea',
-      render: (text) => (text ? <Text>{text}</Text> : 'N/A'),
+      render: (text,record) => (
+          <Text>{text || <Tag color={!text && "yellow"}>
+          N/A
+       </Tag>}</Text>
+      ),
     },
   ];
 
