@@ -89,12 +89,17 @@ const Questions = [
   "Think Zone",
   "Digital citizenship rules",
   "Meditation",
-  "Total",
-  "Self Evaluation Score",
+  "Total Score",
+  "Outof",
+ 
 ];
 
 // Create Document Component
 const MyDocument = ({ data }) => {
+
+
+
+ 
   return (
     <Document>
       <Page size="A4" style={styles.page}>

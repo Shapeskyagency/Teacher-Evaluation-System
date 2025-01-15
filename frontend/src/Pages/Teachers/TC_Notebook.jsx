@@ -281,7 +281,6 @@ const generalDetailsConfig = useMemo(
       id: FormId,
     };
   
-      console.log(payload)
       const response = await dispatch(EditNoteBook(payload));
       if(response?.payload && response?.payload?.success) {
         navigate('/notebook-checking-proforma');

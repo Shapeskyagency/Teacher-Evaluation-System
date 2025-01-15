@@ -41,23 +41,26 @@ function Reader() {
 
 
   const getTotalScore = (type) => {
-    if (!GetSingleForms) return;
-    const validValues = ["Yes", "No", 0.5]; // Include these values
-    const count = Object.values(GetSingleForms[type]).filter(value =>
-      validValues.includes(value)
-    ).length;
-    return count;
-  }
+    if (!GetSingleForms) return 0;
+  
+    // Count "Yes", "Sometimes", and "No" as 1
+    const validValues = ["Yes", "Sometimes", "No"];
+    const scores = Object.values(GetSingleForms[type]).reduce((sum, value) => {
+      return sum + (validValues.includes(value) ? 1 : 0); // Add 1 if value matches
+    }, 0);
+  
+    return scores; // Return total score
+  };
+  
 
   const getSelfAssemnetScrore = (type) => {
-    if (!GetSingleForms) return;
-    const validValues2 = ["Yes", 0.5];
-    const Assesscount = Object.values(GetSingleForms[type]).filter(value =>
-      validValues2.includes(value)
-    ).length;
-    return Assesscount;
-  }
-
+    if (!GetSingleForms) return 0;
+    const validValues = { Yes: 1, Sometimes: 0.5 };
+    const scores = Object.values(GetSingleForms[type]).reduce((sum, value) => {
+      return sum + (validValues[value] || 0); // Add score if value matches, otherwise add 0
+    }, 0);
+    return scores +2;
+  };
 
   let questionsAll = questions;
   const newItems = [
@@ -106,10 +109,10 @@ function Reader() {
               render: (text, record) => {
                 // Custom logic for manual values
                 if (record.key === "Total Score") {
-                  return <p className="mb-0">{getTotalScore('teacherForm')}</p>;
+                  return <p className="mb-0">{getSelfAssemnetScrore('teacherForm')}</p>;
                 }
                 if (record.key === "Out Of") {
-                  return <p className="mb-0">{getSelfAssemnetScrore('teacherForm')}</p>;
+                  return <p className="mb-0">{getTotalScore('teacherForm') + 2}</p>;
                 }
                 // Default behavior for other rows
                 return <p className="mb-0">
@@ -130,12 +133,14 @@ function Reader() {
               render: (text, record) => {
                 // Custom logic for manual values
                 if (record.key === "Total Score") {
-                  return <p className="mb-0">{getSelfAssemnetScrore('observerForm')}</p>;
+                  return <p className="mb-0">{ getSelfAssemnetScrore('observerForm')}</p>;
                 }
-
                 if (record.key === "Out Of") {
-                  return <p className="mb-0">{getTotalScore('observerForm')}</p>;
+                  return <p className="mb-0">{getTotalScore('observerForm') + 2}</p>;
                 }
+              
+
+               
                
                 // Default behavior for other rows
                 return <p className="mb-0">
@@ -154,10 +159,10 @@ function Reader() {
       </div>
 
 
-      {/* <PDFViewer className="w-100 m-auto d-block" style={{ height: "100vh" }}>
+      <PDFViewer className="w-100 m-auto d-block" style={{ height: "100vh" }}>
         
         <MyDocument data={GetSingleForms} />
-      </PDFViewer> */}
+      </PDFViewer>
     </>
   );
 }

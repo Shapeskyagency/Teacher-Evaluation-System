@@ -71,6 +71,12 @@ export const UserLogin = createAsyncThunk('UserLogin',async (payload) => {
   })
 
 
+  export const deleteCreateClassSection = createAsyncThunk('deleteCreateClassSection',async (payload) => {
+    const response = await axiosInstanceToken.delete(`/class/delete/${payload}`);
+      return response.data;
+  })
+
+
 
   // weekly 4 form
 

@@ -267,7 +267,6 @@ const SectionSubject = (value) => {
     [GetTeachersLists, newData,sectionState]
   );
 
-  console.log(sectionState)
 
 
   const renderGeneralDetails = () => (

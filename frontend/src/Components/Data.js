@@ -83,7 +83,7 @@ export const Menu = {
   ],
   Teacher: [
     { name: "Dashboard", route: "/dashboard", icon: <AppstoreAddOutlined /> },
-    { name: "Reports", route: "/reports", icon: <PieChartOutlined /> },
+    // { name: "Reports", route: "/reports", icon: <PieChartOutlined /> },
     { name: "Profile", route: "/profile", icon: <UserOutlined /> },
     { label: "Forms" },
     {
@@ -228,7 +228,7 @@ export const Formcolumns1 = [
         ) : (
           Role === UserRole[1] && (
             <Button size="large" className="btn-outline-primary">
-              Push Notify
+              Reminders
             </Button>
           )
         )}
@@ -377,7 +377,7 @@ export const Formcolumns3 = [
 {Role === UserRole[2] && (
    record?.isTeacherComplete && !record?.isObserverComplete &&
    <Button size="large" className="btn-outline-primary">
-   Push Notify
+   Reminders
  </Button>
 )}
 
@@ -393,14 +393,14 @@ export const Formcolumns3 = [
 {Role === UserRole[1] && (
    (!record?.isTeacherComplete && !record?.isObserverComplete)  &&
    <Button size="large" className="btn-outline-primary">
-            Push Notify
+            Reminders
           </Button>
 )}
 
 {Role === UserRole[1] && (
    (!record?.isTeacherComplete && record?.isObserverComplete)  &&
    <Button size="large" className="btn-outline-primary">
-            Push Notify
+            Reminders
           </Button>
 )}
       
@@ -430,7 +430,7 @@ export const Formcolumns3 = [
           </Link>
             :
             <Button size="large" className="btn-outline-primary">
-            Push Notify
+            Reminders
           </Button>
           )
         )}
@@ -544,7 +544,7 @@ export const FormcolumnsForm1 = [
       ) {
         return (
           <Button size="large" className="btn-outline-primary">
-            Push Notify
+            Reminders
           </Button>
         );
       }
@@ -578,7 +578,7 @@ export const FormcolumnsForm1 = [
               color="primary"
               className="me-2"
             >
-              Push Notify
+              Reminders
             </Button>
             <Link
               className="btn text-primary"
@@ -603,7 +603,7 @@ export const FormcolumnsForm1 = [
       ) {
         return (
           <Button size="large" className="btn-outline-primary">
-            Push Notify
+            Reminders
           </Button>
         );
       }
@@ -715,7 +715,7 @@ export const FormcolumnsForm1 = [
 //       ) {
 //         return (
 //           <Button size="large" className="btn-outline-primary">
-//             Push Notify
+//             Reminders
 //           </Button>
 //         );
 //       }
@@ -749,7 +749,7 @@ export const FormcolumnsForm1 = [
 //               color="primary"
 //               className="me-2"
 //             >
-//               Push Notify
+//               Reminders
 //             </Button>
 //             <Link
 //               className="btn text-primary"
@@ -774,7 +774,7 @@ export const FormcolumnsForm1 = [
 //       ) {
 //         return (
 //           <Button size="large" className="btn-outline-primary">
-//             Push Notify
+//             Reminders
 //           </Button>
 //         );
 //       }

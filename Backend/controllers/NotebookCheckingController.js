@@ -304,7 +304,7 @@ exports.GetObseverForm = async (req, res) => {
         });
   
       // Fetch Form2 data based on observer initiation flag
-      const Form2 = await Form3.find({ isObserverInitiation: true })
+      const Form2 = await Form3.find({"grenralDetails.NameofObserver": userId, isObserverInitiation: true })
         .populate({
           path: 'createdBy teacherID',
           select: '-password -mobile -employeeId -customId'
@@ -377,7 +377,6 @@ exports.EditUpdateNotebook = async (req, res) => {
 
         const classNameFind = await ClassDetails.findById(req.body.className);
 
-        console.log(classNameFind)
         if(!req.body.className && !classNameFind){
            res.status(400).json({message:"Not Found"})
         }

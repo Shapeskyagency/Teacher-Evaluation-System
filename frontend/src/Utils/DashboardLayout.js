@@ -1,23 +1,47 @@
-import React, { memo } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import {getUserId } from "./auth";
 import { Layout } from "antd";
 import Sidebar from "../Components/Sidebar";
 import Navbar from "../Components/Navbar";
 import MainFooter from "../Components/MainFooter";
+import { useDispatch } from "react-redux";
+import { getUserNotification } from "../redux/userSlice";
 
 const { Header, Footer, Sider, Content } = Layout;
 
 
 const DashboardLayout = () => {
   const role = getUserId()?.access;
+  const dispatch = useDispatch();
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    dispatch(getUserNotification());
+  }, [dispatch]);
+
+  const handleCollapse = (isCollapsed) => {
+    setCollapsed(isCollapsed);
+  };
   return role === "Superadmin" ? (
     <>
      <Layout style={layoutStyle}>
-      <Sider width="18%" style={siderStyle}>
+     <Sider
+        width="18%"
+        style={siderStyle}
+        breakpoint="lg"
+        collapsedWidth="0"
+        collapsible
+        onCollapse={handleCollapse}
+      >
       <Sidebar/>
       </Sider>
-      <Layout>
+        <Layout
+              style={{
+                marginLeft: collapsed ? "0" : "18%",
+                transition: "margin 0.3s ease",
+              }}
+            >
         <Header style={headerStyle}>
           <Navbar/>
         </Header>
@@ -42,42 +66,39 @@ export default memo(DashboardLayout);
 
 
 const headerStyle = {
-  textAlign: 'center',
-  color: '#fff',
-  height: 64,
-  paddingInline: 48,
-  backgroundColor: '#4f6f52',
+  textAlign: "center",
+  color: "#fff",
+  height: "auto",
+  padding: "8px 16px",
+  backgroundColor: "#4f6f52",
+  transition: "all 0.3s ease",
 };
+
 const contentStyle = {
-  // textAlign: 'center',
-   width:"82%",
-    overflow: 'auto',
-        marginLeft: '18%',
-  minHeight: 120,
-  lineHeight: '100px',
-  backgroundColor: '#fff',
+  minHeight: "120px",
+  padding: "16px",
+  backgroundColor: "#fff",
+  transition: "all 0.3s ease",
 };
+
 const siderStyle = {
-  textAlign: 'center',
-  lineHeight: '150%',
-  color: '#fff',
-  backgroundColor: '#fff',
-  height:"100dvh",
-  overflow:"auto",
-  boxShadow:"rgb(0 0 0 / 11%) 1px 1px 9px",
-  position: 'fixed',
-  zIndex:999,
+  backgroundColor: "#fff",
+  height: "100vh",
+  boxShadow: "rgb(0 0 0 / 11%) 1px 1px 9px",
+  position: "fixed",
   left: 0,
+  zIndex: 999,
 };
+
 const footerStyle = {
-  textAlign: 'center',
-  color: '#fff',
-  // backgroundColor: '#4f6f52',
+  textAlign: "center",
+  color: "#fff",
+  padding: "8px",
+  backgroundColor: "#4f6f52",
 };
+
 const layoutStyle = {
-  // borderRadius: 8,
-  overflow: 'hidden',
-  width: '100%',
-  maxWidth: '100%',
-  margin:"auto"
+  width: "100%",
+  margin: "0 auto",
+  overflow: "hidden",
 };

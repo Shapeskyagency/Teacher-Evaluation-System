@@ -212,7 +212,7 @@ const Details = () => {
     });
     getTotalScore(values)
     setSelfAssessmentScore(score);
-    form.setFieldsValue({ selfEvaluationScore: score }); // Update hidden field
+    form.setFieldsValue({ OutOf: score }); // Update hidden field
   };
 
   // Questions to dynamically render
@@ -453,7 +453,7 @@ const Details = () => {
                           
                           style={{width:"fit-content"}}>
 
-                            <span> {formDetails?.teacherForm?.selfEvaluationScore} Out of {totalCount}</span></div>
+                            <span> {formDetails?.teacherForm?.OutOf || "NA"} Out of {totalCount}</span></div>
                               </div>
                         </>
                       )}
@@ -466,7 +466,7 @@ const Details = () => {
             {/* Self-assessment score */}
             <Row gutter={[16, 16]}>
               <Col xs={24} sm={12} md={8} lg={12}>
-              <h4 className="mb-3 mt-4">Self Assessment Score: {selfAssessmentScore} Out of {totalCountMein}</h4>
+              <h4 className="mb-3 mt-4"> {getUserId().access === UserRole[1] ? "Observer Score" : "Self Assessment Score:" } {selfAssessmentScore} Out of {totalCountMein}</h4>
                 <Form.Item name="selfEvaluationScore" hidden label="Self Assessment Score">
                   <InputNumber
                     value={selfAssessmentScore}

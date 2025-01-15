@@ -51,25 +51,23 @@ function Weekly4Form() {
     { value: "N/A", label: "N/A" },
   ];
 
-  const RenderRadioFormItem = ({ name, label, question, selectBox,inputBox,classSelection}) => (
-    <>
+const [sectionArry, SetSectionArry] =useState();
+  const onChnageSection = (value) => {
+    if(value){
+     const data =  classList.filter(item=> item._id === value);
+      SetSectionArry(data[0]?.sections)
+    }
+    }
+
+  const RenderRadioFormItem = ({ name, label, question, selectBox,inputBox,classSelection}) => {
+
+    return(
+      <>
       <h5 className="text-gray">{label}</h5>
       {selectBox &&
        
 <>
- {/* <Form.Item name={[...name, "classId"]} >
-        <Select
-        maxCount={5}
-        // mode='multiple'
-            allowClear
-            showSearch
-            placeholder="Select an Class"
-            options={classList?.map((item) => ({
-              value: item?._id,
-              label: `Class ${item?.className}`,
-            }))}
-          />
-        </Form.Item> */}
+ 
 <Form.List
   name={[...name, "sections"]}  // The 'sections' will hold both answer and classId
   rules={[
@@ -86,7 +84,6 @@ function Weekly4Form() {
     <>
       {fields.map(({ key, name, fieldKey, ...restField }) => (
         <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-          {console.log(name)}  {/* Debugging */}
             {/* Form.Item for 'classId' */}
             <Form.Item
             {...restField}
@@ -102,8 +99,29 @@ function Weekly4Form() {
             placeholder="Select an Class"
             options={classList?.map((item) => ({
               value: item?._id,
-              label: `Class ${item?.className}`,
+              label: `${item?.className}`,
             }))}
+            onChange={(v)=>onChnageSection(v)}
+          />
+          </Form.Item>
+
+          <Form.Item
+            {...restField}
+            name={[name, "section"]}  // Corrected: name should be an array
+            fieldKey={[fieldKey, "section"]}
+            rules={[{ required: true, message: 'Please enter a section' }]}
+          >
+             <Select
+        maxCount={5}
+        // mode='multiple'
+            allowClear
+            showSearch
+            placeholder="Select an section"
+            options={sectionArry?.map((item) => ({
+              value: item?.name,   
+              label: `${item?.name}`,
+            }))}
+           
           />
           </Form.Item>
           
@@ -191,7 +209,8 @@ function Weekly4Form() {
 
 
     </>
-  );
+    )
+  };
 
   const renderSections = (title, questions, namePrefix) => (
     <>
@@ -203,7 +222,7 @@ function Weekly4Form() {
       {questions.map((question, index) => (
         <Col md={12} key={`${namePrefix}${index}`}>
           <div className="mb-3 shadow-sm p-3">
-            <RenderRadioFormItem classSelection={index < 2 ? true : false} inputBox={index === 3 ? true : false} selectBox={index === 2 ? true : false} name={[namePrefix, index]} label={question} question={question} />
+            <RenderRadioFormItem classSelection={index < 2 ? true : false} inputBox={index >= 3 ? true : false} selectBox={index === 2 ? true : false} name={[namePrefix, index]} label={question} question={question} />
           </div>
         </Col>
       ))}
@@ -356,6 +375,7 @@ function Weekly4Form() {
                     "I have uploaded experiential/active Lesson Plan for the next week that includes triggers/visual or auditory stimulus.",
                     "My last corrected work is not beyond a fortnight.",
                     "Names of Detained Students with Class.",
+                    "Name of I Care Forms filled along with reason"
                   ],
                   "FormData"
                 )}

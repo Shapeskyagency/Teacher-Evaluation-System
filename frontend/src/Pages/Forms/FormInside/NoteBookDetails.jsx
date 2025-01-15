@@ -170,7 +170,6 @@ const NoteBookDetails = () => {
                   key={option?.id || option}
                   value={option?.value || option}
                 >
-                  {name === "Section" && console.log(option)}
                   {option?.name || option}
                 </Option>
               ))}

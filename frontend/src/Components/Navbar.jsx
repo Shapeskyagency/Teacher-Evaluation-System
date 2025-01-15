@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { getUserId } from '../Utils/auth';
 import { useSelector } from 'react-redux';
-import { Dropdown, Menu, message } from 'antd';
+import { Drawer, Dropdown, Menu, message } from 'antd';
 import { BellFilled, MenuOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { BsHammer } from 'react-icons/bs';
+import Sidebar from './Sidebar';
 
 function Navbar() {
   const role = getUserId().access;
@@ -24,13 +25,22 @@ const navigate = useNavigate()
 
   const menu = <Menu items={menuItems} onClick={onClick} />;
 
+  const [open, setOpen] = useState(false);
+  const showDrawer = () => {
+    setOpen(true);
+  };
+  const onClose = () => {
+    setOpen(false);
+  };
+ 
+
   return (
     <div>
-      <div className="d-flex gap-3">
-        <div><MenuOutlined/></div>
-        <p className="fs-5 fw-bold mb-0">
-          Hi,
-          {role === 'Superadmin' && ' Super admin'}
+      <div className="d-flex  justify-content-between align-items-center gap-3 px-3">
+        <div className='d-lg-none py-0 px-4' onClick={()=>showDrawer()}><MenuOutlined /></div>
+        <p className="fs-5  mb-0 d-md-block d-none">
+          👋Hi, <spna className="fw-bold">{getUserId()?.name}</spna> you are an
+          {role === 'Superadmin' && ' Admin'}
           {role === 'Observer' && ' Observer'}
           {role === 'Teacher' && ' Teacher'}
         </p>
@@ -56,6 +66,17 @@ const navigate = useNavigate()
           </a>
         </Dropdown>
       </div>
+
+      <Drawer
+        placement={'left'}
+        closable={true}
+        onClose={onClose}
+        open={open}
+        key={'left'}
+        size='default'
+      >
+        <Sidebar/>
+      </Drawer>
     </div>
   );
 }

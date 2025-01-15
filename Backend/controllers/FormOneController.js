@@ -73,7 +73,7 @@ exports.createForm = async (req, res) => {
         Class: ${className}, Section: ${section}.
         Click here to fill the form: https://abcd.com/form/${formData._id}
       `;
-      // sendEmail(recipientEmail, subject, body);
+      await sendEmail(recipientEmail, subject, body);
 
       const notifications = new Notification({
         title: 'You are invited to fill the Fortnightly Monitor Form',
@@ -97,6 +97,7 @@ exports.createForm = async (req, res) => {
 exports.FormInitiation = async (req, res) => {
   const { isTeacher, teacherIDs } = req.body;
   const userId = req?.user?.id;
+  const userIdName = req?.user?.name;
 
   try {
     if (isTeacher && Array.isArray(teacherIDs) && teacherIDs.length > 0) {
@@ -110,23 +111,28 @@ exports.FormInitiation = async (req, res) => {
               isObserverInitiation:true,
               observerForm: {},
               teacherForm: {},
-              teacherID:teacher?._id
+              teacherID:teacher?._id,
+              date:new Date()
             });
 
             // Save the form
             await formData.save();
 
             // Send email and create notification
-            const subject = 'New Fortnightly Monitor Form Created';
+            const subject = 'Fortnightly Monitor Form Initiated';
             const body = `
-              A new Fortnightly Monitor Form has been created for:
-              Click here to fill the form: https://abcd.com/form/${formData._id}
+            Dear ${teacher.name},
+            The Fortnightly Monitor form has been initiated by ${userIdName} on ${formData?.date}. Kindly review and complete your section at your earliest convenience.
+            <a href="https://evaluation.dlps.co.in/fortnightly-monitor/create/${formData._id}">Click & Continute Form</a>
+            Regards,
+            The Admin Team
             `;
-            // sendEmail(teacher.email, subject, body);
+
+           const email = await sendEmail(teacher.email, subject, body);
 
             const notification = new Notification({
               title: 'You are invited to fill the Fortnightly Monitor Form',
-              route: `fortnightly-monitor/initiate/create/${formData._id}`,
+              route: `fortnightly-monitor/create/${formData._id}`,
               reciverId: teacher._id,
               date: new Date(),
               status: 'unSeen',

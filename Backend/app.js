@@ -13,11 +13,13 @@ require('dotenv').config();
 const cors = require('cors')
 const app = express();
 app.use(cors({
-    // credentials: true,
-    origin: ['https://teacher-evaluation-system-nine.vercel.app',"http://localhost:3000"],  // Allow all origins
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',  // Allow these HTTP methods
-    allowedHeaders: 'Content-Type,Authorization',  // Allow these headers
+    origin: process.env.APP_URL,
+    //  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    headers: ["Content-Type",'Authorization'],
+    credentials: true,
 }));
+
+
 
 
 // app.use(cors())

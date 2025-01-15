@@ -41,7 +41,6 @@ function NoteBookInisiate() {
         teacherIDs: values?.teacherIDs || "",
       };
       
-  console.log(payload)
       setLoading(true);
       try {
         const response = await dispatch(createInitiate(payload)).unwrap();
