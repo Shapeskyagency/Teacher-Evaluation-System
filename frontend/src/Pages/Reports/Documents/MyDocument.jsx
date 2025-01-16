@@ -122,7 +122,7 @@ const MyDocument = ({ data }) => {
             <View
                 style={[
                   styles.Question,
-                  {
+                   {
                     padding: 5,
                     paddingBottom: 3,
                     paddingTop: 3,

@@ -29,7 +29,7 @@ const NoteBookDetails = () => {
   const [currStep, setCurrStep] = useState(0);
   const [formData, setFormData] = useState({});
   const [newData, setNewData] = useState([]);
-  const [sectionState, setSectionState]= useState([]);
+  const [sectionState, setSectionState] = useState([]);
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -48,19 +48,19 @@ const NoteBookDetails = () => {
       message.error("Somthing went worng!")
     }
   }
-   const fetchClassData = async () => {
-      try {
-        const res = await dispatch(getCreateClassSection());
-        if (res?.payload?.success) {
-          setNewData(res?.payload?.classDetails.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
-        } else {
-          message.error('Failed to fetch class data.');
-        }
-      } catch (error) {
-        console.error('Error fetching class data:', error);
-        message.error('An error occurred while fetching class data.');
-      } 
-    };
+  const fetchClassData = async () => {
+    try {
+      const res = await dispatch(getCreateClassSection());
+      if (res?.payload?.success) {
+        setNewData(res?.payload?.classDetails.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+      } else {
+        message.error('Failed to fetch class data.');
+      }
+    } catch (error) {
+      console.error('Error fetching class data:', error);
+      message.error('An error occurred while fetching class data.');
+    }
+  };
 
   useEffect(() => {
     fetchClassData();
@@ -88,105 +88,92 @@ const NoteBookDetails = () => {
   ];
 
   const yesNoNAOptions = [
-    { value: "0", label: <BsEmojiSmile size={25} /> },
-    { value: "1", label: <BsEmojiNeutral size={25} /> },
-    { value: "-1", label: <BsEmojiFrown size={25} /> },
+    { value: "1", label: "1" },
+    { value: "2", label: "2" },
+    { value: "3", label: "3" },
+    { value: "N/A", label: "N/A" },
   ];
 
-  
+
   const SectionSubject = (value) => {
     if (value) {
       const filteredData = newData.filter((data) => data?._id === value);
       if (filteredData.length > 0) {
         setSectionState(filteredData[0]);
-      }         
-      
+      }
+
     }
-  
+
     return []; // Return an empty array if value is falsy
   };
-  
+
 
 
 
 
   const generalDetailsConfig = useMemo(
     () => [
-    {
-      name: "NameofObserver",
-      label: "Name of Observer",
-      type: "select",
-      options: GetObserverLists?.map((item) => ({
-        id: item?._id,
-        value: item?._id,
-        name: item?.name,
-      })),
-      list: "Observer",
-    },
-    { name: "DateOfObservation", label: "Date of Observation", type: "date" },
-    {
-      name: "className",
-      label: "Class Name",
-      type: "select",
-      options: newData.map((item) => ({
-        id: item._id,
-        value: item?._id,
-        name: item.className,
-      })),
-    },
-    {
-      name: "Section",
-      label: "Section",
-      type: "select",
-      options:  sectionState?.sections?.map((item) => ({
-        id: item._id,
-        value: item?.name,
-        name: item.name,
-      })),
-    },
-    {
-      name: "Subject",
-      label: "Subject",
-      type: "select",
-      options: sectionState?.subjects?.map((item) => ({
-        id: item._id,
-        value: item?.name,
-        name: item.name,
-      })),
-    },
-    { name: "ClassStrength", label: "Class Strength", type: "input" },
-    { name: "NotebooksSubmitted", label: "Notebooks Submitted", type: "input" },
-    { name: "Absentees", label: "Absentees", type: "input" },
-    { name: "Defaulters", label: "Defaulters", type: "input" },
-  ], [GetObserverLists, newData, sectionState]
-);
+      {
+        name: "NameofObserver",
+        label: "Name of Observer",
+        type: "select",
+        options: GetObserverLists?.map((item) => ({
+          id: item?._id,
+          value: item?._id,
+          name: item?.name,
+        })),
+        list: "Observer",
+      },
+      { name: "DateOfObservation", label: "Date of Observation", type: "date" },
+      {
+        name: "className",
+        label: "Class Name",
+        type: "select",
+        options: newData.map((item) => ({
+          id: item._id,
+          value: item?._id,
+          name: item.className,
+        })),
+      },
+      {
+        name: "Section",
+        label: "Section",
+        type: "select",
+        options: sectionState?.sections?.map((item) => ({
+          id: item._id,
+          value: item?.name,
+          name: item.name,
+        })),
+      },
+      {
+        name: "Subject",
+        label: "Subject",
+        type: "select",
+        options: sectionState?.subjects?.map((item) => ({
+          id: item._id,
+          value: item?.name,
+          name: item.name,
+        })),
+      },
+      { name: "ClassStrength", label: "Class Strength", type: "input" },
+      { name: "NotebooksSubmitted", label: "Notebooks Submitted", type: "input" },
+      { name: "Absentees", label: "Absentees", type: "input" },
+      { name: "Defaulters", label: "Defaulters", type: "input" },
+    ], [GetObserverLists, newData, sectionState]
+  );
 
   const renderFormItem = ({ name, label, type, options, list }) => {
     const inputProps = {
       select: (
-        <Select size="large" placeholder={`Select ${label.toLowerCase()}`}  onChange={(value)=>SectionSubject(value)}>
-         {options?.map((option) => (
-                <Option
-                  key={option?.id || option}
-                  value={option?.value || option}
-                >
-                  {option?.name || option}
-                </Option>
-              ))}
-          {/* {options?.map((option) =>
-            list === "Observer" ? (
-              <Select.Option key={option?._id} value={option?._id}>
-                {option?.name}
-              </Select.Option>
-            ) : (
-              <Select.Option
-              key={option?.id }
-              value={name==="className"? option?.id: option?.id}
+        <Select size="large" placeholder={`Select ${label.toLowerCase()}`} onChange={(value) => SectionSubject(value)}>
+          {options?.map((option) => (
+            <Option
+              key={option?.id || option}
+              value={option?.value || option}
             >
-              {option?.name}
-            </Select.Option>
-            )
-          )} */}
+              {option?.name || option}
+            </Option>
+          ))}
         </Select>
       ),
       date: (
@@ -220,9 +207,9 @@ const NoteBookDetails = () => {
 
   const renderGeneralDetails = () =>
     generalDetailsConfig.map((item) => (
-      <Col md={6} key={item.name}>
+      <div key={item.name}>
         {renderFormItem(item)}
-      </Col>
+      </div>
     ));
 
   const Questions = {
@@ -310,7 +297,7 @@ const NoteBookDetails = () => {
 
   const renderMaintenanceQuestions = () => (
     <>
-      <Col md={8}>
+      <Col md={12}>
         <h2
           className="mb-3 px-3 py-3 rounded-3 text-primary"
           style={{ background: "#f7f7f7" }}
@@ -319,7 +306,7 @@ const NoteBookDetails = () => {
         </h2>
       </Col>
       {Questions["maintenanceOfNotebooks"].map((question, index) => (
-        <Col md={8} key={`maintenanceOfNotebooks-${index}`}>
+        <Col md={12} key={`maintenanceOfNotebooks-${index}`}>
           <Card className="mb-3 shadow-sm">
             <RadioFormItem
               name={["maintenanceOfNotebooks", index]}
@@ -333,7 +320,7 @@ const NoteBookDetails = () => {
 
   const renderQualityOfOppurtunities = () => (
     <>
-      <Col md={8}>
+      <Col md={12}>
         <h2
           className="mb-3 px-3 py-3 rounded-3 text-primary"
           style={{ background: "#f7f7f7" }}
@@ -342,7 +329,7 @@ const NoteBookDetails = () => {
         </h2>
       </Col>
       {Questions["qualityOfOppurtunities"].map((question, index) => (
-        <Col md={8} key={`qualityOfOppurtunities-${index}`}>
+        <Col md={12} key={`qualityOfOppurtunities-${index}`}>
           <Card className="mb-3 shadow-sm">
             <RadioFormItem
               name={["qualityOfOppurtunities", index]}
@@ -357,7 +344,7 @@ const NoteBookDetails = () => {
 
   const renderQualityOfTeacherFeedback = () => (
     <>
-      <Col md={8}>
+      <Col md={12}>
         <h2
           className="mb-3 px-3 py-3 rounded-3 text-primary"
           style={{ background: "#f7f7f7" }}
@@ -366,7 +353,7 @@ const NoteBookDetails = () => {
         </h2>
       </Col>
       {Questions["qualityOfTeacherFeedback"].map((question, index) => (
-        <Col md={8} key={`qualityOfTeacherFeedback-${index}`}>
+        <Col md={12} key={`qualityOfTeacherFeedback-${index}`}>
           <Card className="mb-3 shadow-sm">
             <RadioFormItem
               name={["qualityOfTeacherFeedback", index]}
@@ -380,7 +367,7 @@ const NoteBookDetails = () => {
 
   const renderQualityOfLearner = () => (
     <>
-      <Col md={8}>
+      <Col md={12}>
         <h2
           className="mb-3 px-3 py-3 rounded-3 text-primary"
           style={{ background: "#f7f7f7" }}
@@ -389,7 +376,7 @@ const NoteBookDetails = () => {
         </h2>
       </Col>
       {Questions["qualityOfLearner"].map((question, index) => (
-        <Col md={8} key={`qualityOfLearner-${index}`}>
+        <Col md={12} key={`qualityOfLearner-${index}`}>
           <Card className="mb-3 shadow-sm">
             <RadioFormItem
               name={["qualityOfLearner", index]}
@@ -438,7 +425,44 @@ const NoteBookDetails = () => {
     }
   };
 
+  const [assessmentScore, setAssessmentScore] = useState(0);
+  const [outOfScore, setOutOfScore] = useState(0);
 
+  const calculateSelfAssessmentScore = (formValues) => {
+    let count = 0; // Initialize score count
+    let outOfCount = 0; // Initialize total count
+
+    // Array of keys to iterate over
+    const keyObject = [
+      'maintenanceOfNotebooks',
+      'qualityOfOppurtunities',
+      'qualityOfTeacherFeedback',
+      'qualityOfLearner',
+    ];
+
+    keyObject.forEach((key) => {
+      const answers = formValues[key] || []; // Safely get the answers array
+
+      answers.forEach((item) => {
+        if (item?.answer) {
+          // Increment score and outOfCount based on answer
+          const score = item.answer === 'N/A' ? 0 : parseInt(item.answer);
+          if (score >= 1 && score <= 3) {
+            count += score;
+            outOfCount += 3;
+          }
+        }
+      });
+    });
+
+    // Update states with the calculated values
+    setOutOfScore(outOfCount);
+    setAssessmentScore(count);
+  };
+const getPercentafe =(get, from)=>{
+ const numberVal = get / from * 100;
+ return numberVal || '0'
+}
 
   return (
     <div className="container">
@@ -452,24 +476,35 @@ const NoteBookDetails = () => {
           {loading && <div className="LoaderWrapper" >
             <Spin size="large" className="position-absolute" />
           </div>}
-          <Form form={form} layout="vertical" className="w-100">
+          <Form form={form} layout="vertical" className="w-100" onValuesChange={(changedValues, allValues) => {
+            calculateSelfAssessmentScore(allValues); // Trigger the calculation
+          }} >
             <Container className="mt-5">
-              <Row className="justify-content-start flex-column align-items-start">
-                {currStep === 0 && renderGeneralDetails()}
-                {currStep === 1 && (
-                  <>
-                    {renderMaintenanceQuestions()}
-                    {renderQualityOfOppurtunities()}
+              <Row className="justify-content-start  align-items-start">
+                <Col md={6} className="overflow-auto" style={{ height: "80vh" }}>
 
-                  </>
-                )}
+                  {currStep === 0 && renderGeneralDetails()}
+                  {currStep === 1 && (
+                    <>
+                      {renderMaintenanceQuestions()}
+                      {renderQualityOfOppurtunities()}
+                      {renderQualityOfTeacherFeedback()}
+                      {renderQualityOfLearner()}
+                    </>
+                  )}
 
-                {currStep === 2 && (
-                  <>
-                    {renderQualityOfTeacherFeedback()}
-                    {renderQualityOfLearner()}
-                  </>
-                )}
+                  {currStep === 2 && (
+                    <>
+
+                    </>
+                  )}
+                </Col>
+                <Col md={6}>
+                  <Card>
+                    <h4>Assement Score: {assessmentScore} Out Of {outOfScore} </h4>
+                    <h6>Precentage {getPercentafe(assessmentScore,outOfScore)}%</h6>
+                  </Card>
+                </Col>
 
                 <Col
                   md={currStep === 0 ? 6 : 8}
@@ -497,6 +532,7 @@ const NoteBookDetails = () => {
             </Container>
           </Form>
         </Col>
+
       </Row>
     </div>
   );

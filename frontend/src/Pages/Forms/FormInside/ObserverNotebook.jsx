@@ -45,9 +45,10 @@ function ObserverNotebook() {
   }, [dispatch, FormId]);
 
   const yesNoNAOptions = [
-    { value: "0", label: <BsEmojiSmile size={20} />, Color: 'orange' },
-    { value: "1", label: <BsEmojiNeutral size={20} />, Color: 'green' },
-    { value: "-1", label: <BsEmojiFrown size={20} />, Color: 'red' },
+    { value: "1", label: "1" },
+    { value: "2", label: "2" },
+    { value: "3", label: "3" },
+    { value: "N/A", label: "N/A" },
   ];
 
   const generalDetailsConfig = [
@@ -112,7 +113,6 @@ function ObserverNotebook() {
 
   const RenderRadioFormItem = ({ name, label, question, isTextArea }) => {
     const [showRemark, setShowRemark] = useState(false);
-
     return (
 
       <>
@@ -182,7 +182,7 @@ function ObserverNotebook() {
         <Col md={6} key={`${namePrefix}${index}`} className=''>
           <div className='Question-Wraaper px-2 mb-5'>
             <div className='Question-andInput py-2'>
-              <RenderRadioFormItem question name={[namePrefix, index]}
+              <RenderRadioFormItem question={question} name={[namePrefix, index]}
                 label={question}
                 isTextArea={true} />
             </div>
@@ -212,7 +212,6 @@ function ObserverNotebook() {
       data,
       id: FormId,
     };
-
     const response = await dispatch(ObserverNotebookComplete(payload));
     if (response?.payload?.message) {
       message.success(response?.payload?.message);
