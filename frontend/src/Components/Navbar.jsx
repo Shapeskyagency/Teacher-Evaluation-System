@@ -39,7 +39,7 @@ const navigate = useNavigate()
       <div className="d-flex  justify-content-between align-items-center gap-3 px-3">
         <div className='d-lg-none py-0 px-4' onClick={()=>showDrawer()}><MenuOutlined /></div>
         <p className="fs-5  mb-0 d-md-block d-none">
-          👋Hi, <spna className="fw-bold">{getUserId()?.name}</spna> you are an
+          👋Hi, <span className="fw-bold">{getUserId()?.name}</span> you are an
           {role === 'Superadmin' && ' Admin'}
           {role === 'Observer' && ' Observer'}
           {role === 'Teacher' && ' Teacher'}
