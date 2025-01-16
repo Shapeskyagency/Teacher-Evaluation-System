@@ -7,7 +7,14 @@ const sendEmail = require("../utils/emailService");
 // Create a new Weekly4Form
 exports.createWeekly4Form = async (req, res) => {
   const { id: userId } = req?.user || {};
-  const { teacherId: teacherIds = [], FormData, date, dateOfSubmission, isCompleted, isInitiated } = req.body;
+  const {
+    teacherId: teacherIds = [],
+    FormData,
+    date,
+    dateOfSubmission,
+    isCompleted,
+    isInitiated,
+  } = req.body;
 
   try {
     // Step 1: Validate user existence
@@ -16,41 +23,52 @@ exports.createWeekly4Form = async (req, res) => {
       return res.status(400).json({ success: false, error: "User not found" });
     }
 
-    const Payload2 = {
-      date,
-      isInitiated
-    };
-      // Step 5: Handle form creation based on isInitiated
-      if (isInitiated?.status) {
-        return handleInitiatedForms(teacherIds, Payload2, res);
-      }
-    // Step 2: Fetch class names for each classId in FormData
+    // Step 2: Handle initiated forms directly
+    if (isInitiated?.status) {
+      const payload = { date, isInitiated };
+      return handleInitiatedForms(teacherIds, payload, res);
+    }
+
+    // Step 3: Fetch class names for each classId in FormData
     const classNamesMap = await getClassNamesForFormData(FormData);
-    // Step 3: Replace classId with className in FormData
-    FormData.forEach((formItem) => {
-      if (formItem?.classId && Array.isArray(formItem?.classId)) {
-        formItem.classId = formItem.classId.map(classId => classNamesMap[classId] || null);
+
+    // Step 4: Replace classId with className in FormData
+    const updatedFormData = FormData.map((formItem) => {
+      if (formItem?.classId && Array.isArray(formItem.classId)) {
+        return {
+          ...formItem,
+          classId: formItem.classId.map((classId) => classNamesMap[classId] || null),
+        };
       }
+      return formItem;
     });
 
-    // Step 4: Prepare the payload
-    const Payload = {
-      FormData,
+    // Step 5: Prepare the payload
+    const payload = {
+      FormData: updatedFormData,
       date,
       dateOfSubmission,
       isCompleted,
       isInitiated,
-      teacherId: userId
+      teacherId: userId,
     };
 
-    
+    // Step 6: Process observers and create forms
+    if (payload?.isInitiated?.Observer?.length) {
+      for (const observer of payload.isInitiated.Observer) {
+        const observerPayload = { ...payload, isInitiated: { ...payload.isInitiated, Observer: observer } };
+        return createNonInitiatedForm(observerPayload, res);
+      }
+    } else {
+      return createNonInitiatedForm(payload, res);
+    }
 
-    // Step 6: Create non-initiated form
-    return createNonInitiatedForm(Payload, res);
+    return res.status(200).json({ success: true, message: "Form processed successfully." });
   } catch (error) {
     return res.status(400).json({ success: false, error: error.message });
   }
 };
+
 
 // Helper function to get class names for FormData
 const getClassNamesForFormData = async (FormData) => {
@@ -99,9 +117,24 @@ const handleInitiatedForms = async (teacherIds, Payload, res) => {
   
     const dataPush = await Promise.all(
       teacherIds.map(async (teacherId) => {
-        Payload.teacherId=teacherId
+        Payload.teacherId=teacherId;
+        const teachName = await User.findById(teacherId);
+        const ObserverName = await User.findById(Payload?.isInitiated?.Observer);
+
         const newForm = new Weekly4Form(Payload);
         const savedForm = await newForm.save();
+
+
+             // Send email and create notification
+     const subject = 'Learning Progress Checklist Initiated';
+     const body = `
+Dear ${teachName?.name},
+The Learning Progress Checklist has been initiated by ${ObserverName?.name} on ${new Date()}. Please fill out your section at your earliest convenience.
+Regards,
+The Admin Team
+     `;
+     await sendEmail(teachName.email, subject, body);
+
         if (!savedForm) throw new Error("Form not saved");
         return savedForm;
       })
@@ -115,8 +148,26 @@ const handleInitiatedForms = async (teacherIds, Payload, res) => {
 // Helper function to handle non-initiated forms (single form)
 const createNonInitiatedForm = async (Payload, res) => {
   try {
+
+    const UserName = await User.findById(Payload?.isInitiated?.Observer);
+    const teacher = await User.findById(Payload?.teacherId);
+    console.log(teacher)
+      if(!UserName){
+        res.status(404).send({message:"Observer Not Exist!"})
+      }
     const newForm = new Weekly4Form(Payload);
     const savedForm = await newForm.save();
+
+     // Send email and create notification
+     const subject = 'Teacher Submission for Learning Progress Checklist';
+     const body = `
+     Dear ${UserName?.name},
+    ${teacher?.name} has submitted their section of the Learning Progress Checklist on ${new Date()}. Please review and take necessary action.
+    Regards,
+    The Admin Team
+     `;
+     await sendEmail(UserName.email, subject, body);
+
     if (!savedForm) return res.status(400).json({ success: false, error: "Form not saved" });
     return res.status(201).json({ success: true, data: savedForm });
   } catch (error) {

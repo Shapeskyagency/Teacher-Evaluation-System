@@ -351,6 +351,7 @@ const [sectionArry, SetSectionArry] =useState();
                 <h6>Select Observer</h6>
                     <Select
                     className='w-100 mb-4'
+                    mode='multiple'
                       allowClear
                       showSearch
                       placeholder="Select a Observer"

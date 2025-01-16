@@ -118,17 +118,7 @@ exports.FormInitiation = async (req, res) => {
             // Save the form
             await formData.save();
 
-            // Send email and create notification
-            const subject = 'Fortnightly Monitor Form Initiated';
-            const body = `
-            Dear ${teacher.name},
-            The Fortnightly Monitor form has been initiated by ${userIdName} on ${formData?.date}. Kindly review and complete your section at your earliest convenience.
-            <a href="https://evaluation.dlps.co.in/fortnightly-monitor/create/${formData._id}">Click & Continute Form</a>
-            Regards,
-            The Admin Team
-            `;
-
-           const email = await sendEmail(teacher.email, subject, body);
+          
 
             const notification = new Notification({
               title: 'You are invited to fill the Fortnightly Monitor Form',
