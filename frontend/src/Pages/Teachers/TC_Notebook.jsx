@@ -70,10 +70,12 @@ function TC_Notebook() {
     }
   }, [dispatch, FormId]);
 
+
   const yesNoNAOptions = [
-    { value: "0", label: <BsEmojiSmile size={25} /> },
-    { value: "1", label: <BsEmojiNeutral size={25} /> },
-    { value: "-1", label: <BsEmojiFrown size={25} /> },
+    { value: "1", label: "1" },
+    { value: "2", label: "2" },
+    { value: "3", label: "3" },
+    { value: "N/A", label: "N/A" },
   ];
 
   // const generalDetailsConfig = [
@@ -256,7 +258,7 @@ const generalDetailsConfig = useMemo(
       {questions?.map((question, index) => (
         <Col md={12} key={`${namePrefix}${index}`}>
           <Card className="mb-3 shadow-sm">
-            <RenderRadioFormItem question name={[namePrefix, index]}
+            <RenderRadioFormItem question={question} name={[namePrefix, index]}
               label={question}
               isTextArea={true} />
           </Card>
@@ -280,18 +282,62 @@ const generalDetailsConfig = useMemo(
       data,
       id: FormId,
     };
-  
       const response = await dispatch(EditNoteBook(payload));
       if(response?.payload && response?.payload?.success) {
         navigate('/notebook-checking-proforma');
       message.success(response?.payload?.message);
   };
   };
+
+
+
+  
+    const [assessmentScore, setAssessmentScore] = useState(0);
+    const [outOfScore, setOutOfScore] = useState(0);
+  
+    const calculateSelfAssessmentScore = (formValues) => {
+      let count = 0; // Initialize score count
+      let outOfCount = 0; // Initialize total count
+  
+      // Array of keys to iterate over
+      const keyObject = [
+        'maintenanceOfNotebooks',
+        'qualityOfOppurtunities',
+        'qualityOfTeacherFeedback',
+        'qualityOfLearner',
+      ];
+  
+      keyObject.forEach((key) => {
+        const answers = formValues[key] || []; // Safely get the answers array
+  
+        answers.forEach((item) => {
+          if (item?.answer) {
+            // Increment score and outOfCount based on answer
+            const score = item.answer === 'N/A' ? 0 : parseInt(item.answer);
+            if (score >= 1 && score <= 3) {
+              count += score;
+              outOfCount += 3;
+            }
+          }
+        });
+      });
+  
+      // Update states with the calculated values
+      setOutOfScore(outOfCount);
+      setAssessmentScore(count);
+    };
+  const getPercentafe =(get, from)=>{
+   const numberVal = get / from * 100;
+   return numberVal || '0'
+  }
   return (
     <Container className="mt-3">
       <Row>
-        <Col md={6}>
-          <Form form={form} layout="vertical">
+        <Col md={7}>
+          <Form form={form} layout="vertical" onValuesChange={(changedValues, allValues) => {
+            calculateSelfAssessmentScore(allValues); // Trigger the calculation
+          }} >
+            <div className='overflow-auto px-3' style={{height:"90vh"}}>
             <div className="mb-5">
               <h3 className="mb-4">Maintenance Of Notebooks</h3>
               <Form.Item
@@ -366,6 +412,7 @@ const generalDetailsConfig = useMemo(
                 "qualityOfLearner"
               )}
             </div>
+            </div>
             {/* <div>
               {renderGeneralDetails2()}
             </div> */}
@@ -374,6 +421,10 @@ const generalDetailsConfig = useMemo(
               Submit
             </Button>
           </Form>
+        </Col>
+        <Col md={5}>
+              <h4>Asessment Score: {assessmentScore} out of {outOfScore}</h4>
+              <p>{getPercentafe(assessmentScore,outOfScore)}%</p>
         </Col>
     
       </Row>
