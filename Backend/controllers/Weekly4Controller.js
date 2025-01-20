@@ -149,9 +149,8 @@ The Admin Team
 const createNonInitiatedForm = async (Payload, res) => {
   try {
 
-    const UserName = await User.findById(Payload?.isInitiated?.Observer);
     const teacher = await User.findById(Payload?.teacherId);
-    console.log(teacher)
+    const UserName = await User.findById(Payload?.isInitiated?.Observer);
     if (!UserName) {
       res.status(404).send({ message: "Observer Not Exist!" })
     }
@@ -214,6 +213,8 @@ exports.updateWeekly4Form = async (req, res) => {
   const { FormData, date, dateOfSubmission, isCompleted, isInitiated } = req.body;
   try {
 
+   
+
     // Fetch class names for each classId in FormData
     const ClassArry = await Promise.all(
       FormData?.map(async (formItem) => {
@@ -245,6 +246,12 @@ exports.updateWeekly4Form = async (req, res) => {
       isInitiated
     }
 
+    const UserName = await User.findById(Payload?.isInitiated?.Observer);
+    const teacher = await User.findById(req.params.id);
+    if (!UserName) {
+      res.status(404).send({ message: "Observer Not Exist!" })
+    }
+
     const updatedForm = await Weekly4Form.findByIdAndUpdate(
       req.params.id,
       Payload,
@@ -254,6 +261,17 @@ exports.updateWeekly4Form = async (req, res) => {
     if (!updatedForm) {
       return res.status(404).json({ message: 'Form not found' });
     }
+
+    // Send email and create notification
+    const subject = 'Teacher Submission for Learning Progress Checklist';
+    const body = `
+     Dear ${UserName?.name},
+    ${teacher?.name} has submitted their section of the Learning Progress Checklist on ${new Date()}. Please review and take necessary action.
+    Regards,
+    The Admin Team
+     `;
+
+     await sendEmail(UserName.email, subject, body);
 
     res.status(200).json(updatedForm);
   } catch (error) {
