@@ -49,6 +49,11 @@ export const GetObserverPendignForms = createAsyncThunk('GetObserverPendignForms
   })
 
 
+  export const GetAllFormsForAdmin = createAsyncThunk('GetAllFormsForAdmin',async () => {
+    const response = await axiosInstanceToken.get(`/form/fortnightly-monitor/get/all`);
+      return response.data;
+  })
+
   const fortnightlySlice = createSlice({
     name: 'fortnightlySlice',
     initialState: {
@@ -128,6 +133,19 @@ export const GetObserverPendignForms = createAsyncThunk('GetObserverPendignForms
   state.error={message:"Server Error"}
 })
 
+.addCase(GetAllFormsForAdmin.pending,(state,action)=>{
+  state.loading= true;
+  state.error= action.payload
+})
+.addCase(GetAllFormsForAdmin.fulfilled,(state,action)=>{
+  state.loading= false;
+  state.getAllForms= action.payload
+})
+.addCase(GetAllFormsForAdmin.rejected,(state,action)=>{
+  state.loading= false;
+  state.error={message:"Server Error"}
+})
+
         //GetSingleFormsOne
 
         .addCase(GetSingleFormsOne.pending,(state,action)=>{
@@ -142,6 +160,8 @@ export const GetObserverPendignForms = createAsyncThunk('GetObserverPendignForms
           state.loading= false;
           state.error={message:"Server Error"}
         })
+
+        
 
     },
   });

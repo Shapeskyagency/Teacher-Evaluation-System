@@ -100,6 +100,10 @@ export const UserLogin = createAsyncThunk('UserLogin',async (payload) => {
       return response.data;
   })
 
+  export const getAllWeeklyFromAll = createAsyncThunk('getAllWeeklyFromAll',async (payload) => {
+    const response = await axiosInstanceToken.get(`/weekly4Form/get/all`);
+      return response.data;
+  })
 
 
 
@@ -200,6 +204,20 @@ const userSlice = createSlice({
         state.error=action.payload;
       })
       .addCase(getAllWeeklyFrom.rejected,(state,action)=>{
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(getAllWeeklyFromAll.pending,(state,action)=>{
+        state.loading =true;
+        state.error =null
+      })
+      .addCase(getAllWeeklyFromAll.fulfilled,(state,action)=>{
+        state.loading=false;
+        state.getAllWeeklyFroms =action.payload;
+        state.error=action.payload;
+      })
+      .addCase(getAllWeeklyFromAll.rejected,(state,action)=>{
         state.loading = false;
         state.error = action.payload;
       })

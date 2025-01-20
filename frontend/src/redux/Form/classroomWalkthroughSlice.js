@@ -32,6 +32,11 @@ export const CreateWalkThrough = createAsyncThunk('CreateWalkThrough',async (pay
       return response.data;
   })
 
+  export const GetAllClassRoomForms = createAsyncThunk('GetAllClassRoomForms',async (payload) => {
+    const response = await axiosInstanceToken.get(`classroom-walkthrough/teachers/get/all`);
+      return response.data;
+  })
+
 
 
   
@@ -88,6 +93,19 @@ export const CreateWalkThrough = createAsyncThunk('CreateWalkThrough',async (pay
           state.GetForms = action.payload; // Store the received form data
         })
         .addCase(TeacherwalkthroughForms.rejected, (state, action) => {
+          state.isLoading = false; // Set loading to false when the request fails
+          state.error = action.payload; // Store the error message
+        })
+
+
+        .addCase(GetAllClassRoomForms.pending, (state) => {
+          state.isLoading = true; // Set loading to true when the request is pending
+        })
+        .addCase(GetAllClassRoomForms.fulfilled, (state, action) => {
+          state.isLoading = false; // Set loading to false when the request is fulfilled
+          state.GetForms = action.payload; // Store the received form data
+        })
+        .addCase(GetAllClassRoomForms.rejected, (state, action) => {
           state.isLoading = false; // Set loading to false when the request fails
           state.error = action.payload; // Store the error message
         });

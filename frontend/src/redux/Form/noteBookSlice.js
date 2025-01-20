@@ -39,6 +39,13 @@ export const CreateNoteBookForm = createAsyncThunk('CreateNoteBookForm',async (p
       return response.data;
   })
 
+  export const getNootbookForms = createAsyncThunk('getNootbookForms',async (payload) => {
+    const response = await axiosInstanceToken.get(`${prefixURL}/get-all`);
+      return response.data;
+  })
+
+
+
 
 
 
@@ -98,6 +105,18 @@ export const CreateNoteBookForm = createAsyncThunk('CreateNoteBookForm',async (p
           state.GetForms2 = action.payload; // Store the received form data
         })
         .addCase(GetobserverForms.rejected, (state, action) => {
+          state.isLoading = false; // Set loading to false when the request fails
+          state.error = action.payload; // Store the error message
+        })
+        
+        .addCase(getNootbookForms.pending, (state) => {
+          state.isLoading = true; // Set loading to true when the request is pending
+        })
+        .addCase(getNootbookForms.fulfilled, (state, action) => {
+          state.isLoading = false; // Set loading to false when the request is fulfilled
+          state.GetForms2 = action.payload; // Store the received form data
+        })
+        .addCase(getNootbookForms.rejected, (state, action) => {
           state.isLoading = false; // Set loading to false when the request fails
           state.error = action.payload; // Store the error message
         });

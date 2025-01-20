@@ -320,3 +320,32 @@ exports.TeacherContinueForm = async (req, res) => {
         res.status(500).json({ message: "An error occurred while updating the form.", error });
     }
 };
+
+
+exports.getClassRoomForms = async (req,res) =>{
+    const userId = req?.user?.id;
+    try {
+        const GetAllForms = await Form2.find()
+        .populate({
+            path: 'teacherID',
+            select: '-password -mobile -employeeId -customId'
+        })
+        .populate({
+            path: 'createdBy',
+            select: '-password -mobile -employeeId -customId'
+        })
+        .populate({
+          path: 'grenralDetails.NameoftheVisitingTeacher',
+          select: '-password -mobile -employeeId -customId'
+      })
+        if(!userId){
+            return res.status(403).json({ message: "You do not have permission." });
+        }
+
+        res.status(200).send(GetAllForms)
+        
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({error: error, message:"somthing went wrong"})
+    }
+}
