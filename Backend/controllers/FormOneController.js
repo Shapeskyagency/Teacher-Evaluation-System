@@ -350,3 +350,34 @@ exports.getObserverDashboard = async (req, res) => {
     res.status(500).json({ message: 'Error fetching dashboard data.', error });
   }
 };
+
+
+
+exports.GetFormOneAdmin = async (req, res) => {
+  const userId = req?.user?.id;
+
+  try {
+      const GetAllForms = await Form1.find()
+      .populate({
+          path: 'teacherID',
+          select: '-password -mobile -employeeId -customId'
+      })
+      .populate({
+          path: 'userId',
+          select: '-password -mobile -employeeId -customId'
+      })
+      .populate({
+        path: 'coordinatorID',
+        select: '-password -mobile -employeeId -customId'
+    })
+      if(!userId && !userId?.id){
+          return res.status(403).json({ message: "You do not have permission." });
+      }
+
+      res.status(200).send(GetAllForms)
+
+  } catch (error) {
+      console.error("Error Getting Form One:", error);
+      res.status(500).json({ message: "Error Getting Form One.", error });
+  }
+}

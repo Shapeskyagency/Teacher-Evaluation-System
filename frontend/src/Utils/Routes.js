@@ -40,6 +40,10 @@ import Weely4Page from "../Pages/Observer/Weely4Page";
 import Weely4Form from "../Pages/Forms/Weely4Form";
 import NoteBookInisiate from "../Pages/Observer/NoteBookInisiate";
 import Weekly4FormReport from "../Pages/Reports/Weekly4FormReport";
+import Fortnightly from "../Pages/Admin/Fortnightly";
+import ClassRoom from "../Pages/Admin/ClassRoom";
+import NoteBook from "../Pages/Admin/NootBook";
+import Weekly from "../Pages/Admin/Weekly";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken() : null;
@@ -86,12 +90,13 @@ const protects = {
         { path: "/users/:id", element: <UserDetails /> },
         { path: "/reports", element: <UnderConstraction /> },
         { path: "/profile", element: <UserProfile /> },
-        { path: '/fortnightly-monitor', element: <FortnightlyMonitor /> },
-        { path: '/fortnightly-monitor/create', element: <BasicDetailsForm /> },
-        { path: '/fortnightly-monitor/create/:id', element: <Details /> },
+        { path: '/fortnightly-monitor', element: <Fortnightly /> },
         { path: '/fortnightly-monitor/report/:id', element: <Reader /> },
+        { path: "/classroom-walkthrough", element: <ClassRoom /> },
         { path: "/classroom-walkthrough/report/:id", element: <ClassroomWalkthroughReader /> },
-        { path: "/class-section", element: <ClassSectionPage /> },
+        { path: "/notebook-checking-proforma", element: <NoteBook /> },
+        { path: "/notebook-checking-proforma/report/:id", element: <NotebookPDF /> },
+        { path: "/weekly4form", element: <Weekly /> },
         { path: "*", element: <NotFound404 /> },
       ],
     },
@@ -123,13 +128,11 @@ const protects = {
         { path: "/classroom-walkthrough/edit/:id", element: <OB_WalkthroughEdit /> },
         { path: "/notebook-checking-proforma/edit/:id", element: <OB_Notebook /> },
         { path: "/notebook-checking-proforma/form-initiation", element: <NoteBookInisiate /> },
-
         { path: "/notebook-checking-proforma/report/:id", element: <NotebookPDF /> },
         { path: "/weekly4form", element: <Weely4Page /> },
         { path: "/weekly4form/create", element: <Weely4Form /> },
         { path: "/weekly4form/edit/:id", element: <Weely4Form /> },
         { path: "/weekly4form/report/:id", element: <Weekly4FormReport /> },
-        // { path: "/weekly4form/report/:id", element:<Weely4Form/> },
         { path: "*", element: <NotFound404 /> },
 
       ],
