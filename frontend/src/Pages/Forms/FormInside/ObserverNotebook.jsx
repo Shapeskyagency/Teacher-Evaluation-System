@@ -13,7 +13,7 @@ import {
   Spin,
   Tag,
 } from "antd";
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row, Table } from "react-bootstrap";
 import TextArea from "antd/es/input/TextArea";
 import { getAllTimes } from '../../../Utils/auth';
 import { BsEmojiFrown, BsEmojiNeutral, BsEmojiSmile } from 'react-icons/bs';
@@ -119,7 +119,7 @@ function ObserverNotebook() {
         <Form.Item
           className='mb-0 '
           name={[...name, "answer"]}
-          label={<h6 className="text-gray" style={{ fontSize: 16 }}>{label}</h6>}
+          // label={<h6 className="text-gray" style={{ fontSize: 16 }}>{label}</h6>}
           rules={[{ required: true, message: "Please select an answer!" }]}
         >
           <>
@@ -176,11 +176,35 @@ function ObserverNotebook() {
         >
           {title}
         </h2>
+        <Table className='table-responsive' style={{tableLayout: 'fixed'}} bordered hover>
+          <thead>
+            <tr >
+              <th style={{width: 500}}>Questions</th>
+              <th style={{width: 200}}>Options</th>
+              <th style={{width: 100}}>Responses</th>
+              <th style={{width: 100}}>Remarks</th>
+            </tr>
+          </thead>
+         
+    </Table>
       </Col>
       {questions?.map((question, index) => (
 
-        <Col md={6} key={`${namePrefix}${index}`} className=''>
-          <div className='Question-Wraaper px-2 mb-5'>
+        <Col md={12} key={`${namePrefix}${index}`} className=''>
+           <Table className='table-responsive shadow-sm rounded overflow-hidden border' style={{tableLayout: 'fixed'}} hover>
+           <tbody>
+        <tr>
+          <td style={{width: 500}}><h6>{question}</h6></td>
+          <td style={{width: 200}}> <RenderRadioFormItem question={question} name={[namePrefix, index]}
+                label={question}
+                isTextArea={true} /></td>
+          <td style={{width: 100}}>{formDataList?.TeacherForm?.[namePrefix]?.[index]?.answer ?? "No response available"}</td>
+          <td style={{width: 100}}>{formDataList?.TeacherForm?.[namePrefix]?.[index]?.remark ?? "No response available"}</td>
+        </tr>
+      </tbody>
+         
+    </Table>
+          {/* <div className='Question-Wraaper px-2 mb-5'>
             <div className='Question-andInput py-2'>
               <RenderRadioFormItem question={question} name={[namePrefix, index]}
                 label={question}
@@ -191,7 +215,7 @@ function ObserverNotebook() {
               {formDataList?.TeacherForm?.[namePrefix]?.[index]?.answer ?? "No response available"}
             </div>
 
-          </div>
+          </div> */}
         </Col>
       ))}
     </>
@@ -235,7 +259,7 @@ function ObserverNotebook() {
           <Col md={12}>
             <div className="basicDetailsWrapper mb-4 py-2">
               <h3 className='mt-2 mb-3'>Teacher Response</h3>
-              <div className="grid-wrapper">
+              <div className="grid-wrapper flex-md-nowrap flex-wrap">
                 <div className="sect1">
                   <p><span className="bold">Name:</span> {formDataList?.grenralDetails?.NameofObserver?.name}</p>
                   <p><span className="bold">Date Of Observation:</span> {getAllTimes(formDataList?.grenralDetails?.DateOfObservation).formattedDate2}</p>
