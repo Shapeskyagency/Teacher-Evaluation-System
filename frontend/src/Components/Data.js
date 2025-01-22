@@ -354,7 +354,9 @@ export const Formcolumns3 = [
       <Space size="middle">
         {(Role === UserRole[1] || Role === UserRole[2]) &&
           record?.isTeacherComplete &&
-          record?.isObserverComplete && (
+          record?.isObserverComplete &&
+          record?.isReflation &&
+          (
             <>
               <Link
                 className="btn btn-primary"
@@ -370,7 +372,16 @@ export const Formcolumns3 = [
               </Link>
             </>
           )}
-
+        {Role === UserRole[2] &&
+          (record?.isTeacherComplete &&
+          record?.isObserverComplete &&
+          !record?.isReflation ) && (
+            <Link
+              className="btn text-primary"
+              to={`/notebook-checking-proforma/complete/${record._id}`}>
+              Continue Form
+            </Link>
+          )}
 
         {Role === UserRole[2] && (
           !record?.isTeacherComplete && !record?.isObserverComplete &&
