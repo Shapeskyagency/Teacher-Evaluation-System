@@ -67,13 +67,14 @@ exports.createForm = async (req, res) => {
 
     // Send email and notification if recipient exists
     if (recipientEmail) {
-      const subject = 'New Fortnightly Monitor Form Created';
-      const body = `
-        A new Fortnightly Monitor Form has been created for:
-        Class: ${className}, Section: ${section}.
-        Click here to fill the form: https://abcd.com/form/${formData._id}
-      `;
-      await sendEmail(recipientEmail, subject, body);
+//       const subject = 'New Fortnightly Monitor Form Created';
+//       const body = `
+// Dear {Teacher Name},
+// The Fortnightly Monitor form has been initiated by {Observer Name} on {Date}. Kindly review and complete your section at your earliest convenience.
+// Regards,
+// The Admin Team
+//   `;
+//       await sendEmail(recipientEmail, subject, body);
 
       const notifications = new Notification({
         title: 'You are invited to fill the Fortnightly Monitor Form',
@@ -98,7 +99,7 @@ exports.FormInitiation = async (req, res) => {
   const { isTeacher, teacherIDs } = req.body;
   const userId = req?.user?.id;
   const userIdName = req?.user?.name;
-
+  let FormData;
   try {
     if (isTeacher && Array.isArray(teacherIDs) && teacherIDs.length > 0) {
       const teacherForms = await Promise.all(
@@ -116,8 +117,7 @@ exports.FormInitiation = async (req, res) => {
             });
 
             // Save the form
-            await formData.save();
-
+           FormData =  await formData.save();
           
 
             const notification = new Notification({
@@ -134,8 +134,19 @@ exports.FormInitiation = async (req, res) => {
           return null;
         })
       );
-
+      const checkForm = await Form1.findById(FormData._id).populate('teacherID coordinatorID userId');
       const validForms = teacherForms.filter((form) => form !== null);
+      const recipientEmail = checkForm?.teacherID?.email;
+      const recipientName = checkForm?.teacherID?.name;
+      const subject = 'Fortnightly Monitor Form Initiated';
+      const body = `
+Dear ${recipientName},
+The Fortnightly Monitor form has been initiated by ${checkForm?.coordinatorID?.name || checkForm?.userId?.name } on ${new Date()}. Kindly review and complete your section at your earliest convenience.
+Regards,
+The Admin Team
+  `;
+  
+      await sendEmail(recipientEmail, subject, body);
 
       if (validForms.length > 0) {
         return res.status(201).json({
@@ -238,7 +249,7 @@ exports.getSingleuserForm = async(req,res)=>{
 exports.FormFill = async (req, res) => {
   const formId = req.params.id
   try {
-    const data = await Form1.findById(formId)
+    const data = await Form1.findById(formId);
     const { 
       isCoordinatorComplete, 
       isTeacherComplete, 
@@ -248,6 +259,9 @@ exports.FormFill = async (req, res) => {
       date,
       Section
     } = req.body;
+
+    const FindClass = await ClassDetails.findById(className);
+
     
     if (data?.isObserverInitiation && (!className || !date || !Section)) {
       res.status(400).json({
@@ -276,14 +290,14 @@ exports.FormFill = async (req, res) => {
         isTeacherComplete, 
         TeacherSubmissionDate:new Date(),
         teacherForm,
-        className: data?.className || className,
+        className: FindClass?.className || className,
         date:data?.date || date,
         section:data?.section || Section
       };
     }
 
     // Update the form based on the formId
-    const updatedForm = await Form1.findByIdAndUpdate(formId, updateData, { new: true }).populate('teacherID')
+    const updatedForm = await Form1.findByIdAndUpdate(formId, updateData, { new: true }).populate('teacherID coordinatorID userId');
 
     // If no form was found, return a 404 error
     if (!updatedForm) {
@@ -299,6 +313,17 @@ exports.FormFill = async (req, res) => {
             date: new Date(),
             status: 'unSeen',
           });
+          const recipientEmail = updatedForm?.userId?.email || updatedForm?.userId?.email;
+          const recipientName = updatedForm?.userId?.name || updatedForm?.userId?.name;
+          const subject = 'Self-Assessment Submission Received for Fortnightly Monitor';
+          const body = ` 
+                        Dear ${recipientName},
+                        ${updatedForm?.teacherID?.name} has submitted their Self-Assessment of the Fortnightly Monitor form on ${new Date()}. Please review and fill your section.
+                        Regards,
+                        The Admin Team
+                          `;
+      
+          await sendEmail(recipientEmail, subject, body);
           await notifications.save();
         }
 

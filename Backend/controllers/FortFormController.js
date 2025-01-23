@@ -202,10 +202,14 @@ exports.GetObserverForm01 = async (req, res) => {
 
   try {
     // Query forms assigned to the user
-    const Assigned = await Form1.find({ coordinatorID: userId }).populate(populateOptions);
+    const Assigned = await Form1.find({ coordinatorID: userId })
+    .populate(populateOptions)
+    .populate('className');
 
     // Query forms with observer initiation
-    const Initiated = await Form1.find({userId, isObserverInitiation: true }).populate(populateOptions);
+    const Initiated = await Form1.find({userId, isObserverInitiation: true })
+    .populate(populateOptions)
+    .populate('className');
 
     // Combine both arrays while avoiding duplicates based on _id
     const Combined = [

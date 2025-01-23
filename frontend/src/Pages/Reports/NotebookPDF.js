@@ -33,6 +33,14 @@ const TableCard = React.memo(({ title, dataSource }) => (
             </Tag>
           ),
         },
+        {
+          title: 'Remarks',
+          dataIndex: 'remark',
+          key: 'remark',
+          render: (text) => (
+              <span>{text}</span>
+          ),
+        },
       ]}
     />
   </Card>
@@ -114,7 +122,7 @@ function NotebookPDF() {
               </div>
 
               <h5>Observer Notebook</h5>
-              <div className='d-flex gap-3'>
+              <div className='d-flex gap-3 mb-4'>
                 <p className='m-0'>
                   Absentees: <b>{formDataList?.NotebooksObserver?.Absentees}</b>
                 </p>
@@ -128,19 +136,50 @@ function NotebookPDF() {
                   Notebooks Submitted: <b>{formDataList?.NotebooksObserver?.NotebooksSubmitted}</b>
                 </p>
               </div>
+
+
+              <h5>Teacher Notebook</h5>
+              <div className='d-flex gap-3'>
+                <p className='m-0'>
+                  Absentees: <b>{formDataList?.NotebooksTeacher?.Absentees}</b>
+                </p>
+                <p className='m-0'>
+                  Class Strength: <b>{formDataList?.NotebooksTeacher?.ClassStrength}</b>
+                </p>
+                <p className='m-0'>
+                  Defaulters: <b>{formDataList?.NotebooksTeacher?.Defaulters}</b>
+                </p>
+                <p className='m-0'>
+                  Notebooks Submitted: <b>{formDataList?.NotebooksTeacher?.NotebooksSubmitted}</b>
+                </p>
+              </div>
             </div>
           </Col>
 
-          <Col md={12}>
+          <Col md={6}>
             <h3>Observer Response</h3>
           </Col>
+          <Col md={6} className='mt-4'>
+            <h3>Teacher Response</h3>
+          </Col>
 
-          <Col md={8}>
+          <Col md={6}>
             {keyObject.map((title, index) => (
               <TableCard
                 key={index}
                 title={title}
                 dataSource={getField(Object.keys(formDataList?.ObserverForm || {})[index])}
+              />
+            ))}
+          </Col>
+          
+
+          <Col md={6}>
+            {keyObject.map((title, index) => (
+              <TableCard
+                key={index + 4}
+                title={title}
+                dataSource={getField(Object.keys(formDataList?.TeacherForm || {})[index], 'TeacherForm')}
               />
             ))}
           </Col>
@@ -151,19 +190,7 @@ function NotebookPDF() {
             </Card>
           </Col>
 
-          <Col md={12} className='mt-4'>
-            <h3>Teacher Response</h3>
-          </Col>
-
-          <Col md={8}>
-            {keyObject.map((title, index) => (
-              <TableCard
-                key={index + 4}
-                title={title}
-                dataSource={getField(Object.keys(formDataList?.TeacherForm || {})[index], 'TeacherForm')}
-              />
-            ))}
-          </Col>
+         
         </Row>
       </Container>
     </div>

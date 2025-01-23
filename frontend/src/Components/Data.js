@@ -317,6 +317,22 @@ export const Formcolumns3 = [
       <span>{getAllTimes(text.DateOfObservation).formattedDate2 || "N/A"}</span>
     ), // Formatting the date
   },
+ 
+ 
+  {
+    title: "Teacher Status",
+    dataIndex: "isTeacherComplete",
+    key: "isTeacherComplete",
+    render: (text) => (
+      <Space size="middle">
+        {text ? (
+          <Tag color="green">COMPLETED</Tag>
+        ) : (
+          <Tag color="volcano">NOT COMPLETED</Tag>
+        )}
+      </Space>
+    ),
+  },
   {
     title: "Observer Status",
     dataIndex: "isObserverComplete",
@@ -332,9 +348,9 @@ export const Formcolumns3 = [
     ),
   },
   {
-    title: "Teacher Status",
-    dataIndex: "isTeacherComplete",
-    key: "isTeacherComplete",
+    title: "Reflection Status",
+    dataIndex: "isReflation",
+    key: "isReflation",
     render: (text) => (
       <Space size="middle">
         {text ? (
@@ -345,7 +361,6 @@ export const Formcolumns3 = [
       </Space>
     ),
   },
-
   {
     title: "Action",
     dataIndex: "action",
@@ -381,6 +396,14 @@ export const Formcolumns3 = [
               to={`/notebook-checking-proforma/complete/${record._id}`}>
               Continue Form
             </Link>
+          )}
+            {Role === UserRole[1] &&
+          (record?.isTeacherComplete &&
+          record?.isObserverComplete &&
+          !record?.isReflation ) && (
+            <Button size="large" className="btn-outline-primary">
+            Reminders
+          </Button>
           )}
 
         {Role === UserRole[2] && (
