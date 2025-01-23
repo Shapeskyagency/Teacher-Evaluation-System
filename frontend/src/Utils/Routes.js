@@ -98,6 +98,7 @@ const protects = {
         { path: "/notebook-checking-proforma/report/:id", element: <NotebookPDF /> },
         { path: "/weekly4form", element: <Weekly /> },
         { path: "/weekly4form/report/:id", element: <Weekly4FormReport /> },
+        { path: "/class-section", element: <ClassSectionPage/> },
 
         { path: "*", element: <NotFound404 /> },
       ],
