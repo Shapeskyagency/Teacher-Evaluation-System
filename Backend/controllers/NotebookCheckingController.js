@@ -184,7 +184,6 @@ exports.updateObserverFields = async (req, res) => {
         qualityOfOppurtunities,
         qualityOfTeacherFeedback,
         qualityOfLearner,
-
     } = req.body;
 
     try {
@@ -212,6 +211,7 @@ exports.updateObserverFields = async (req, res) => {
                 qualityOfLearner
             },
             observerFeedback,
+            isReflation: false
         };
 
         // Remove undefined or null values from the payload
