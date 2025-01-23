@@ -184,9 +184,14 @@ function NotebookPDF() {
             ))}
           </Col>
 
-          <Col md={4}>
+          <Col md={6}>
             <Card title="Observer Feedback" className='mt-4'>
               <p>{formDataList?.observerFeedback}</p>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card title="Teacher Reflation Feedback" className='mt-4'>
+              <p>{formDataList?.teacherReflationFeedback}</p>
             </Card>
           </Col>
 

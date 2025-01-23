@@ -44,6 +44,7 @@ import Fortnightly from "../Pages/Admin/Fortnightly";
 import ClassRoom from "../Pages/Admin/ClassRoom";
 import NoteBook from "../Pages/Admin/NootBook";
 import Weekly from "../Pages/Admin/Weekly";
+import NotebookComplete from "../Pages/Teachers/NotebookComplete";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken() : null;
@@ -75,6 +76,7 @@ const protects = {
         { path: "/weekly4form/create", element: <Weely4Form /> },
         { path: "/weekly4form/create/:id", element: <Weely4Form /> },
         { path: "/weekly4form/report/:id", element: <Weekly4FormReport /> },
+        { path: "/notebook-checking-proforma/complete/:id" , element: <NotebookComplete />},
         { path: "*", element: <NotFound404 /> },
       ],
     },
@@ -99,7 +101,6 @@ const protects = {
         { path: "/weekly4form", element: <Weekly /> },
         { path: "/weekly4form/report/:id", element: <Weekly4FormReport /> },
         { path: "/class-section", element: <ClassSectionPage/> },
-
         { path: "*", element: <NotFound404 /> },
       ],
     },

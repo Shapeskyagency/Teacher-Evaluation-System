@@ -37,7 +37,8 @@ const NotebookCheckingProforma = new Schema({
     isTeacherComplete:{type:Boolean, default:false},
     TeacherForm:questionForm,
     observerFeedback:{type:String, default:null},
-    isReflation:{type:Boolean, default:false}
+    isReflation:{type:Boolean, default:false},
+    teacherReflationFeedback:{type:String, default:null}
 
 })
 const Form3 = mongoose.model('Form3',  NotebookCheckingProforma);

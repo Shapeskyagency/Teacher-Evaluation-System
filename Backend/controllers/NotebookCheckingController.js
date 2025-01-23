@@ -457,3 +457,26 @@ exports.GetNootbookForms = async (req, res) => {
         res.status(500).json({ message: "Error Getting Form One.", error });
     }
 }
+
+exports.updateTeacherReflationFeedback = async (req, res) => {
+    const { id } = req.params;
+    const { reflation } = req.body;
+  
+    try {
+      const updatedForm = await Form3.findByIdAndUpdate(
+        id,
+        { teacherReflationFeedback: reflation, isReflation:reflation ? true:false }, 
+        { new: true }
+      );
+  
+      if (!updatedForm) {
+        return res.status(404).json({ message: "Form not found" });
+      }
+  
+      res.status(200).json({success:true});
+    } catch (error) {
+      console.error("Error updating teacher reflation feedback:", error);
+      res.status(500).json({ message: "Server error, please try again later" });
+    }
+  };
+  

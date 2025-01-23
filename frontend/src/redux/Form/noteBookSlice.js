@@ -44,6 +44,11 @@ export const CreateNoteBookForm = createAsyncThunk('CreateNoteBookForm',async (p
       return response.data;
   })
 
+  export const updateTeacherReflationFeedback = createAsyncThunk('updateTeacherReflationFeedback',async (payload) => {
+    const response = await axiosInstanceToken.put(`${prefixURL}/teacher/reflation/${payload?.id}`,payload.data);
+    return response.data;
+  })
+
 
 
 
