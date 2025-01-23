@@ -36,54 +36,64 @@ const NoteBookDetails = () => {
   const FormId = useParams()?.id
   const { loading, GetObserverLists } = useSelector((state) => state?.user);
   //   const {isLoading,formDataList} = useSelector((state)=>state?.walkThroughForm)
+// Fetch notebook form details
+const fetchNoteBookForm = async () => {
+  try {
+    const response = await dispatch(GetNoteBookForm(FormId));
+    const { isTeacherComplete, createdBy, isObserverComplete } = response?.payload;
+    const userId = getUserId().id;
+    const userAccess = getUserId().access;
 
-  const Fectch = async () => {
-    const data = await dispatch(GetNoteBookForm(FormId));
-    const { isTeacherComplete, createdBy, isObserverComplete } = data?.payload
-    if (isTeacherComplete && createdBy?._id === getUserId().id && getUserId().access === UserRole[2]) {
-      navigate(`/notebook-checking-proforma/report/${FormId}`)
-    } else if (isObserverComplete && createdBy?._id === getUserId().id && getUserId().access === UserRole[1]) {
-      navigate(`/notebook-checking-proforma/report/${FormId}`)
+    if (
+      (isTeacherComplete && createdBy?._id === userId && userAccess === UserRole[2]) ||
+      (isObserverComplete && createdBy?._id === userId && userAccess === UserRole[1])
+    ) {
+      navigate(`/notebook-checking-proforma/report/${FormId}`);
     } else {
-      message.error("Somthing went worng!")
+      message.error("Something went wrong!");
     }
+  } catch (error) {
+    console.error("Error fetching notebook form:", error);
+    message.error("Failed to fetch notebook form details.");
   }
-  const fetchClassData = async () => {
-    try {
-      const res = await dispatch(getCreateClassSection());
-      if (res?.payload?.success) {
-        setNewData(res?.payload?.classDetails.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
-      } else {
-        message.error('Failed to fetch class data.');
-      }
-    } catch (error) {
-      console.error('Error fetching class data:', error);
-      message.error('An error occurred while fetching class data.');
-    }
-  };
+};
 
-  useEffect(() => {
-    fetchClassData();
-    if (FormId) {
-      Fectch();
+// Fetch class and section data
+const fetchClassData = async () => {
+  try {
+    const response = await dispatch(getCreateClassSection());
+    if (response?.payload?.success) {
+      setNewData(
+        response?.payload?.classDetails.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        )
+      );
     } else {
-      dispatch(GetObserverList());
+      message.error("Failed to fetch class data.");
     }
+  } catch (error) {
+    console.error("Error fetching class data:", error);
+    message.error("An error occurred while fetching class data.");
+  }
+};
 
-  }, [dispatch])
+useEffect(() => {
+  fetchClassData();
+  if (FormId) {
+    fetchNoteBookForm();
+  } else {
+    dispatch(GetObserverList());
+  }
+}, [dispatch, FormId]);
 
-  const disableFutureDates = (current) => {
-    // Get the current date without the time part
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Reset time to 00:00:00 to compare only the date
-
-    // Disable dates that are in the future
-    return current && current.toDate() > today;
-  };
+const disableFutureDates = (current) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return current && current.toDate() > today;
+};
 
   const steps = [
     { title: "General Details" },
-    { title: "Proforma Details" },
     { title: "Final" },
   ];
 
@@ -245,7 +255,7 @@ const NoteBookDetails = () => {
 
   const RadioFormItem = ({ name, question }) => {
     const [showRemark, setShowRemark] = useState(false);
-
+ 
     return (
       <div>
         {/* Answer Field */}
@@ -282,15 +292,14 @@ const NoteBookDetails = () => {
         </Form.Item>
 
         {/* Remark Field */}
-        {showRemark && (
           <Form.Item
+          hidden={!showRemark}
             name={[...name, "remark"]}
             rules={[{ required: false }]}
             style={{ marginTop: "1rem" }}
           >
             <Input.TextArea rows={3} placeholder="Add your remark here" />
           </Form.Item>
-        )}
       </div>
     );
   };
@@ -416,6 +425,7 @@ const NoteBookDetails = () => {
   };
 
   const handleSubmit = async (finalData) => {
+
     const data = await dispatch(CreateNoteBookForm(finalData))
     if (data?.payload?.status) {
       message.success(data?.payload?.message);

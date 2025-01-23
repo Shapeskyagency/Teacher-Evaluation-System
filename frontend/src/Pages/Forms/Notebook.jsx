@@ -301,7 +301,7 @@ function Notebook() {
                     </Col>
                 </Row>
             </div>
-
+                            {console.log(applyFilters(sortedForms))}
             <Table
                 columns={columnsWithFilters}
                 dataSource={applyFilters(sortedForms)}

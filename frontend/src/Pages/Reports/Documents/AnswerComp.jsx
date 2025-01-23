@@ -85,7 +85,7 @@ function AnswerComp({ data, type }) {
           },
         ]}
       >
-        <Text style={styles.testCenter}>{data?.className}/{data?.section}</Text>
+        <Text style={styles.testCenter}>{data?.className?.className}/{data?.section}</Text>
       </View>
 
       <View

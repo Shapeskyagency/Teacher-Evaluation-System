@@ -304,7 +304,7 @@ exports.GetObseverForm = async (req, res) => {
             });
 
         // Fetch Form2 data based on observer initiation flag
-        const Form2 = await Form3.find({ "grenralDetails.NameofObserver": userId, isObserverInitiation: true })
+        const Form2 = await Form3.find({"grenralDetails.NameofObserver": userId, isObserverInitiation: true })
             .populate({
                 path: 'createdBy teacherID',
                 select: '-password -mobile -employeeId -customId'
@@ -314,11 +314,17 @@ exports.GetObseverForm = async (req, res) => {
                 select: '-password -mobile -employeeId -customId'
             });
 
-        // Combine both Form and Form2 data
-        const combinedForms = [...Form, ...Form2]; // Using spread operator to merge arrays
+       // Combine both Form and Form2 data
+            const combinedForms = [...Form, ...Form2];
+
+            // Remove duplicates based on a unique property (e.g., _id)
+            const uniqueForms = combinedForms.filter((form, index, self) =>
+                index === self.findIndex((f) => f._id.toString() === form._id.toString())
+            );
+
 
         // Send combined data as response
-        res.status(200).json(combinedForms);
+        res.status(200).json(uniqueForms);
 
     } catch (error) {
         console.error("Error Getting Classroom Walkthrough:", error);
