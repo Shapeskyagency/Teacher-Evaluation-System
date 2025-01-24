@@ -131,7 +131,7 @@ function OB_WalkthroughEdit() {
         name: "className",
         label: "Class Name / Section",
         type: "select",
-        options: newData.map((item) => ({
+        options: newData?.map((item) => ({
           id: item._id,
           name: item.className,
         })),
