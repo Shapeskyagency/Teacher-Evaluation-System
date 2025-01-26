@@ -77,6 +77,17 @@ exports.createForm = async (req, res) => {
             reciverId: NameofObserver,
         });
 
+        const recipientEmail = await User.findById(NameofObserver);
+        const subject = 'Notebook Checking Proforma Created';
+        const body = ` 
+Dear ${recipientEmail.name},
+${user.name} has submitted their Notebook Checking Proforma on ${new Date()}. Please review and proceed accordingly.
+Regards,
+The Admin Team
+                            `;
+
+        await sendEmail(recipientEmail.email, subject, body);
+
         // Send success response
         res.status(201).json({ message: "Form created successfully", form: savedForm, status: true });
 
@@ -110,13 +121,17 @@ exports.createInitiate = async (req, res) => {
                         TeacherForm: {}
                     }).save();
 
-                    // Send email (commented as per original logic)
-                    const subject = 'New Notbook Form Initiated';
-                    const body = `
-              A new Notbook Form  has been Initiated for:
-              Click here to fill the form: https://abcd.com/form/${formData._id}
-            `;
-                    // sendEmail(teacher.email, subject, body);
+                    const recipientEmail = await User.findById(userId);
+        const subject = 'Notebook Checking Proforma Initiated';
+        const body = ` 
+Dear ${teacher.name},
+The Notebook Checking Proforma has been initiated by ${recipientEmail?.name} on ${new Date()}. Kindly review and complete your section at your earliest.
+Regards,
+The Admin Team
+
+                            `;
+
+        await sendEmail(teacher.email, subject, body);
 
                     // Create and save the notification
                     await new notification({
@@ -126,6 +141,8 @@ exports.createInitiate = async (req, res) => {
                         date: new Date(),
                         status: 'unSeen',
                     }).save();
+
+                    
 
                     return formData;
                 })
