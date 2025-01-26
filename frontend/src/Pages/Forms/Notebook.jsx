@@ -221,7 +221,7 @@ function Notebook() {
                             />
                         </Col>
                     }
-                    <Col md={2}>
+                    <Col md={2} className="mb-2 mt-2 mb-md-0 mt-md-0">
                         <Select
                             mode="multiple"
                             allowClear
@@ -236,7 +236,7 @@ function Notebook() {
                             }))}
                         />
                     </Col>
-                    <Col md={2}>
+                    <Col md={2} className="mb-2 mb-md-0 mt-md-0">
                         <Select
                             mode="multiple"
                             allowClear
@@ -260,7 +260,7 @@ function Notebook() {
                             }
                         />
                     </Col>
-                    <Col md={2}>
+                    <Col md={2} className="mb-2 mt-2 mb-md-0 mt-md-0">
                         <Select
                             mode="multiple"
                             allowClear

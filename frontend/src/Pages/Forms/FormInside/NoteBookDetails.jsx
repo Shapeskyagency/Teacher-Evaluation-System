@@ -139,7 +139,7 @@ const disableFutureDates = (current) => {
         name: "className",
         label: "Class Name",
         type: "select",
-        options: newData.map((item) => ({
+        options: newData?.map((item) => ({
           id: item._id,
           value: item?._id,
           name: item.className,

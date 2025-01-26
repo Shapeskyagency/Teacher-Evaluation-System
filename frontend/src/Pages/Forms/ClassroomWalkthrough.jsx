@@ -204,7 +204,7 @@ function ClassroomWalkthrough() {
               </Col>
             }
         {UserRole[2] === getUserId().access && 
-            <Col md={2}>
+            <Col md={2} className="mt-2 mb-md-0 mt-md-0">
               <Select
                 mode="multiple"
                 allowClear
@@ -220,7 +220,7 @@ function ClassroomWalkthrough() {
               />
             </Col>
               }
-            <Col md={2}>
+            <Col md={2} className="mb-2 mt-2 mb-md-0 mt-md-0">
               <Select
                 mode="multiple"
                 allowClear
@@ -251,7 +251,7 @@ function ClassroomWalkthrough() {
               />
             </Col>
          
-            <Col md={2}>
+            <Col md={2} className="mb-2 mt-2 mb-md-0 mt-md-0">
               <DatePicker
                 style={{ width: "100%" }}
                 placeholder="Select Date"
@@ -260,7 +260,7 @@ function ClassroomWalkthrough() {
                 }
               />
             </Col>
-            <Col md={2}>
+            <Col md={2}className="mb-2 mb-md-0 mt-md-0">
               <Select
                 mode="multiple"
                 allowClear

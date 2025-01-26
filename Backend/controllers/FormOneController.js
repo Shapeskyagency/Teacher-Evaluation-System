@@ -305,6 +305,21 @@ exports.FormFill = async (req, res) => {
         message: 'Form not found'
       });
     }
+    const recipientEmail = updatedForm?.userId?.email || updatedForm?.userId?.email;
+    const recipientName = updatedForm?.userId?.name || updatedForm?.userId?.name;
+
+    if(isCoordinatorComplete){
+    const subject = 'Observer Submission Completed for Fortnightly Monitor';
+    const body = ` 
+                  Dear ${updatedForm?.teacherID?.name},
+                  ${recipientName} has submitted their section of the Fortnightly Monitor form on ${new Date()}. You may review the Report now.
+                  Regards,
+                  The Admin Team
+                    `;
+
+    await sendEmail(recipientEmail, subject, body);
+    }
+
         if(isTeacherComplete){
           const notifications = new Notification({
             title: `${updatedForm?.teacherID?.name} Have Complete the form now its your turn!`,
@@ -313,8 +328,7 @@ exports.FormFill = async (req, res) => {
             date: new Date(),
             status: 'unSeen',
           });
-          const recipientEmail = updatedForm?.userId?.email || updatedForm?.userId?.email;
-          const recipientName = updatedForm?.userId?.name || updatedForm?.userId?.name;
+
           const subject = 'Self-Assessment Submission Received for Fortnightly Monitor';
           const body = ` 
                         Dear ${recipientName},

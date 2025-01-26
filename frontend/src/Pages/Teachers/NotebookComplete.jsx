@@ -1,15 +1,13 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Button, Card, Spin, Table, Tag } from "antd";
-import { DownloadOutlined } from "@ant-design/icons";
 import { Container, Row, Col } from "react-bootstrap";
-import ReactPDF from "@react-pdf/renderer";
-import Logo from "./Imgs/Logo.png";
-import LogoBanner from "./Imgs/image.png";
-import { GetNoteBookForm } from "../../redux/Form/noteBookSlice";
-import NoteBookDoc from "./Documents/NoteBookDoc";
+import Logo from "../Reports/Imgs/Logo.png";
+import LogoBanner from "../Reports/Imgs/image.png";
+import { GetNoteBookForm, updateTeacherReflationFeedback } from "../../redux/Form/noteBookSlice";
 import { getAllTimes } from "../../Utils/auth";
+import { useNavigate } from "react-router-dom";
 
 const TableCard = React.memo(({ title, dataSource }) => (
   <Card title={title} className="mt-4">
@@ -54,32 +52,55 @@ const TableCard = React.memo(({ title, dataSource }) => (
   </Card>
 ));
 
-function NotebookPDF() {
+function NotebookComplete() {
   const { id: Id } = useParams();
   const dispatch = useDispatch();
   const { formDataList, isLoading } = useSelector((state) => state.notebook);
 
-  const downloadPDF = useCallback(async () => {
-    const blob = await ReactPDF.pdf(
-      <NoteBookDoc data={formDataList} />
-    ).toBlob();
-    const url = URL.createObjectURL(blob);
-
-    // Trigger download
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `notebook-checking-proforma-${Id}.pdf`;
-    link.click();
-
-    // Clean up the object URL
-    URL.revokeObjectURL(url);
-  }, [formDataList, Id]);
+  const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
     if (Id) {
       dispatch(GetNoteBookForm(Id));
     }
   }, [Id, dispatch]);
+
+  useEffect(() => {
+    if (formDataList?.teacherReflationFeedback) {
+      setInputValue(formDataList.teacherReflationFeedback);
+    }
+  }, [formDataList]);
+
+//   const handleSubmit = useCallback(() => {
+//     if (Id && inputValue.trim()) {
+//       dispatch(updateTeacherReflationFeedback({ id: Id, data: { reflation: inputValue } }))
+//         .unwrap()
+//         .then(() => {
+//           console.log("Reflation updated successfully!");
+//         })
+//         .catch((error) => {
+//           console.error("Error updating teacher reflation feedback:", error);
+//         });
+//     }
+//   }, [Id, inputValue, dispatch]);
+const navigate = useNavigate();
+const handleSubmit = useCallback(() => {
+    if (Id && inputValue.trim()) {
+      dispatch(updateTeacherReflationFeedback({ id: Id, data: { reflation: inputValue } }))
+        .then((res) => {
+          if (res.success) {
+            console.log("Reflation updated successfully!");
+            navigate(`/notebook-checking-proforma/report/${Id}`);
+          } else {
+            console.log("Unexpected response:", res);
+          }
+        })
+        .catch((error) => {
+          console.error("Error updating teacher reflation feedback:", error);
+        });
+    }
+  }, [Id, inputValue, dispatch]);
+  
 
   const keyObject = [
     "Maintenance Of Notebooks",
@@ -92,45 +113,22 @@ function NotebookPDF() {
     formDataList?.[type]?.[field];
 
   return (
-    <div className="ms-3 lh-sm py-4 position-relative">
+    <div className="ms-5 lh-sm py-4 position-relative">
       {isLoading && (
         <div className="LoaderWrapper">
           <Spin size="large" className="position-absolute" />
         </div>
       )}
-      <Button type="primary" onClick={downloadPDF}>
-        <DownloadOutlined /> Download PDF
-      </Button>
-
       <Container>
         <Row className="justify-content-start align-items-start">
-          {/* <Col md={12}>
-            <div className='d-flex gap-4 justify-content-center mb-4'>
+          <Col md={12}>
+            <div className="d-flex gap-4 justify-content-center mb-4">
               <img src={Logo} width={100} height={100} alt="Logo" />
               <img src={LogoBanner} width={400} height={100} alt="Banner" />
             </div>
-          </Col> */}
-
-          <Col xs={12} className="text-center mb-2 mt-2">
-            <div className="d-flex flex-md-row align-items-center justify-content-center gap-2">
-              <img
-                src={Logo}
-                width={100}
-                height={100}
-                alt="Logo"
-                className="mb-2 mb-md-0"
-              />
-              <img
-                src={LogoBanner}
-                width="100%"
-                height="auto"
-                alt="Banner"
-                style={{ maxWidth: "400px" }}
-              />
-            </div>
           </Col>
 
-          {/* <Col md={12}>
+          <Col md={12}>
             <div className="p-4 rounded border mb-4">
               <h5>General Details</h5>
               <div className="d-flex gap-3 mb-4">
@@ -197,75 +195,6 @@ function NotebookPDF() {
                 </p>
               </div>
             </div>
-          </Col> */}
-
-          <Col xs={12}>
-            <div className="p-4 rounded border mb-4">
-              <h5>General Details</h5>
-              <div className="d-flex flex-column flex-md-row gap-3 mb-4">
-                <p className="m-0">
-                  Name Of Observer:{" "}
-                  <b>{formDataList?.grenralDetails?.NameofObserver?.name}</b>
-                </p>
-                <p className="m-0">
-                  Grade: <b>{formDataList?.grenralDetails?.className}</b>
-                </p>
-                <p className="m-0">
-                  Section: <b>{formDataList?.grenralDetails?.Section}</b>
-                </p>
-                <p className="m-0">
-                  Subject: <b>{formDataList?.grenralDetails?.Subject}</b>
-                </p>
-                <p className="m-0">
-                  Date Of Observation:{" "}
-                  <b>
-                    {
-                      getAllTimes(
-                        formDataList?.grenralDetails?.DateOfObservation
-                      ).formattedDate2
-                    }
-                  </b>
-                </p>
-              </div>
-
-              <h5>Observer Notebook</h5>
-              <div className="d-flex flex-column flex-md-row gap-3 mb-4">
-                <p className="m-0">
-                  Absentees: <b>{formDataList?.NotebooksObserver?.Absentees}</b>
-                </p>
-                <p className="m-0">
-                  Class Strength:{" "}
-                  <b>{formDataList?.NotebooksObserver?.ClassStrength}</b>
-                </p>
-                <p className="m-0">
-                  Defaulters:{" "}
-                  <b>{formDataList?.NotebooksObserver?.Defaulters}</b>
-                </p>
-                <p className="m-0">
-                  Notebooks Submitted:{" "}
-                  <b>{formDataList?.NotebooksObserver?.NotebooksSubmitted}</b>
-                </p>
-              </div>
-
-              <h5>Teacher Notebook</h5>
-              <div className="d-flex flex-column flex-md-row gap-3">
-                <p className="m-0">
-                  Absentees: <b>{formDataList?.NotebooksTeacher?.Absentees}</b>
-                </p>
-                <p className="m-0">
-                  Class Strength:{" "}
-                  <b>{formDataList?.NotebooksTeacher?.ClassStrength}</b>
-                </p>
-                <p className="m-0">
-                  Defaulters:{" "}
-                  <b>{formDataList?.NotebooksTeacher?.Defaulters}</b>
-                </p>
-                <p className="m-0">
-                  Notebooks Submitted:{" "}
-                  <b>{formDataList?.NotebooksTeacher?.NotebooksSubmitted}</b>
-                </p>
-              </div>
-            </div>
           </Col>
 
           <Col md={6}>
@@ -300,15 +229,29 @@ function NotebookPDF() {
             ))}
           </Col>
 
-          <Col md={6}>
+          <Col md={4}>
             <Card title="Observer Feedback" className="mt-4">
               <p>{formDataList?.observerFeedback}</p>
             </Card>
           </Col>
-          <Col md={6}>
-            <Card title="Teacher Reflation Feedback" className="mt-4">
-              <p>{formDataList?.teacherReflationFeedback}</p>
-            </Card>
+        </Row>
+        <Row className="mt-4">
+          <Col md={8} className="justify-content-start align-items-start">
+            <h5 className="mb-3">Teacher Reflation</h5>
+            <textarea
+              name="reflation"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="Enter your thoughts or reflation"
+              className="form-control w-75"
+              rows={5}
+              style={{ resize: "none" }}
+            ></textarea>
+          </Col>
+          <Col md={12} className="justify-content-start align-items-start mt-4">
+            <Button type="primary" size="large" onClick={handleSubmit}>
+              Submit
+            </Button>
           </Col>
         </Row>
       </Container>
@@ -316,4 +259,4 @@ function NotebookPDF() {
   );
 }
 
-export default NotebookPDF;
+export default NotebookComplete;

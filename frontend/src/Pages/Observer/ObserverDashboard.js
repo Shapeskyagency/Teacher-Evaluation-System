@@ -22,7 +22,7 @@ function ObserverDashboard() {
     <BootstrapRow className="my-3">
       <BootstrapCol md={4}>
         <Link to={'/fortnightly-monitor'} className='text-decoration-none'>
-        <Card className='shadow-sm'>
+        <Card className='shadow-sm mb-3'>
           <h3 className='mb-3'>Fortnightly Monitor</h3>
           <p className="fs-5 bg-primary-subtle px-3 rounded-5 text-primary" style={{ width: "fit-content" }}>
             {FormData?.length} invitation
@@ -32,7 +32,7 @@ function ObserverDashboard() {
       </BootstrapCol>
       <BootstrapCol md={4}>
         <Link to={'/fortnightly-monitor'} className='text-decoration-none'>
-        <Card className='shadow-sm'>
+        <Card className='shadow-sm mb-3'>
           <h3 className='mb-3'>Classroom Walkthrough</h3>
           <p className="fs-5 bg-primary-subtle px-3 rounded-5 text-primary" style={{ width: "fit-content" }}>
             0 invitation
@@ -42,7 +42,7 @@ function ObserverDashboard() {
       </BootstrapCol>
       <BootstrapCol md={4}>
         <Link to={'/fortnightly-monitor'} className='text-decoration-none'>
-        <Card className='shadow-sm'>
+        <Card className='shadow-sm mb-3'>
           <h3 className='mb-3'>Notebook Checking</h3>
           <p className="fs-5 bg-primary-subtle px-3 rounded-5 text-primary" style={{ width: "fit-content" }}>
             0 invitation
