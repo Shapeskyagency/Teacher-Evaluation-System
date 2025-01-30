@@ -43,21 +43,21 @@ exports.createForm = async (req, res) => {
         }
 
 
-        const classData =  await ClassDetails.findById(className);
-        if(!classData){
-         res.status(400).json({success: false, message:" Class and Section is Required!"})
+        const classData = await ClassDetails.findById(className);
+        if (!classData) {
+            res.status(400).json({ success: false, message: " Class and Section is Required!" })
         }
-   
+
         // Create the new form data
         const newForm = new Form2({
             createdBy: userId,
             isObserverCompleted: ObserverFeedback ? true : false, // Default to `false` if not provided
             ObserverFeedback: ObserverFeedback || [], // Default to an empty array
-            isTeacherCompletes:false,
+            isTeacherCompletes: false,
             grenralDetails: {
                 NameoftheVisitingTeacher,
                 DateOfObservation: DateOfObservation || new Date(), // Use current date if not provided
-                className:classData?.className,
+                className: classData?.className,
                 Section,
                 Subject,
                 Topic,
@@ -72,20 +72,32 @@ exports.createForm = async (req, res) => {
             Grade,
             NumberofParametersNotApplicable,
         });
-         // Save the form to the database
-         const savedForm = await newForm.save();
+        // Save the form to the database
+        const savedForm = await newForm.save();
         const notification = await createNotification({
             title: 'You are invited to fill the Classroom Walkthrough',
             route: `classroom-walkthrough/create/${savedForm._id}`,
             reciverId: NameoftheVisitingTeacher,
-          });
+        });
 
+
+
+        const recipientEmail = await User.findById(NameoftheVisitingTeacher);
+        const subject = 'Classroom Walkthrough Submission Completed';
+        const body = ` 
+Dear ${recipientEmail.name},
+${user.name} has completed and submitted the Classroom Walkthrough Proforma on ${new Date()}. Please review the feedback and submit your reflections within the next 3 days.
+Regards,
+The Admin Team
+                            `;
+
+        await sendEmail(recipientEmail.email, subject, body);
 
         // Send success response
-        res.status(201).json({ message: "Form created successfully", form: savedForm,status: true });
+        res.status(201).json({ message: "Form created successfully", form: savedForm, status: true });
     } catch (error) {
         console.error("Error creating Classroom Walkthrough:", error);
-        res.status(500).json({ message: "Error creating Classroom Walkthrough.", status: false,error });
+        res.status(500).json({ message: "Error creating Classroom Walkthrough.", status: false, error });
     }
 };
 
@@ -176,16 +188,16 @@ exports.getSignleForm = async (req, res) => {
     const FormID = req?.params?.id;
     try {
         const Form = await Form2.findById(FormID)
-        .populate({
-            path: 'createdBy',
-            select: '-password -mobile -employeeId -customId'
-        })
-        .populate({
-            path: 'grenralDetails.NameoftheVisitingTeacher',
-            select: '-password -mobile -employeeId -customId'
-        });
+            .populate({
+                path: 'createdBy',
+                select: '-password -mobile -employeeId -customId'
+            })
+            .populate({
+                path: 'grenralDetails.NameoftheVisitingTeacher',
+                select: '-password -mobile -employeeId -customId'
+            });
 
-        if(!FormID && !Form?._id){
+        if (!FormID && !Form?._id) {
             return res.status(403).json({ message: "You do not have permission." });
         }
         res.status(200).send(Form)
@@ -200,19 +212,19 @@ exports.GetTeahearsForm = async (req, res) => {
     const FormID = req?.params?.id;
     try {
         const Form = await Form2.find(FormID)
-        .populate({
-            path: 'createdBy',
-            select: '-password -mobile -employeeId -customId'
-        })
-        .populate({
-            path: 'grenralDetails.NameoftheVisitingTeacher',
-            select: '-password -mobile -employeeId -customId'
-        })
-        .populate({
-            path: 'grenralDetails.className',
-        });
+            .populate({
+                path: 'createdBy',
+                select: '-password -mobile -employeeId -customId'
+            })
+            .populate({
+                path: 'grenralDetails.NameoftheVisitingTeacher',
+                select: '-password -mobile -employeeId -customId'
+            })
+            .populate({
+                path: 'grenralDetails.className',
+            });
 
-        if(!FormID && !Form?._id){
+        if (!FormID && !Form?._id) {
             return res.status(403).json({ message: "You do not have permission." });
         }
         res.status(200).send(Form)
@@ -227,20 +239,20 @@ exports.GetTeahearsForm = async (req, res) => {
 exports.GetcreatedBy = async (req, res) => {
     const userId = req?.user?.id;
     try {
-        const Form = await Form2.find({createdBy:userId})
-        .populate({
-            path: 'createdBy',
-            select: '-password -mobile -employeeId -customId'
-        })
-        .populate({
-            path: 'grenralDetails.NameoftheVisitingTeacher',
-            select: '-password -mobile -employeeId -customId'
-        })
-        .populate({
-            path: 'grenralDetails.className',
-        });
+        const Form = await Form2.find({ createdBy: userId })
+            .populate({
+                path: 'createdBy',
+                select: '-password -mobile -employeeId -customId'
+            })
+            .populate({
+                path: 'grenralDetails.NameoftheVisitingTeacher',
+                select: '-password -mobile -employeeId -customId'
+            })
+            .populate({
+                path: 'grenralDetails.className',
+            });
 
-        if(!userId && !userId?.id){
+        if (!userId && !userId?.id) {
             return res.status(403).json({ message: "You do not have permission." });
         }
 
@@ -257,19 +269,19 @@ exports.GetTeacherForm = async (req, res) => {
     const userId = req?.user?.id;
     try {
         const Form = await Form2.find({ "grenralDetails.NameoftheVisitingTeacher": userId })
-        .populate({
-            path: 'createdBy',
-            select: '-password -mobile -employeeId -customId'
-        })
-        .populate({
-            path: 'grenralDetails.NameoftheVisitingTeacher',
-            select: '-password -mobile -employeeId -customId'
-        })
-        .populate({
-            path: 'grenralDetails.className',
-        });
+            .populate({
+                path: 'createdBy',
+                select: '-password -mobile -employeeId -customId'
+            })
+            .populate({
+                path: 'grenralDetails.NameoftheVisitingTeacher',
+                select: '-password -mobile -employeeId -customId'
+            })
+            .populate({
+                path: 'grenralDetails.className',
+            });
 
-        if(!userId && !userId?.id){
+        if (!userId && !userId?.id) {
             return res.status(403).json({ message: "You do not have permission." });
         }
 
@@ -300,7 +312,7 @@ exports.TeacherContinueForm = async (req, res) => {
         }
         // Find the form
         const form = await Form2.findById(FormID);
-            
+
         if (!form) {
             return res.status(404).json({ message: "Form not found." });
         }
@@ -309,11 +321,21 @@ exports.TeacherContinueForm = async (req, res) => {
         form.TeacherFeedback = TeacherFeedback || form.TeacherFeedback;
         form.isTeacherCompletes = isTeacherCompletes ?? form.isTeacherCompletes;
 
+        const recipientEmail = form.createdBy.email;
+        const subject = 'Teacher Submission Received for Classroom Walkthrough';
+        const body = ` 
+Dear ${form.createdBy.name},
+${form?.grenralDetails?.NameoftheVisitingTeacher?.name} has submitted their section of the Classroom Walkthrough Proforma on ${new Date()}. Please review and provide your feedback.
+Regards,
+The Admin Team
+                    `;
+
+        await sendEmail(recipientEmail, subject, body);
         // Save the updated form
-         await form.save();
+        await form.save();
 
         // Send the response
-        res.status(200).json({ message: "Form Successfully Completed."});
+        res.status(200).json({ message: "Form Successfully Completed." });
 
     } catch (error) {
         console.error("Error in TeacherContinueForm:", error);
@@ -322,30 +344,30 @@ exports.TeacherContinueForm = async (req, res) => {
 };
 
 
-exports.getClassRoomForms = async (req,res) =>{
+exports.getClassRoomForms = async (req, res) => {
     const userId = req?.user?.id;
     try {
         const GetAllForms = await Form2.find()
-        .populate({
-            path: 'teacherID',
-            select: '-password -mobile -employeeId -customId'
-        })
-        .populate({
-            path: 'createdBy',
-            select: '-password -mobile -employeeId -customId'
-        })
-        .populate({
-          path: 'grenralDetails.NameoftheVisitingTeacher',
-          select: '-password -mobile -employeeId -customId'
-      })
-        if(!userId){
+            .populate({
+                path: 'teacherID',
+                select: '-password -mobile -employeeId -customId'
+            })
+            .populate({
+                path: 'createdBy',
+                select: '-password -mobile -employeeId -customId'
+            })
+            .populate({
+                path: 'grenralDetails.NameoftheVisitingTeacher',
+                select: '-password -mobile -employeeId -customId'
+            })
+        if (!userId) {
             return res.status(403).json({ message: "You do not have permission." });
         }
 
         res.status(200).send(GetAllForms)
-        
+
     } catch (error) {
         console.log(error)
-        res.status(500).send({error: error, message:"somthing went wrong"})
+        res.status(500).send({ error: error, message: "somthing went wrong" })
     }
 }

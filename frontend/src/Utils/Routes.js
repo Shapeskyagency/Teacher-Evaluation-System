@@ -45,6 +45,7 @@ import ClassRoom from "../Pages/Admin/ClassRoom";
 import NoteBook from "../Pages/Admin/NootBook";
 import Weekly from "../Pages/Admin/Weekly";
 import NotebookComplete from "../Pages/Teachers/NotebookComplete";
+import TextBox from "../Pages/TextBox";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken() : null;
@@ -150,6 +151,7 @@ const protects = {
         { path: "/", element: <Login /> },
         { path: "/login", element: <Login /> },
         { path: "/signup", element: <Register /> },
+        { path: "/test", element: <TextBox /> },
         { path: "*", element: <NotFound404 /> },
       ],
     },
