@@ -1,15 +1,18 @@
 import { PlusCircleFilled, PlusCircleOutlined } from '@ant-design/icons'
 import { Button, Table, Tag } from 'antd'
 import React, { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation} from 'react-router-dom'
 import { UserRole } from '../../config/config'
 import { getAllTimes, getUserId } from '../../Utils/auth'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAllWeeklyFrom, getAllWeeklyFromAll } from '../../redux/userSlice'
 
+
 function Weekly() {
   const dispatch = useDispatch();
   const { getAllWeeklyFroms, loading } = useSelector((state) => state.user);
+  const location = useLocation();
+  const currentPath = location.pathname
   useEffect(() => {
     dispatch(getAllWeeklyFromAll());
   }, [])
@@ -36,6 +39,7 @@ function Weekly() {
     
       <div className="container py-4">
       {UserRole[1] === getUserId()?.access &&
+       currentPath !=="/reports" &&
         <Link to="/weekly4form/create?Initiate=true">
           <Button  className='mb-4' variant='solid' color='primary' size='large'> <PlusCircleOutlined />Form Initiation</Button>
           </Link>

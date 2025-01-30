@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Button, Table, Select, Tag, DatePicker, Space } from "antd";
 import { Col, Row } from "react-bootstrap";
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   GetAllFormsForAdmin,
@@ -21,6 +21,8 @@ const Fortnightly = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const Role = getUserId().access;
+  const location = useLocation();
+  const currentPath = location.pathname
 
   const CombinedData = useSelector(
     (state) => state?.Forms?.getAllForms || []
@@ -61,7 +63,7 @@ const Fortnightly = () => {
   // Get unique values for filters
   const getUniqueValues = (key) => {
     const values = [];
-    CombinedData.forEach((item) => {
+    CombinedData?.forEach((item) => {
 
       if(key==='observerName'){
             values.push(item?.userID?.name || item?.coordinatorID?.name);
@@ -193,8 +195,8 @@ const columnsWithFilters = useMemo(() => {
               </Button>
             )}
 
-            {Role === UserRole[1] && (
-              <Button
+            {(Role === UserRole[1] && currentPath !=="/reports") && (
+                 <Button
                 className="mb-3"
                 onClick={() => navigate("/fortnightly-monitor/form-initiation")}
                 type="primary"

@@ -46,6 +46,8 @@ import NoteBook from "../Pages/Admin/NootBook";
 import Weekly from "../Pages/Admin/Weekly";
 import NotebookComplete from "../Pages/Teachers/NotebookComplete";
 import TextBox from "../Pages/TextBox";
+import AdminReport from "../Pages/Admin/AdminReport";
+import ObserverReports from "../Pages/Observer/ObserverReports"
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken() : null;
@@ -91,7 +93,7 @@ const protects = {
         { path: "/dashboard", element: <AdminDashboard /> },
         { path: "/users", element: <Users /> },
         { path: "/users/:id", element: <UserDetails /> },
-        { path: "/reports", element: <UnderConstraction /> },
+        { path: "/reports", element: <AdminReport /> },
         { path: "/profile", element: <UserProfile /> },
         { path: '/fortnightly-monitor', element: <Fortnightly /> },
         { path: '/fortnightly-monitor/report/:id', element: <Reader /> },
@@ -113,6 +115,7 @@ const protects = {
       children: [
         { path: "/", element: <Navigate to="/dashboard" /> },
         { path: "/dashboard", element: <ObserverDashboard /> },
+        { path: "/reports", element: <ObserverReports /> },
         { path: '/fortnightly-monitor', element: <FortnightlyMonitor /> },
         { path: "/profile", element: <UserProfile /> },
         { path: '/fortnightly-monitor', element: <FortnightlyMonitor /> },
