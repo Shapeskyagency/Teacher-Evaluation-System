@@ -1,97 +1,74 @@
-import React, { useEffect, useState } from 'react';
-import { UserCircle, FileText, BookOpen, ClipboardCheck, Search, ArrowUpDown } from 'lucide-react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import TableReports from '../../Components/TableReports';
+import { FileText, UserCircle, BookOpen, ClipboardCheck } from 'lucide-react';
+import { FormOne_Columns } from './TableColumns';
 import { GetAllFormsForAdmin } from '../../redux/Form/fortnightlySlice';
-import TableReports from '../../Components/TableReports'
-import { GetAllClassRoomForms } from "../../redux/Form/classroomWalkthroughSlice";
-import ClassRoom from '../Admin/ClassRoom'
-import Fortnightly from '../Admin/Fortnightly'
-import NootBook from '../Admin/NootBook'
-import Weekly from '../Admin/Weekly'
-import moment from 'moment';
-import {Spin } from "antd";
+import { getUserId } from "../../Utils/auth";
+import { useDispatch, useSelector } from "react-redux";
 
 const reportTypes = [
   {
     title: 'Fortnightly Monitor',
     icon: <FileText className="w-5 h-5" />,
-    bgColor: 'bg-green-50'
+    bgColor: 'bg-green-50',
   },
   {
     title: 'Classroom Walkthrough',
     icon: <UserCircle className="w-5 h-5" />,
-    bgColor: 'bg-orange-50'
+    bgColor: 'bg-orange-50',
   },
   {
     title: 'Notebook Checking',
     icon: <BookOpen className="w-5 h-5" />,
-    bgColor: 'bg-blue-50'
+    bgColor: 'bg-blue-50',
   },
   {
     title: 'Weekly Learning Checklist',
     icon: <ClipboardCheck className="w-5 h-5" />,
-    bgColor: 'bg-purple-50'
-  }
-];
-const columns = [
-  { key: 'observer', label: 'Observer' },
-  { key: 'teacher', label: 'Teacher' },
-  { key: 'class', label: 'Class' },
-  { key: 'section', label: 'Section' },
-  { key: 'date', label: 'Date' },
+    bgColor: 'bg-purple-50',
+  },
 ];
 
 const ObserverReports = () => {
   const dispatch = useDispatch();
-  const CombinedData = useSelector((state) => state?.Forms?.getAllForms || []);
-  const { isLoading, GetForms } = useSelector((state) => state?.walkThroughForm||[]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [steps, steSteps] =useState(0);
 
-  const NextPage = (value)=>{
- 
-    steSteps(value)
-  }
+  useEffect(() => {
+    dispatch(GetAllFormsForAdmin());
+   
+  }, [dispatch]);
+
+  const CombinedData = useSelector(
+    (state) => state?.Forms?.getAllForms || []
+  );
+  console.log(CombinedData);
+
   
+
   return (
-    <div className="flex-1 p-6">
+    <div className="p-4">
       {/* Report Type Cards */}
-      <div className="flex gap-4 mb-6">
-        {reportTypes.map((type,i) => (
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        {reportTypes?.map((report, index) => (
           <div
-          onClick={()=>NextPage(i)}
-            key={type.title}
-            className={`flex-1 p-4 rounded-lg ${type.bgColor} cursor-pointer hover:shadow-md transition-shadow`}
+            key={index}
+            className={`flex items-center p-4 rounded-lg ${report.bgColor}`}
           >
-            <div className="flex items-center gap-2">
-              {type.icon}
-              <span className="font-medium">{type.title}</span>
-            </div>
+            <div className="mr-3 text-gray-700">{report.icon}</div>
+            <span className="text-gray-900 font-medium">{report.title}</span>
           </div>
         ))}
       </div>
-      {isLoading &&
-      <div className="LoaderWrapper">
-      <Spin size="large" className="position-absolute" />
+
+      {/* Table Component */}
+      <TableReports 
+        columns={FormOne_Columns}
+        dataSource={CombinedData}
+        pagination
+        tableHeight
+      />
+      
     </div>
-      }
-      {steps ===0 &&(
-       <Fortnightly />
-      )}
-     
-     {steps ===1 &&(
-      <ClassRoom/>
-        // <TableReports columns={columns}  data={GetForms}/>
-      )}
-      {steps ===2 &&(
-          <NootBook />
-        // <TableReports columns={columns}  data={GetForms}/>
-      )}
-      {steps ===3 &&(
-        <Weekly />
-        // <TableReports columns={columns}  data={GetForms}/>
-      )}
-    </div>
+    
   );
 };
 
