@@ -2,7 +2,7 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import { Button, Spin, Table, Select, DatePicker, Space } from "antd";
 import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import { GetAllClassRoomForms, GetcreatedBy, TeacherwalkthroughForms } from "../../redux/Form/classroomWalkthroughSlice";
 import { AdminFormcolumns1, Formcolumns1 } from "../../Components/Data";
 import { getUserId } from "../../Utils/auth";
@@ -13,6 +13,9 @@ import { Col, Row } from "react-bootstrap";
 function ClassRoom() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
+  const currentPath = location.pathname
+
   const { isLoading, GetForms } = useSelector((state) => state?.walkThroughForm);
   const Role = getUserId().access;
   const [sortedForms, setSortedForms] = useState([]);
@@ -164,7 +167,8 @@ function ClassRoom() {
         </div>
       )}
       <div style={{ padding: "16px" }}>
-        {Role === UserRole[1] ? (
+        {(Role === UserRole[1] && currentPath !=="/reports") ? (
+          
           <Button
             onClick={() => navigate("/classroom-walkthrough/create")}
             type="primary"
@@ -176,6 +180,7 @@ function ClassRoom() {
             Fill New Form
           </Button>
         ) : (
+          currentPath !=="/reports" &&
           <h2 className="mb-4">Classroom Walkthrough</h2>
         )}
 
