@@ -97,9 +97,6 @@ const Questions = [
 // Create Document Component
 const MyDocument = ({ data }) => {
 
-
-
- 
   return (
     <Document>
       <Page size="A4" style={styles.page}>

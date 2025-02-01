@@ -263,7 +263,7 @@ exports.FormFill = async (req, res) => {
     const FindClass = await ClassDetails.findById(className);
 
     
-    if (data?.isObserverInitiation && (!className || !date || !Section)) {
+    if (!data?.isObserverInitiation && (!className || !date || !Section)) {
       res.status(400).json({
         message: 'All fields are required',
       });

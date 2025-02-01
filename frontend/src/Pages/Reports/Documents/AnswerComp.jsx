@@ -44,6 +44,9 @@ function AnswerComp({ data, type }) {
     </View>
   );
 
+  
+  console.log(selfAssessCount)
+
   const fields = [
     "classCleanliness",
     "newsUpdate",
@@ -69,7 +72,6 @@ function AnswerComp({ data, type }) {
     "thinkZone",
     "digitalCitizenshipRules",
     "meditation",
-    "OutOf",
   ];
 
   return (
@@ -85,7 +87,11 @@ function AnswerComp({ data, type }) {
           },
         ]}
       >
-        <Text style={styles.testCenter}>{data?.className?.className}/{data?.section}</Text>
+        {/* <Text style={styles.testCenter}>{data?.className?.className}/{data?.section}</Text> */}
+        <Text style={styles.testCenter}>
+  {typeof data?.className === "object" ? data.className.name : data?.className}/{data?.section}
+</Text>
+
       </View>
 
       <View
@@ -110,6 +116,20 @@ function AnswerComp({ data, type }) {
         </View>
       ))}
 
+<View
+        style={[
+          styles.Question,
+          {
+            padding: 5,
+            paddingBottom: 3,
+            paddingTop: 3,
+            borderBottomWidth: 1,
+          },
+        ]}
+      >
+        <Text style={styles.testCenter}>{selfAssessCount+2}</Text>
+      </View>
+
       {/* Total Count */}
       <View
         style={[
@@ -122,7 +142,7 @@ function AnswerComp({ data, type }) {
           },
         ]}
       >
-        <Text style={styles.testCenter}>{totalCount + 2}</Text>
+        <Text style={styles.testCenter}>{totalCount}</Text>
       </View>
 
     </>

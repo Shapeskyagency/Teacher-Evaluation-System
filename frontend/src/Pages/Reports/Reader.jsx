@@ -8,7 +8,7 @@ import { Button, Spin, Table, Tag } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import Logo from "./Imgs/Logo.png";
 import LogoBanner from "./Imgs/image.png";
-import { questions } from "../../Components/normalData";
+import { questions2 } from "../../Components/normalData";
 
 function Reader() {
   const Id = useParams().id;
@@ -58,7 +58,7 @@ function Reader() {
     return scores + 2;
   };
 
-  let questionsAll = questions;
+  let questionsAll = questions2;
   const newItems = [
     { name: "Total Score", key: "Total Score" },
     { name: "Out of", key: "Out Of" },
@@ -140,7 +140,7 @@ function Reader() {
                 }
                 if (record.key === "Out Of") {
                   return (
-                    <p className="mb-0">{getTotalScore("teacherForm") + 2}</p>
+                    <p className="mb-0">{getTotalScore("teacherForm")}</p>
                   );
                 }
                 // Default behavior for other rows
@@ -179,7 +179,7 @@ function Reader() {
                 }
                 if (record.key === "Out Of") {
                   return (
-                    <p className="mb-0">{getTotalScore("observerForm") + 2}</p>
+                    <p className="mb-0">{getTotalScore("observerForm")}</p>
                   );
                 }
 
