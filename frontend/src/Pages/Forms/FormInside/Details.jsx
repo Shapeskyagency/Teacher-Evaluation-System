@@ -367,7 +367,7 @@ const Details = () => {
             </div>
                 </>
               )}
-                {questions.map((field, index) => {
+                {questions?.map((field, index) => {
                   return (
                     <div id="SideQuestion" className="mb-3 border p-3 py-2 rounded shadow-sm p-2" key={field?.key}>
                       <Form.Item
