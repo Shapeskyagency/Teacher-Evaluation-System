@@ -28,7 +28,7 @@ const TableReports = ({columns,dataSource,pagination,tableHeight,className}) => 
           className={`${styles.customTable } ${className} w-full`}
           columns={columns}
           dataSource={dataSource || []}
-          pagination={pagination} // Removed pagination
+          pagination={false} // Removed pagination
           scroll={{ y: tableHeight }} // Keeps scroll enabled
         />
       </div>
