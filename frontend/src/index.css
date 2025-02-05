@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap');
 
+@import "tailwindcss";
 
 .host-grotesk-1 {
   font-family: "Host Grotesk", sans-serif; 
@@ -61,4 +62,28 @@ color: #0b5ed7 !important;
 .btn:hover{
   background-color: var(--bs-btn-hover-bg);
     border-color: var(--bs-btn-hover-border-color);
+}
+
+@media (max-width:786px) {
+  .select-options
+{
+ width: 100%; 
+}
+.grid-cols-4-mobile
+{
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.text-monile
+{
+  display: none;
+}
+.mobile-paddig
+{
+  padding: 10px !important;
+  justify-content: center;
+}
+.mobile-margin-r
+{
+  margin-right: 0;
+}
 }

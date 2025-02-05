@@ -60,6 +60,7 @@ export const GetObserverPendignForms = createAsyncThunk('GetObserverPendignForms
       data: null,
       getAllForms:null,
       // GetSingleForms:null,
+      getAllAdminForms:null,
       GetTodoFormList:null,
       loading: false,
       error: null,
@@ -139,7 +140,7 @@ export const GetObserverPendignForms = createAsyncThunk('GetObserverPendignForms
 })
 .addCase(GetAllFormsForAdmin.fulfilled,(state,action)=>{
   state.loading= false;
-  state.getAllForms= action.payload
+  state.getAllAdminForms= action.payload
 })
 .addCase(GetAllFormsForAdmin.rejected,(state,action)=>{
   state.loading= false;
