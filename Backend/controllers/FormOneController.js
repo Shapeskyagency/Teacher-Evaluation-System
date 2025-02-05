@@ -331,7 +331,7 @@ exports.FormFill = async (req, res) => {
 
           const subject = 'Self-Assessment Submission Received for Fortnightly Monitor';
           const body = ` 
-                        Dear ${recipientName},
+                        Dear ${v},
                         ${updatedForm?.teacherID?.name} has submitted their Self-Assessment of the Fortnightly Monitor form on ${new Date()}. Please review and fill your section.
                         Regards,
                         The Admin Team
