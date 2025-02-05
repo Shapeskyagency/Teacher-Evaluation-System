@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { FileText, UserCircle, BookOpen, ClipboardCheck } from "lucide-react";
 import FormOneReport from "./ReportsTab/FormOneReport";
 import FormTwoReport from "./ReportsTab/FormTwoReport";
+import FormThreeReport from "./ReportsTab/FormThreeReport";
+import FormFourReport from "./ReportsTab/FormFourReport";
 
 
 
@@ -61,7 +63,12 @@ const handleChange =(step) =>{
 {currStep === 1 &&(
           <FormTwoReport/>
         )}
-
+{currStep === 2 &&(
+          <FormThreeReport/>
+        )}
+        {currStep === 3 &&(
+          <FormFourReport/>
+        )}
 
       </div>
     </>
