@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { UserRole } from '../../config/config';
 import { getUserId } from '../../Utils/auth';
-const Role = getUserId().access;
+const Role = getUserId()?.access;
 
 export const FormOne_Columns = [
   {
