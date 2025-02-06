@@ -55,7 +55,7 @@ function Reader() {
     const scores = Object.values(GetSingleForms[type]).reduce((sum, value) => {
       return sum + (validValues[value] || 0); // Add score if value matches, otherwise add 0
     }, 0);
-    return scores + 2;
+    return scores ;
   };
 
   let questionsAll = questions2;

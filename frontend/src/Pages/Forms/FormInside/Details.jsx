@@ -120,7 +120,6 @@ const Details = () => {
     const Assesscount = Object.values(formDetails[type]).filter(value =>
         validValues2.includes(value)
       ).length;
-      // setSelfAssessCount(Assesscount)
 
     const validValues = ["Yes", "No", 'Sometimes']; // Include these values
     const count = Object.values(formDetails[type]).filter(value =>
@@ -130,15 +129,7 @@ const Details = () => {
     setTotalCount(count);
   }, [formDetails, type]);
 
-  const getTotalScore = (formValue) =>{
-  
-    const validValues = ["Yes", "No", 'Sometimes']; // Include these values
-    const count = Object.values(formValue).filter(value =>
-      validValues.includes(value)
-    ).length;
-    setTotalCountMein(count)
-  }
-
+ 
 
 
   // Form submission handler
@@ -210,11 +201,30 @@ const Details = () => {
       else if (answer === "Sometimes") score += 0.5; // Add 0.5 for "0.5"
       // Ignore "N/A" (or any undefined answer)
     });
-    getTotalScore(values)
     setSelfAssessmentScore(score);
-    form.setFieldsValue({ OutOf: score }); // Update hidden field
   };
 
+
+  const getTotalScore = (type) => {
+    if (!formDetails) return 0;
+
+    // Count "Yes", "Sometimes", and "No" as 1
+    const validValues = ["Yes", "Sometimes", "No"];
+    const scores = Object.values(formDetails[type]).reduce((sum, value) => {
+      return sum + (validValues.includes(value) ? 1 : 0); // Add 1 if value matches
+    }, 0);
+
+    return scores; // Return total score
+  };
+
+  const getSelfAssemnetScrore = (type) => {
+    if (!formDetails) return 0;
+    const validValues = { Yes: 1, Sometimes: 0.5 };
+    const scores = Object.values(formDetails[type]).reduce((sum, value) => {
+      return sum + (validValues[value] || 0); // Add score if value matches, otherwise add 0
+    }, 0);
+    return scores ;
+  };
   // Questions to dynamically render
 
   const disableFutureDates = (current) => {
@@ -453,7 +463,7 @@ const Details = () => {
                           
                           style={{width:"fit-content"}}>
 
-                            <span> {formDetails?.teacherForm?.OutOf || "NA"} Out of {totalCount}</span></div>
+                            <span> {getSelfAssemnetScrore('teacherForm') || "NA"} Out of {getTotalScore('teacherForm')}</span></div>
                               </div>
                         </>
                       )}
