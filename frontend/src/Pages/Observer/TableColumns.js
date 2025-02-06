@@ -345,7 +345,7 @@ export const FormOne_Columns3 = [
         to={`/classroom-walkthrough/report/${record._id}`}
       >
         <button
-          className="px-3 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors"
+          className="text-nowrap px-3 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors"
         >
           View Report
         </button>
