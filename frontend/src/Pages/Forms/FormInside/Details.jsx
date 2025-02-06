@@ -202,8 +202,18 @@ const Details = () => {
       // Ignore "N/A" (or any undefined answer)
     });
     setSelfAssessmentScore(score);
-    
+    getTotalScorevalu(values)
   };
+
+
+  const getTotalScorevalu = (formValue) =>{
+  
+    const validValues = ["Yes", "No", 'Sometimes']; // Include these values
+    const count = Object.values(formValue).filter(value =>
+      validValues.includes(value)
+    ).length;
+    setTotalCountMein(count)
+  }
 
 
   const getTotalScore = (type) => {
@@ -380,7 +390,7 @@ const Details = () => {
               )}
                 {questions?.map((field, index) => {
                   return (
-                    <div id="SideQuestion" className="mb-3 border p-3 py-2 rounded shadow-sm p-2" key={field?.key}>
+                    <div id="SideQuestion" className="mb-3 border p-3 py-2 rounded shadow-sm " key={field?.key}>
                       <Form.Item
                          className="w-75 mb-2"
                         name={field?.key}
@@ -431,7 +441,7 @@ const Details = () => {
                        
                             return (
                               <>
-                              <div  style={{heighteight:heights[index]}} className="mb-3 border p-3 py-2 rounded shadow-sm p-2" key={index+1}>
+                              <div  style={{heighteight:heights[index]}} className="mb-3 border  py-2 rounded shadow-sm p-2" key={index+1}>
                               <div style={{marginBottom:"0.6rem"}}>
                               <p
                             className="mb-0 fs-6 "

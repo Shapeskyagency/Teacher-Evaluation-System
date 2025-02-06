@@ -263,11 +263,11 @@ exports.FormFill = async (req, res) => {
     const FindClass = await ClassDetails.findById(className);
 
     
-    if (!data?.isObserverInitiation && (!className || !date || !Section)) {
-      res.status(400).json({
-        message: 'All fields are required',
-      });
-    }
+    // if (!isCoordinatorComplete && !isTeacherComplete && !data?.isObserverInitiation && (!className || !date || !Section)) {
+    //   res.status(400).json({
+    //     message: 'All fields are required',
+    //   });
+    // }
 
     // Check if the formId is provided
     if (!formId) {
@@ -317,7 +317,7 @@ exports.FormFill = async (req, res) => {
       The Admin Team
                     `;
 
-    await sendEmail((updatedForm?.coordinatorID.email ||  updatedForm?.userId?.email) , subject, body);
+    await sendEmail((updatedForm?.teacherID.email ||  updatedForm?.userId?.email) , subject, body);
     }
 
         if(updatedForm?.isTeacherComplete && className && date){
@@ -337,7 +337,7 @@ Regards,
 The Admin Team
                           `;
       
-          await sendEmail((updatedForm?.teacherID?.email || updatedForm?.userId?.email), subject, body);
+          await sendEmail((updatedForm?.coordinatorID?.email || updatedForm?.userId?.email), subject, body);
           await notifications.save();
         }
 

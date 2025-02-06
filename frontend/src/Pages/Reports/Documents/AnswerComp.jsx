@@ -1,6 +1,20 @@
-import { StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Font, StyleSheet, Text, View } from '@react-pdf/renderer';
 import React, { useEffect, useState } from 'react';
 import { getAllTimes } from '../../../Utils/auth';
+
+
+Font.register({
+  family: "Open Sans",
+  fonts: [
+    {
+      src: "https://cdn.jsdelivr.net/npm/open-sans-all@0.1.3/fonts/open-sans-regular.ttf",
+    },
+    {
+      src: "https://cdn.jsdelivr.net/npm/open-sans-all@0.1.3/fonts/open-sans-600.ttf",
+      fontWeight: 600,
+    },
+  ],
+});
 
 function AnswerComp({ data, type }) {
   const [totalCount, setTotalCount] = useState(0);
@@ -40,11 +54,11 @@ function AnswerComp({ data, type }) {
         },
       ]}
     >
-      <Text style={styles.testCenter}>{data?.[type]?.[fieldName] || "-"}</Text>
+      <Text style={[styles.testCenter]}>{data?.[type]?.[fieldName] || "-"}</Text>
     </View>
   );
 
-  
+
   console.log(selfAssessCount)
 
   const fields = [
@@ -89,8 +103,8 @@ function AnswerComp({ data, type }) {
       >
         {/* <Text style={styles.testCenter}>{data?.className?.className}/{data?.section}</Text> */}
         <Text style={styles.testCenter}>
-  {typeof data?.className === "object" ? data.className.name : data?.className}/{data?.section}
-</Text>
+          {typeof data?.className === "object" ? data.className.name : data?.className}/{data?.section}
+        </Text>
 
       </View>
 
@@ -116,7 +130,7 @@ function AnswerComp({ data, type }) {
         </View>
       ))}
 
-<View
+      <View
         style={[
           styles.Question,
           {
@@ -153,9 +167,11 @@ export default AnswerComp;
 
 const styles = StyleSheet.create({
   Question: {
-    fontSize: 12,
+    fontSize: 11,
   },
   testCenter: {
     textAlign: "center",
+        fontWeight:'bold',
+    fontFamily: "Open Sans"
   },
 });
