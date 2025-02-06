@@ -127,7 +127,7 @@ function AnswerComp({ data, type }) {
           },
         ]}
       >
-        <Text style={styles.testCenter}>{selfAssessCount+2}</Text>
+        <Text style={styles.testCenter}>{selfAssessCount}</Text>
       </View>
 
       {/* Total Count */}

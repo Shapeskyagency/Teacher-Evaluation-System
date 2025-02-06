@@ -308,19 +308,19 @@ exports.FormFill = async (req, res) => {
     const recipientEmail = updatedForm?.userId?.email || updatedForm?.userId?.email;
     const recipientName = updatedForm?.userId?.name || updatedForm?.userId?.name;
 
-    if(isCoordinatorComplete){
+    if(updatedForm?.isCoordinatorComplete){
     const subject = 'Observer Submission Completed for Fortnightly Monitor';
     const body = ` 
-                  Dear ${updatedForm?.teacherID?.name},
-                  ${recipientName} has submitted their section of the Fortnightly Monitor form on ${new Date()}. You may review the Report now.
-                  Regards,
-                  The Admin Team
+      Dear ${updatedForm?.teacherID?.name || updatedForm?.userId?.name},
+      ${updatedForm?.coordinatorID?.name || updatedForm?.userId?.name} has submitted their section of the Fortnightly Monitor form on ${new Date()}. You may review the Report now.
+      Regards,
+      The Admin Team
                     `;
 
-    await sendEmail(recipientEmail, subject, body);
+    await sendEmail((updatedForm?.coordinatorID.email ||  updatedForm?.userId?.email) , subject, body);
     }
 
-        if(isTeacherComplete){
+        if(updatedForm?.isTeacherComplete && className && date){
           const notifications = new Notification({
             title: `${updatedForm?.teacherID?.name} Have Complete the form now its your turn!`,
             route: `fortnightly-monitor/create/${updatedForm?._id}`,
@@ -331,13 +331,13 @@ exports.FormFill = async (req, res) => {
 
           const subject = 'Self-Assessment Submission Received for Fortnightly Monitor';
           const body = ` 
-                        Dear ${recipientName},
-                        ${updatedForm?.teacherID?.name} has submitted their Self-Assessment of the Fortnightly Monitor form on ${new Date()}. Please review and fill your section.
-                        Regards,
-                        The Admin Team
+Dear ${updatedForm?.coordinatorID?.name || updatedForm?.userId?.name},
+${updatedForm?.teacherID?.name || updatedForm?.userId?.name} has submitted their Self-Assessment of the Fortnightly Monitor form on ${new Date()}. Please review and fill your section.
+Regards,
+The Admin Team
                           `;
       
-          await sendEmail(recipientEmail, subject, body);
+          await sendEmail((updatedForm?.teacherID?.email || updatedForm?.userId?.email), subject, body);
           await notifications.save();
         }
 
@@ -418,5 +418,25 @@ exports.GetFormOneAdmin = async (req, res) => {
   } catch (error) {
       console.error("Error Getting Form One:", error);
       res.status(500).json({ message: "Error Getting Form One.", error });
+  }
+}
+
+
+
+exports.RemiderFormOne = async (req, res) => {
+  const userId = req?.user?.id;
+  const formId = req.params.id
+  try {
+    const UserDetails = await User.findById(userId);
+    const FormDetails =await Form1.findById(formId);
+    if(UserDetails.access === "Obserevr"){
+      
+    }
+
+    if(UserDetails.access === "Teacher"){  
+
+    }
+  } catch (error) {
+    res.status(200).send({message: error.message})
   }
 }
