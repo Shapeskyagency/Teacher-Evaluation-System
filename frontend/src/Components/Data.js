@@ -218,10 +218,14 @@ export const Formcolumns1 = [
           record?.isObserverCompleted ? (
           <>
             <Link
-              className="btn btn-primary"
+              // className="btn btn-primary"
               to={`/classroom-walkthrough/report/${record._id}`}
             >
-              View Report
+             <button
+          className="text-nowrap px-3 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors"
+        >
+          View Report
+        </button>
             </Link>
             {Role === UserRole[1] &&
               <Link
@@ -598,20 +602,27 @@ export const FormcolumnsForm1 = [
 
       if (isTeacherComplete && isCoordinatorComplete) {
         return (
-          <div className="d-flex gap-1 justify-content-center align-items-center">
+          <div className="d-flex gap-1 justify-content-start align-items-center">
             <Link
-              className="btn btn-primary text-nowrap h-fit"
+              // className="btn btn-primary text-nowrap h-fit"
               to={`/fortnightly-monitor/report/${record._id}`}
             >
-              View Report
+             <button
+          className="text-nowrap px-3 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors"
+        >
+          View Report
+        </button>
             </Link>
             <Link
-              className="btn text-primary"
               to={`/fortnightly-monitor/edit/${record._id}`}
             >
-              <Button size="large" color="danger" variant="solid">
-                Edit
-              </Button>
+              <button
+              
+          className="text-nowrap px-3 py-1 bg-red-50 text-red-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors"
+        >
+          Edit
+        </button>
+             
             </Link>
           </div>
         );
@@ -637,10 +648,15 @@ export const FormcolumnsForm1 = [
       ) {
         return (
           <Link
-            className="btn text-primary"
+            // className="btn text-primary"
             to={`/fortnightly-monitor/create/${record._id}`}
           >
-            Continue Form
+              <button
+          className="text-nowrap px-3 py-1  text-blue-600 hover:text-blue-900 rounded-md text-sm font-medium transition-colors"
+        >
+           Continue Form
+        </button>
+           
           </Link>
         );
       }
@@ -652,7 +668,7 @@ export const FormcolumnsForm1 = [
       ) {
        
         return (
-          <div className="d-flex gap-1 justify-content-center align-items-center">
+          <div className="d-flex gap-1 justify-content-start align-items-center">
            
             <Reminder id={record?._id}/>
             <Link
@@ -689,10 +705,14 @@ export const FormcolumnsForm1 = [
       ) {
         return (
           <Link
-            className="btn text-primary"
+            // className="btn text-primary"
             to={`/fortnightly-monitor/create/${record._id}`}
           >
-            Continue Form
+            <button
+          className="text-nowrap px-3 py-1  text-blue-600 hover:text-blue-900 rounded-md text-sm font-medium transition-colors"
+        >
+           Continue Form
+        </button>
           </Link>
         );
       }
