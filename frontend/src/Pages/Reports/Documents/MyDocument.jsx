@@ -6,6 +6,7 @@ import {
   Document,
   StyleSheet,
   Image,
+  Font,
 } from "@react-pdf/renderer";
 import Logo from "../Imgs/Logo.png";
 import LogoBanner from "../Imgs/image.png";
@@ -20,6 +21,19 @@ import AnswerComp from "./AnswerComp";
 //   family: "Gilda Display",
 //   src: "http://fonts.gstatic.com/s/gildadisplay/v4/8yAVUZLLZ3wb7dSsjix0CP1Ie94GXVQ4L73iNy0KJ5Y.ttf",
 // });
+
+Font.register({
+  family: "Open Sans",
+  fonts: [
+    {
+      src: "https://cdn.jsdelivr.net/npm/open-sans-all@0.1.3/fonts/open-sans-regular.ttf",
+    },
+    {
+      src: "https://cdn.jsdelivr.net/npm/open-sans-all@0.1.3/fonts/open-sans-600.ttf",
+      fontWeight: 600,
+    },
+  ],
+});
 
 // Create styles
 const styles = StyleSheet.create({
@@ -58,7 +72,8 @@ const styles = StyleSheet.create({
   },
   Question: {
     // fontFamily: "Gilda Display",
-    fontSize: 12,
+    fontFamily: "Open Sans",
+    fontSize: 11,
   },
   testCenter:{
     textAlign:"center"
