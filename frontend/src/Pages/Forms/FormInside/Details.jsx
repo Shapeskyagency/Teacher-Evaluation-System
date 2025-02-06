@@ -202,6 +202,7 @@ const Details = () => {
       // Ignore "N/A" (or any undefined answer)
     });
     setSelfAssessmentScore(score);
+    
   };
 
 
