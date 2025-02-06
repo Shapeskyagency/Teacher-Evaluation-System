@@ -15,8 +15,10 @@ import {
 import { getAllTimes, getUserId } from "../Utils/auth";
 import { UserRole } from "../config/config";
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BsCloudSlash } from "react-icons/bs";
+import { FormOneReminder } from "../redux/userSlice";
+import Reminder from "./Reminder";
 
 // import { SiGoogleclassroom } from "react-icons/si";
 
@@ -492,64 +494,103 @@ export const Formcolumns3 = [
 
 
 export const FormcolumnsForm1 = [
+  // {
+  //   title: UserRole[1] === Role ? "Teacher Name" : "Observer Name",
+  //   dataIndex: "teacherID",
+  //   key: "teacherID",
+  //   width:"160px",
+  //   render: (text, record) => (
+  //     <a>
+  //       {UserRole[1] === Role
+  //         ? record?.teacherID?.name || record?.userId?.name
+  //         : record?.coordinatorID?.name || record?.userId?.name}
+  //     </a>
+  //   ),
+  // },
   {
     title: UserRole[1] === Role ? "Teacher Name" : "Observer Name",
-    dataIndex: "teacherID",
-    key: "teacherID",
-    render: (text, record) => (
-      <a>
-        {UserRole[1] === Role
-          ? record?.teacherID?.name || record?.userId?.name
-          : record?.coordinatorID?.name || record?.userId?.name}
-      </a>
-    ),
+    dataIndex: UserRole[1] === Role ? "teacherID" : "coordinatorID",
+    key: UserRole[1] === Role ? "teacherID" : "coordinatorID",
+    width:"160px",
+    sorter: (a, b) =>  (a?.name || b?.userId?.name).localeCompare( UserRole[1] === Role ? b.teacherID?.name : b.coordinatorID?.name || b?.userId?.name),
+    render: (user,record) => <span>{user?.name || record?.userId?.name || "N/A"}</span>,
   },
   {
     title: "Class Name",
     dataIndex: "className",
     key: "className",
-    render: (text) => <a>{text || "N/A"}</a>,
+    width:"150px",
+    sorter: (a, b) => (a.className || "").localeCompare(b.className || ""),
+    
+    onFilter: (value, record) => record.className === value,
+    render: (text) => <span>{text || "N/A"}</span>,
   },
   {
     title: "Section",
     dataIndex: "section",
     key: "section",
-    render: (text) => <a>{text || "N/A"}</a>,
+    width:"100px",
+    sorter: (a, b) => (a.section || "").localeCompare(b.section || ""),
+    onFilter: (value, record) => record.section === value,
+    render: (text) => <span>{text || "N/A"}</span>,
   },
   {
     title: "Date",
     dataIndex: "date",
     key: "date",
-    render: (text) => <a>{getAllTimes(text).formattedDate2 || "N/A"}</a>,
+    width:"120px",
+    sorter: (a, b) => new Date(a.date) - new Date(b.date),
+    render: (date) => <span>{date ? new Date(date).toLocaleDateString() : "N/A"}</span>,
   },
   {
     title: "Teacher Status",
     dataIndex: "isTeacherComplete",
     key: "isTeacherComplete",
-    render: (text) => (
-      <Space size="middle">
-        <Tag color={text ? "green" : "volcano"}>
-          {text ? "COMPLETED" : "NOT COMPLETED"}
-        </Tag>
-      </Space>
+    width:"160px",
+    filters: [
+      { text: "Completed", value: true },
+      { text: "Not Completed", value: false },
+    ],
+    onFilter: (value, record) => record.isTeacherComplete === value,
+    render: (isComplete) => (
+      <span 
+        style={{
+          color: isComplete ? 'green' : 'red', 
+          padding: '2px 6px',
+          borderRadius: '4px'
+        }}
+      >
+        {isComplete ? "COMPLETED" : "NOT COMPLETED"}
+      </span>
     ),
   },
   {
     title: "Observer Status",
     dataIndex: "isCoordinatorComplete",
     key: "isCoordinatorComplete",
-    render: (text) => (
-      <Space size="middle">
-        <Tag color={text ? "green" : "volcano"}>
-          {text ? "COMPLETED" : "NOT COMPLETED"}
-        </Tag>
-      </Space>
+    width:"160px",
+    filters: [
+      { text: "Completed", value: true },
+      { text: "Not Completed", value: false },
+    ],
+    onFilter: (value, record) => record.isCoordinatorComplete === value,
+    render: (isComplete) => (
+      <span 
+        style={{
+          color: isComplete ? 'green' : 'red', 
+          padding: '2px 6px',
+          borderRadius: '4px'
+        }}
+      >
+        {isComplete ? "COMPLETED" : "NOT COMPLETED"}
+      </span>
     ),
   },
   {
     title: "Action",
     dataIndex: "action",
     key: "action",
+    width:"200px",
     render: (_, record) => {
       const { isTeacherComplete, isCoordinatorComplete, isObserverInitiation } =
         record;
@@ -557,9 +598,9 @@ export const FormcolumnsForm1 = [
 
       if (isTeacherComplete && isCoordinatorComplete) {
         return (
-          <>
+          <div className="d-flex gap-1 justify-content-center align-items-center">
             <Link
-              className="btn btn-primary"
+              className="btn btn-primary text-nowrap h-fit"
               to={`/fortnightly-monitor/report/${record._id}`}
             >
               View Report
@@ -572,7 +613,7 @@ export const FormcolumnsForm1 = [
                 Edit
               </Button>
             </Link>
-          </>
+          </div>
         );
       }
 
@@ -582,10 +623,9 @@ export const FormcolumnsForm1 = [
         !isCoordinatorComplete &&
         !isObserverInitiation
       ) {
+        
         return (
-          <Button size="large" className="btn-outline-primary">
-            Reminders
-          </Button>
+          <Reminder id={record?._id}/>
         );
       }
 
@@ -610,25 +650,20 @@ export const FormcolumnsForm1 = [
         isTeacherComplete &&
         !isCoordinatorComplete
       ) {
+       
         return (
-          <>
-            <Button
-              size="large"
-              variant="solid"
-              color="primary"
-              className="me-2"
-            >
-              Reminders
-            </Button>
+          <div className="d-flex gap-1 justify-content-center align-items-center">
+           
+            <Reminder id={record?._id}/>
             <Link
-              className="btn text-primary"
+              className="btn text-primary text-nowrap"
               to={`/fortnightly-monitor/edit/${record._id}`}
             >
               <Button size="large" color="danger" variant="solid">
                 Edit
               </Button>
             </Link>
-          </>
+          </div>
         );
       }
 
@@ -641,10 +676,9 @@ export const FormcolumnsForm1 = [
           !isTeacherComplete &&
           isCoordinatorComplete)
       ) {
+        
         return (
-          <Button size="large" className="btn-outline-primary">
-            Reminders
-          </Button>
+          <Reminder id={record?._id}/>
         );
       }
 
