@@ -317,10 +317,10 @@ exports.FormFill = async (req, res) => {
       The Admin Team
                     `;
 
-    await sendEmail((updatedForm?.teacherID.email ||  updatedForm?.userId?.email) , subject, body);
+    await sendEmail((updatedForm?.teacherID?.email ||  updatedForm?.userId?.email) , subject, body);
     }
 
-        if(updatedForm?.isTeacherComplete && className && date){
+        if(updatedForm?.isTeacherComplete){
           const notifications = new Notification({
             title: `${updatedForm?.teacherID?.name} Have Complete the form now its your turn!`,
             route: `fortnightly-monitor/create/${updatedForm?._id}`,
@@ -423,20 +423,100 @@ exports.GetFormOneAdmin = async (req, res) => {
 
 
 
-exports.RemiderFormOne = async (req, res) => {
-  const userId = req?.user?.id;
-  const formId = req.params.id
+// exports.RemiderFormOne = async (req, res) => {
+//   const userId = req?.user?.id;
+//   const formId = req?.params?.id
+//   try {
+//     const UserDetails = await User.findById(userId);
+//     const FormDetails =await Form1.findById(formId);
+//     if(!FormDetails){
+//       res.status(400).json({message:"Form not found"})
+//     }
+//     if(UserDetails?.access === "Obserevr"){
+//       const subject = 'Reminder: Fortnightly Monitor Form Submission Pending';
+//       const body = ` 
+// Dear ${FormDetails?.teacherID?.name || FormDetails?.userId?.name},
+// This is a gentle reminder from ${FormDetails?.coordinatorID?.name || FormDetails?.userId?.name} to complete your section of the Fortnightly Monitor form at the earliest.
+// Regards,
+// The Admin Team
+
+//                       `;
+  
+//       await sendEmail((FormDetails?.teacherID?.email || FormDetails?.userId?.email), subject, body);
+
+//       res.status(200).send({success:true})
+//     }
+
+//     if(UserDetails?.access === "Teacher"){  
+//       const subject = 'Reminder: Fortnightly Monitor Form Submission Pending';
+//       const body = ` 
+// Dear ${FormDetails?.coordinatorID?.name || FormDetails?.userId?.name},
+// This is a gentle reminder from  ${FormDetails?.teacherID?.name || FormDetails?.userId?.name} to complete your section of the Fortnightly Monitor form at the earliest.
+// Regards,
+// The Admin Team
+//                       `;
+  
+//       await sendEmail((FormDetails?.coordinatorID?.email || FormDetails?.userId?.email), subject, body);
+//       res.status(200).send({success:true})
+//     }
+//   } catch (error) {
+//     res.status(200).send({message: error.message})
+//   }
+// }
+
+
+exports.ReminderFormOne = async (req, res) => {
   try {
-    const UserDetails = await User.findById(userId);
-    const FormDetails =await Form1.findById(formId);
-    if(UserDetails.access === "Obserevr"){
-      
+    const userId = req?.user?.id;
+    const formId = req?.params?.id;
+
+    const [UserDetails, FormDetails] = await Promise.all([
+      User.findById(userId),
+      Form1.findById(formId).populate({
+        path: 'teacherID',
+        select: '-password -mobile -employeeId -customId'
+    })
+    .populate({
+        path: 'userId',
+        select: '-password -mobile -employeeId -customId'
+    })
+    .populate({
+      path: 'coordinatorID',
+      select: '-password -mobile -employeeId -customId'
+  }),
+    ]);
+
+    if (!FormDetails) {
+      return res.status(400).json({ message: "Form not found" });
     }
 
-    if(UserDetails.access === "Teacher"){  
-
+    const accessRole = UserDetails?.access;
+    if (!["Observer", "Teacher"].includes(accessRole)) {
+      return res.status(403).json({ message: "Unauthorized access" });
     }
+
+    const isObserver = accessRole === "Observer";
+    const sender = isObserver ? FormDetails?.coordinatorID?.name || FormDetails?.userId?.name 
+                              : FormDetails?.teacherID?.name || FormDetails?.userId?.name;
+    const receiverName = isObserver ? FormDetails?.teacherID?.name || FormDetails?.userId?.name
+                                    : FormDetails?.coordinatorID?.name || FormDetails?.userId?.name;
+    const receiverEmail = isObserver ? FormDetails?.teacherID?.email || FormDetails?.userId?.email
+                                     : FormDetails?.coordinatorID?.email || FormDetails?.userId?.email;
+
+
+    const subject = "Reminder: Fortnightly Monitor Form Submission Pending";
+    const body = `
+Dear ${receiverName},
+This is a gentle reminder from ${sender} to complete your section of the Fortnightly Monitor form at the earliest.
+
+Regards,  
+The Admin Team`;
+
+    await sendEmail(receiverEmail, subject, body);
+    return res.status(200).json({ success: true });
+
   } catch (error) {
-    res.status(200).send({message: error.message})
+    console.error("Error sending reminder:", error);
+    return res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
-}
+};

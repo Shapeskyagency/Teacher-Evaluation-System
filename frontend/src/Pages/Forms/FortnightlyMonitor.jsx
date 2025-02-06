@@ -1,48 +1,31 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { Button, Table, Select, Tag, DatePicker, Space } from "antd";
-import { Col, Row } from "react-bootstrap";
-import { PlusCircleOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  GetFormsOne,
-  GetObserverFormsOne,
-} from "../../redux/Form/fortnightlySlice";
-import { FormcolumnsForm1 } from "../../Components/Data";
-import { UserRole } from "../../config/config";
-import { getUserId } from "../../Utils/auth";
-import moment from "moment";
-
+import { Button, DatePicker, Select, Table } from 'antd';
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import moment from 'moment';
+import { getUserId } from '../../Utils/auth';
+import { GetFormsOne, GetObserverFormsOne } from '../../redux/Form/fortnightlySlice';
+import { UserRole } from '../../config/config';
+import { FormcolumnsForm1 } from '../../Components/Data';
+import { PlusCircleOutlined } from '@ant-design/icons';
+import { useNavigate, useNavigation } from 'react-router-dom';
 const { Option } = Select;
 
-const FortnightlyMonitor = () => {
-  const [openModal, setOpenModal] = useState(false);
+function FortnightlyMonitor() {
+
+  const Role = getUserId()?.access;
   const navigate = useNavigate();
+  
   const dispatch = useDispatch();
-  const Role = getUserId().access;
-
-  const CombinedData = useSelector(
-    (state) => state?.Forms?.getAllForms?.Combined || []
-  );
-
-  const forms = useSelector(
-    (state) => state?.Forms?.getAllForms?.Assigned || []
-  );
-  const formInitiationList = useSelector(
-    (state) => state?.Forms?.getAllForms?.Initiated || []
-  );
-
-  const [filteredCombinedData, setFilteredCombinedData] = useState([]);
   const [filters, setFilters] = useState({
-    className: [],
+    observer: [],
+    teacher: [],
+    class: [],
     section: [],
-    teacherID: [],
-    status: [],
     date: [],
-    observerName: [],
+    teacherStatus: [],
+    observerStatus: [],
   });
 
-  // Fetch forms on component mount
   useEffect(() => {
     if (Role === UserRole[1]) {
       dispatch(GetObserverFormsOne());
@@ -50,147 +33,79 @@ const FortnightlyMonitor = () => {
       dispatch(GetFormsOne());
     }
   }, [dispatch, Role]);
+  const CombinedData = useSelector((state) => state?.Forms?.getAllForms?.Combined || []);
 
-  // Sorting logic
-  const sortData = (data) => {
-    return [...(data || [])].sort((a, b) =>
-      a.isTeacherComplete === b.isTeacherComplete
-        ? 0
-        : a.isTeacherComplete
-        ? 1
-        : -1
+  // Dynamically get unique values for filters
+  const uniqueClasses = [
+    ...new Set(CombinedData.map((item) => item.className).filter(Boolean)),
+  ];
+  const uniqueObservers = [
+    ...new Set(
+      CombinedData.map((item) => item.coordinatorID?.name || item.userId?.name).filter(
+        (name) => name
+      )
+    ),
+  ]; // Ensure only non-falsy names are included
+  const uniqueTeachers = [
+    ...new Set(
+      CombinedData.map((item) => item?.teacherID?.name || item.userId?.name).filter((name) => name)
+    ),
+  ]; // Ensure only non-falsy names are included
+  const uniqueDates = [...new Set(CombinedData.map((item) => item.date))];
+
+  // Dynamically get unique sections
+  const uniqueSections = [
+    ...new Set(CombinedData.map((item) => item.section).filter(Boolean)), // Ensure only non-falsy values
+  ];
+
+  // Function to handle filter change for multiple values
+  const handleFilterChange = (value, filterType) => {
+    setFilters((prev) => ({ ...prev, [filterType]: value }));
+  };
+
+  // Handle date picker change
+  const handleDateChange = (date, dateString) => {
+    if (date) {
+      // Format the selected date to match the format in the data (e.g., 'YYYY-MM-DD')
+      setFilters((prev) => ({
+        ...prev,
+        date: [dateString], // Store as string to match with data date field
+      }));
+    } else {
+      setFilters((prev) => ({
+        ...prev,
+        date: [], // Clear date filter if no date is selected
+      }));
+    }
+  };
+
+  // Filter CombinedData based on selected filters
+  const filteredData = CombinedData.filter((item) => {
+    // Format date in item for comparison
+    const itemDate = moment(item.date).format("YYYY-MM-DD");
+
+    return (
+      (filters.class.length === 0 || filters.class.includes(item.className)) &&
+      (filters.section.length === 0 ||
+        filters.section.includes(item.section)) &&
+      (filters.date.length === 0 || filters.date.includes(itemDate)) && // Compare the date as string
+      (filters.teacherStatus.length === 0 ||
+        filters.teacherStatus.includes(item.isTeacherComplete)) &&
+      (filters.observerStatus.length === 0 ||
+        filters.observerStatus.includes(item.isCoordinatorComplete)) &&
+      (filters.observer.length === 0 ||
+        filters.observer.some((name) =>
+          item?.coordinatorID?.name?.includes(name) || item?.userId?.name?.includes(name) 
+        )) 
+        &&
+      (filters.teacher.length === 0 ||
+        filters.teacher.some((name) => item?.teacherID?.name?.includes(name) || item.userId?.name.includes(name) ))
     );
-  };
-
-  // Handle sorting and set initial data
-  useEffect(() => {
-    setFilteredCombinedData(sortData(CombinedData));
-  }, [CombinedData]);
-
-  // Get unique values for filters
-  const getUniqueValues = (key) => {
-    const values = [];
-    CombinedData.forEach((item) => {
-
-      if(key==='observerName'){
-            values.push(item?.userID?.name || item?.coordinatorID?.name);
-       }else if(key==='teacherID')
-        {
-          values.push(item?.teacherID?.name || item?.userID?.name);
-        }
-        else{
-        if (item[key]) {
-          values.push(item[key])
-        }
-       }
-    });
-    return [...new Set(values)];
-  };
-
-  const getTeachersNames = () => getUniqueValues("teacherID");
-  const getClasses = () => getUniqueValues("className");
-  const getSections = () => getUniqueValues("section");
-  const getObserverNames = () => getUniqueValues("observerName");
-
-  // Handle filter changes
-  const handleFilter = (key, value) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [key]: value,
-    }));
-  };
-
-  // Reset filters
-  const handleResetFilters = () => {
-    setFilters({
-      className: [],
-      section: [],
-      teacherID: [],
-      status: [],
-      date: [],
-      observerName: [],
-    });
-  };
-
-  // Apply the filters to the data
-  const applyFilters = (data) => {
-    const { className, section, teacherID, status, date, observerName } = filters;
-    return data.filter((item) => {
-
-      const matchesClassName = className.length ? className.includes(item.className) : true;
-      const matchesSection = section.length ? section.includes(item.section) : true;
-      const matchesTeacherID = teacherID.length ? teacherID.includes(item?.teacherID?.name || item?.userId?.name ) : true;
-      const matchesStatus = status.length ? status.includes(item.isTeacherComplete ? "COMPLETED" : "NOT COMPLETED") : true;
-      const matchesDate = date.length
-        ? date.some((d) => moment(item.date).isSame(d, "day"))
-        : true;
-      const matchesObserverName = observerName.length ? observerName.includes(item?.coordinatorID?.name || item?.userId?.name ) : true;
-
-      return matchesClassName && matchesSection && matchesTeacherID && matchesStatus && matchesDate && matchesObserverName;
-    });
-  };
-
-// Add filters to columns dynamically
-const columnsWithFilters = useMemo(() => {
-  const uniqueValues = (key, source) => {
-    return [...new Set(source.flatMap((item) => (item[key] ? item[key] : [])))].map((value) => ({
-      text: value,
-      value: value,
-    }));
-  };
-
-  return FormcolumnsForm1.map((column) => {
-    if (["className", "section", "teacherID", "observerName"].includes(column.dataIndex)) {
-      return {
-        ...column,
-        // filters: uniqueValues(column.dataIndex, CombinedData),
-        onFilter: (value, record) => record[column.dataIndex] === value,
-      };
-    }
-
-    if (column.dataIndex === "date") {
-      return {
-        ...column,
-        sorter: (a, b) => new Date(a.date) - new Date(b.date),
-        sortDirections: ["ascend", "descend"],
-      };
-    }
-
-    if (column.dataIndex === "isTeacherComplete") {
-      return {
-        ...column,
-       
-        onFilter: (value, record) =>
-          (record.isTeacherComplete ? "COMPLETED" : "NOT COMPLETED") === value,
-      };
-    }
-
-    return column;
   });
-}, [CombinedData]);
-
-  // Render table with filters and pagination
-  const renderTable = (title, data) => (
-    <div>
-      <h3>{title}</h3>
-      <Table
-        columns={columnsWithFilters}
-        dataSource={data}
-        bordered
-        rowKey={(record) => record?._id}
-        scroll={{ x: "max-content" }}
-        pagination={{ pageSize: 5, responsive: true }}
-      />
-    </div>
-  );
-
-
   return (
-    <div className="container py-4">
-      <Row>
-        <Col>
-          <div className="pb-0 pt-0" style={{ padding: "16px" }}>
-            {Role === UserRole[2] && (
+    <div>
+
+{Role === UserRole[2] && (
               <Button
                 className="mb-3"
                 onClick={() => navigate("/fortnightly-monitor/create")}
@@ -213,117 +128,137 @@ const columnsWithFilters = useMemo(() => {
                 Form Initiation
               </Button>
             )}
-
-            {/* Filter Options - Searchable Multi-Select */}
-            <div style={{ marginBottom: "20px" }}>
-              <Row>
-              {UserRole[1]=== getUserId().access &&
-                   <Col md={2}>
-                   <Select
-                     mode="multiple"
-                     allowClear
-                     showSearch
-                     style={{ width: "100%" }}
-                     placeholder="Select Teacher"
-                     value={filters.teacherID}
-                     onChange={(value) => handleFilter("teacherID", value)}
-                     options={getTeachersNames().map((teacher) => ({
-                       value: teacher,
-                       label: teacher,
-                     }))}
-                   />
-                
-                 </Col>
-                }
-                    {UserRole[2]=== getUserId().access &&
-                <Col md={2}>
-                  <Select
-                    mode="multiple"
-                    allowClear
-                    showSearch
-                    style={{ width: "100%" }}
-                    placeholder="Select Observer"
-                    value={filters.observerName}
-                    onChange={(value) => handleFilter("observerName", value)}
-                    options={getObserverNames()?.map((observer) => ({
-                      value: observer,
-                      label: observer,
-                    }))}
-                  />
-                  
-                </Col>
-                  }
-                <Col md={2} className="mt-2 mb-md-0 mt-md-0">
-                  <Select
-                    mode="multiple"
-                    allowClear
-                    showSearch
-                    style={{ width: "100%" }}
-                    placeholder="Select Class"
-                    value={filters.className}
-                    onChange={(value) => handleFilter("className", value)}
-                    options={getClasses().map((className) => ({
-                      value: className,
-                      label: className,
-                    }))}
-                  />
-                </Col>
-                <Col md={2} className="mb-2 mt-2 mb-md-0 mt-md-0">
-                  <Select
-                    mode="multiple"
-                    allowClear
-                    showSearch
-                    style={{ width: "100%" }}
-                    placeholder="Select Section"
-                    value={filters.section}
-                    onChange={(value) => handleFilter("section", value)}
-                    options={getSections().map((section) => ({
-                      value: section,
-                      label: section,
-                    }))}
-                  />
-                </Col>
-             
-                   <Col md={2}>
-                  <DatePicker
-                    style={{ width: "100%" }}
-                    placeholder="Select Date"
-                    onChange={(date) =>
-                      handleFilter("date", date ? [date.format("YYYY-MM-DD")] : [])
-                    }
-                  />
-                </Col>
-                <Col md={2} className="mb-2 mt-2 mb-md-0 mt-md-0">
-                  <Select
-                    mode="multiple"
-                    allowClear
-                    style={{ width: "100%" }}
-                    placeholder="Select Status"
-                    value={filters.status}
-                    onChange={(value) => handleFilter("status", value)}
-                    options={[
-                      { value: "COMPLETED", label: "Completed" },
-                      { value: "NOT COMPLETED", label: "Not Completed" },
-                    ]}
-                  />
-                </Col>
-               
-                <Col md={2}>
-                  <Button onClick={handleResetFilters} type="default">
-                    Reset Filters
-                  </Button>
-                </Col>
-              </Row>
-            </div>
-
-            {/* Render Tables */}
-            {renderTable("All Forms", applyFilters(filteredCombinedData))}
+ <div className=" flex flex-wrap gap-4">
+          {/* Observer Filter */}
+          {UserRole[2]=== getUserId().access &&
+          <div className="w-35 select-options">
+            <Select
+              mode="multiple"
+              style={{ width: "100%" }}
+              placeholder="Observer Name"
+              value={filters.observer}
+              onChange={(value) => handleFilterChange(value, "observer")}
+              showSearch
+              filterOption={(input, option) =>
+                option.children.toLowerCase().includes(input.toLowerCase())
+              }
+            >
+              {uniqueObservers.map((observer, index) => (
+                <Option key={index} value={observer}>
+                  {observer}
+                </Option>
+              ))}
+            </Select>
           </div>
-        </Col>
-      </Row>
+          }
+
+          {/* Teacher Filter */}
+          {UserRole[1]=== getUserId().access &&
+          <div className="w-35 select-options">
+            <Select
+              mode="multiple"
+              style={{ width: "100%" }}
+              placeholder="Teacher Name"
+              value={filters.teacher}
+              onChange={(value) => handleFilterChange(value, "teacher")}
+              showSearch
+              filterOption={(input, option) =>
+                option.children.toLowerCase().includes(input.toLowerCase())
+              }
+            >
+              {uniqueTeachers.map((teacher, index) => (
+                <Option key={index} value={teacher}>
+                  {teacher}
+                </Option>
+              ))}
+            </Select>
+          </div>
+            }
+
+          {/* Class Filter */}
+          <div className="w-35 select-options">
+            <Select
+              mode="multiple"
+              style={{ width: "100%" }}
+              placeholder="Select Class"
+              value={filters.class}
+              onChange={(value) => handleFilterChange(value, "class")}
+            >
+              {uniqueClasses.map((className, index) => (
+                <Option key={index} value={className}>
+                  {className}
+                </Option>
+              ))}
+            </Select>
+          </div>
+
+          {/* Section Filter */}
+          <div className="w-35 select-options">
+            <Select
+              mode="multiple"
+              style={{ width: "100%" }}
+              placeholder="Select Section"
+              value={filters.section}
+              onChange={(value) => handleFilterChange(value, "section")}
+            >
+              {uniqueSections.map((section, index) => (
+                <Option key={index} value={section}>
+                  {section}
+                </Option>
+              ))}
+            </Select>
+          </div>
+
+          {/* Teacher Status Filter */}
+          <div className="w-35 select-options">
+            <Select
+              mode="multiple"
+              style={{ width: "100%" }}
+              placeholder="Teacher Status"
+              value={filters.teacherStatus}
+              onChange={(value) => handleFilterChange(value, "teacherStatus")}
+            >
+              <Option value={true}>Complete</Option>
+              <Option value={false}>Incomplete</Option>
+            </Select>
+          </div>
+
+          {/* Observer Status Filter */}
+          <div className="w-35 select-options">
+            <Select
+              mode="multiple"
+              style={{ width: "100%" }}
+              placeholder="Observer Status"
+              value={filters.observerStatus}
+              onChange={(value) => handleFilterChange(value, "observerStatus")}
+            >
+              <Option value={true}>Complete</Option>
+              <Option value={false}>Incomplete</Option>
+            </Select>
+          </div>
+          <div className="mb-4 w-35 select-options">
+            <DatePicker
+            className='w-full'
+              placeholder="Select Date"
+              onChange={handleDateChange}
+              format="YYYY-MM-DD"
+            />
+          </div>
+          {/* <Button type="default" onClick={resetFilters}>
+            Reset Filters
+          </Button> */}
+        </div>
+
+        {/* Table Component */}
+        <Table
+          columns={FormcolumnsForm1}
+          dataSource={filteredData}
+          pagination={false}
+          scroll={{ y: 70 * 5 }}
+          rowKey="_id"
+        />
     </div>
-  );
-};
+  )
+}
 
-export default FortnightlyMonitor;
-
+export default FortnightlyMonitor

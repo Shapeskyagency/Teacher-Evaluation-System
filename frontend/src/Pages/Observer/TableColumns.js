@@ -97,6 +97,7 @@ export const FormOne_Columns = [
     title: "Action",
     dataIndex: "action",
     key: "action",
+    width:"200px",
     render: (text, record) => (
       <Link
         to={`/fortnightly-monitor/report/${record._id}`}
@@ -163,6 +164,10 @@ export const FormOne_Columns2 = [
     title: "Teacher Status",
     dataIndex: "isTeacherCompletes",
     key: "isTeacherCompletes",
+    filters: [
+      { text: "Completed", value: true },
+      { text: "Not Completed", value: false },
+    ],
     width:"160px",
     onFilter: (value, record) => record.isTeacherCompletes === value,
     render: (isComplete) => (
@@ -219,20 +224,20 @@ export const FormOne_Columns2 = [
 
 export const FormOne_Columns3 = [
   {
+    title: "Observer Name",
+    dataIndex: "grenralDetails",
+    key: "grenralDetails",
+    width:'160px',
+    sorter: (a, b) => (a?.NameofObserver?.name || b?.createdBy?.name || "").localeCompare(b?.generalDetails?.NameofObserver?.name || b?.createdBy?.name || ""),
+    render: (user,record) => <span>{user?.NameofObserver?.name || record?.generalDetails?.NameofObserver?.name }</span>,
+  },
+  {
     title: "Teacher Name",
     dataIndex: "teacherID",
     key: "teacherID",
     width:'160px',
     sorter: (a, b) => (a?.name ||  b?.createdBy?.name || "").localeCompare(b?.teacherID?.name || b?.createdBy?.name || ""),
     render: (user,record) => <span>{user?.name || record?.createdBy?.name }</span>,
-  },
-  {
-    title: "Observer Name",
-    dataIndex: "grenralDetails",
-    key: "grenralDetails",
-    width:'160px',
-    sorter: (a, b) => (a?.NameofObserver?.name || b?.createdBy?.name || "").localeCompare(b?.generalDetails?.NameofObserver?.name || b?.createdBy?.name || ""),
-    render: (user,record) => <span>{console.log(user) }</span>,
   },
   {
     title: "Grade",
