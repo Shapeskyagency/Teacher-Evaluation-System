@@ -120,7 +120,7 @@ function FormTwoReport() {
     <div>
         
             {/* Filters Section */}
-            <div className=" flex flex-wrap gap-4">
+            <div className=" flex flex-wrap gap-4 mb-3 ">
           {/* Observer Filter */}
           <div className="w-35 select-options">
             <Select
@@ -240,7 +240,7 @@ function FormTwoReport() {
               <Option value={false}>Incomplete</Option>
             </Select>
           </div>
-          <div className="mb-4 w-35 select-options">
+          <div className=" w-35 select-options">
             <DatePicker
             className='w-full'
               placeholder="Select Date"
