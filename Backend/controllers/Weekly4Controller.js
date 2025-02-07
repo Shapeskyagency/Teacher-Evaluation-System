@@ -298,7 +298,7 @@ exports.deleteWeekly4Form = async (req, res) => {
 // Get a Weekly4Form 
 exports.getAllweeklyForms = async (req, res) => {
   try {
-    const getAllFrom = await Weekly4Form.find().populate(`isInitiated.Observer`,'-password -coordinator -designation -email -updatedAt -__v')
+    const getAllFrom = await Weekly4Form.find().populate(`isInitiated.Observer teacherId`,'-password -coordinator -designation -email -updatedAt -__v')
 
     if (!getAllFrom) {
       return res.status(404).json({ message: 'Form not found' });

@@ -13,6 +13,7 @@ function FormTwoReport() {
       teacher: [],
       class: [],
       section: [],
+      subject:[],
       date: [],
       teacherStatus: [],
       observerStatus: [],
@@ -21,7 +22,6 @@ function FormTwoReport() {
   
     const CombinedData = useSelector((state) => state?.walkThroughForm?.GetForms    || []);
   
-    console.log(CombinedData)
     useEffect(() => {
         dispatch(GetAllClassRoomForms());
       }, [dispatch]);
@@ -47,7 +47,13 @@ function FormTwoReport() {
   
     // Dynamically get unique sections
     const uniqueSections = [
-      ...new Set(CombinedData.map((item) => item.section).filter(Boolean)), // Ensure only non-falsy values
+      ...new Set(CombinedData.map((item) => item?.grenralDetails?.Section).filter(Boolean)), // Ensure only non-falsy values
+    ];
+
+    const uniqueSubject = [
+      ...new Set(
+        CombinedData.map((item) => item?.grenralDetails?.Subject).filter(Boolean)
+      ),
     ];
   
     // Function to handle filter change for multiple values
@@ -92,7 +98,8 @@ function FormTwoReport() {
         (filters.class.length === 0 || filters.class.includes(item.grenralDetails?.className)) &&
         (filters.section.length === 0 ||
           filters.section.includes(item.grenralDetails?.Section)) &&
-        (filters.date.length === 0 || filters.date.includes(itemDate)) && // Compare the date as string
+          (filters.subject.length === 0 || filters.subject.includes(item?.grenralDetails?.Subject))&&
+          (filters.date.length === 0 || filters.date.includes(itemDate)) && // Compare the date as string
         (filters.teacherStatus.length === 0 ||
           filters.teacherStatus.includes(item.isTeacherCompletes)) &&
         (filters.observerStatus.length === 0 ||
@@ -106,6 +113,9 @@ function FormTwoReport() {
           filters.teacher.some((name) => item?.grenralDetails?.NameoftheVisitingTeacher?.name.includes(name)))
       );
     });
+
+
+
   return (
     <div>
         
@@ -186,6 +196,22 @@ function FormTwoReport() {
               ))}
             </Select>
           </div>
+
+           <div className="w-35 select-options">
+                  <Select
+                    mode="multiple"
+                    style={{ width: "100%" }}
+                    placeholder="Select Subject"
+                    value={filters.subject}
+                    onChange={(value) => handleFilterChange(value, "subject")}
+                  >
+                    {uniqueSubject.map((section, index) => (
+                      <Option key={index} value={section}>
+                        {section}
+                      </Option>
+                    ))}
+                  </Select>
+                  </div>
 
           {/* Teacher Status Filter */}
           <div className="w-35 select-options">
