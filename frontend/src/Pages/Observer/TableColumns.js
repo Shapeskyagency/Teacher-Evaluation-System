@@ -289,6 +289,10 @@ export const FormOne_Columns3 = [
     title: "Teacher Status",
     dataIndex: "isTeacherComplete",
     key: "isTeacherComplete",
+    filters: [
+      { text: "Completed", value: true },
+      { text: "Not Completed", value: false },
+    ],
     width:"160px",
     onFilter: (value, record) => record.isTeacherCompletes === value,
     render: (isComplete) => (
@@ -372,7 +376,7 @@ export const FormOne_Columns4 = [
     dataIndex: "isInitiated",
     key: "isInitiated",
     width:'160px',
-    // sorter: (a, b) => (a?.Observer?.name || "").localeCompare(b?.isInitiated?.Observer?.name || ""),
+    sorter: (a, b) => (a?.Observer?.name || "").localeCompare(b?.isInitiated?.Observer?.name || ""),
     render: (user) => <span>{user?.Observer?.name || "N/A"}</span>,
    },
   {
@@ -400,9 +404,13 @@ export const FormOne_Columns4 = [
   //   render: (date) => <span>{date ? new Date(date).toLocaleDateString() : "N/A"}</span>,
   // },
   {
-    title: "Status",
+    title: "Teacher Status",
     dataIndex: "isCompleted",
     key: "isCompleted",
+    filters: [
+      { text: "Completed", value: true },
+      { text: "Not Completed", value: false },
+    ],
     width:"160px",
     onFilter: (value, record) => record.isCompleted === value,
     render: (isComplete) => (
