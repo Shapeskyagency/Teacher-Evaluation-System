@@ -6,7 +6,7 @@ const weekly4FormSchema = new Schema({
     dateOfSubmission: { type: Date, required: false },
     teacherId: { type: Schema.Types.ObjectId, ref: 'User' },
     isInitiated: { status: { type: Boolean }, Observer: { type: Schema.Types.ObjectId, ref: 'User' } },
-    isCompleted: { type: Boolean },
+    isCompleted: { type: Boolean, default:false },
     FormData: {type: Array}
 });
 
