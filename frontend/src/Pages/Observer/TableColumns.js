@@ -41,6 +41,7 @@ export const FormOne_Columns = [
     onFilter: (value, record) => record.section === value,
     render: (text) => <span>{text || "N/A"}</span>,
   },
+
   {
     title: "Date",
     dataIndex: "date",
@@ -153,6 +154,15 @@ export const FormOne_Columns2 = [
     render: (text) => <span>{text.Section || "N/A"}</span>,
   },
   {
+    title: "Subject",
+    dataIndex: "grenralDetails",
+    key: "grenralDetails",
+    width:"100px",
+    sorter: (a, b) => (a?.Subject || "").localeCompare(b?.grenralDetails?.Subject || ""),
+    onFilter: (value, record) => record.grenralDetails?.Subject === value,
+    render: (text) => <span>{text.Subject}</span>,
+  },
+  {
     title: "Date",
     dataIndex: "grenralDetails",
     key: "grenralDetails",
@@ -208,6 +218,7 @@ export const FormOne_Columns2 = [
     title: "Action",
     dataIndex: "action",
     key: "action",
+    width:"200px",
     render: (text, record) => (
       <Link
         to={`/classroom-walkthrough/report/${record._id}`}
@@ -262,22 +273,26 @@ export const FormOne_Columns3 = [
     dataIndex: "grenralDetails",
     key: "grenralDetails",
     width:"100px",
-    sorter: (a, b) => (a.Section || "").localeCompare(b.grenralDetails?.Section || ""),
-    onFilter: (value, record) => record.grenralDetails.Section === value,
-    render: (text) => <span>{text.Section || "N/A"}</span>,
+    sorter: (a, b) => (a.Subject || "").localeCompare(b.grenralDetails?.Subject || ""),
+    onFilter: (value, record) => record.grenralDetails.Subject === value,
+    render: (text) => <span>{text.Subject || "N/A"}</span>,
   },
   {
     title: "Observation Date",
     dataIndex: "grenralDetails",
     key: "grenralDetails",
-    width:"120px",
+    width:"180px",
     sorter: (a, b) => new Date(a.DateOfObservation) - new Date(b.grenralDetails.DateOfObservation),
     render: (date) => <span>{date ? new Date(date?.DateOfObservation).toLocaleDateString() : "N/A"}</span>,
   },
   {
     title: "Teacher Status",
-    dataIndex: "isTeacherCompletes",
-    key: "isTeacherCompletes",
+    dataIndex: "isTeacherComplete",
+    key: "isTeacherComplete",
+    filters: [
+      { text: "Completed", value: true },
+      { text: "Not Completed", value: false },
+    ],
     width:"160px",
     onFilter: (value, record) => record.isTeacherCompletes === value,
     render: (isComplete) => (
@@ -294,8 +309,8 @@ export const FormOne_Columns3 = [
   },
   {
     title: "Observer Status",
-    dataIndex: "isObserverCompleted",
-    key: "isObserverCompleted",
+    dataIndex: "isObserverComplete",
+    key: "isObserverComplete",
     width:"160px",
     filters: [
       { text: "Completed", value: true },
@@ -316,14 +331,14 @@ export const FormOne_Columns3 = [
   },
   {
     title: "Reflection Status",
-    dataIndex: "isObserverCompleted",
-    key: "isObserverCompleted",
+    dataIndex: "isReflation",
+    key: "isReflation",
     width:"160px",
     filters: [
       { text: "Completed", value: true },
       { text: "Not Completed", value: false },
     ],
-    onFilter: (value, record) => record.isObserverCompleted === value,
+    onFilter: (value, record) => record.isReflation === value,
     render: (isComplete) => (
       <span 
         style={{
@@ -340,9 +355,10 @@ export const FormOne_Columns3 = [
     title: "Action",
     dataIndex: "action",
     key: "action",
+    width:"200px",
     render: (text, record) => (
       <Link
-        to={`/classroom-walkthrough/report/${record._id}`}
+        to={`/notebook-checking-proforma/report/${record._id}`}
       >
         <button
           className="text-nowrap px-3 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors"
@@ -356,27 +372,47 @@ export const FormOne_Columns3 = [
 
 export const FormOne_Columns4 = [
   {
-    title: "Teacher Name",
-    dataIndex: "grenralDetails",
-    key: "grenralDetails",
+    title: "Observer Name",
+    dataIndex: "isInitiated",
+    key: "isInitiated",
     width:'160px',
-    sorter: (a, b) => (a?.NameoftheVisitingTeacher?.name || "").localeCompare(b.grenralDetails?.NameoftheVisitingTeacher?.name || ""),
-    render: (user) => <span>{user?.NameoftheVisitingTeacher?.name || "N/A"}</span>,
-  },
+    sorter: (a, b) => (a?.Observer?.name || "").localeCompare(b?.isInitiated?.Observer?.name || ""),
+    render: (user) => <span>{user?.Observer?.name || "N/A"}</span>,
+   },
   {
-    title: "Initiated Date",
-    dataIndex: "grenralDetails",
-    key: "grenralDetails",
-    width:"120px",
-    sorter: (a, b) => new Date(a.DateOfObservation) - new Date(b.grenralDetails.DateOfObservation),
-    render: (date) => <span>{date ? new Date(date?.DateOfObservation).toLocaleDateString() : "N/A"}</span>,
-  },
+    title: "Teacher Name",
+    dataIndex: "teacherId",
+    key: "teacherId",
+    width:'160px',
+    sorter: (a, b) => (a?.name || "").localeCompare(b?.teacherId?.name || ""),
+    render: (user) => <span>{user?.name || "N/A"}</span>,
+   },
   {
-    title: "Status",
-    dataIndex: "isTeacherCompletes",
-    key: "isTeacherCompletes",
+    title: "Date Of Submission",
+    dataIndex: "dateOfSubmission",
+    key: "dateOfSubmission",
+    width:"150px",
+    sorter: (a, b) => new Date(a) - new Date(b?.dateOfSubmission),
+    render: (date) => <span>{date ? new Date(date).toLocaleDateString() : "N/A"}</span>,
+  },
+  // {
+  //   title: "Date Of Submission",
+  //   dataIndex: "dateOfSubmission",
+  //   key: "dateOfSubmission",
+  //   width:"120px",
+  //   sorter: (a, b) => new Date(a) - new Date(b?.dateOfSubmission),
+  //   render: (date) => <span>{date ? new Date(date).toLocaleDateString() : "N/A"}</span>,
+  // },
+  {
+    title: "Teacher Status",
+    dataIndex: "isCompleted",
+    key: "isCompleted",
+    filters: [
+      { text: "Completed", value: true },
+      { text: "Not Completed", value: false },
+    ],
     width:"160px",
-    onFilter: (value, record) => record.isTeacherCompletes === value,
+    onFilter: (value, record) => record.isCompleted === value,
     render: (isComplete) => (
       <span 
         style={{
@@ -393,6 +429,7 @@ export const FormOne_Columns4 = [
     title: "Action",
     dataIndex: "action",
     key: "action",
+    width:"200px",
     render: (text, record) => (
       <Link
         to={`/classroom-walkthrough/report/${record._id}`}
