@@ -102,7 +102,10 @@ function TeacherWalkthrough() {
 
   const handleSubmit = async (data) => {
     const payload = {
-      data: { isTeacherCompletes: true, TeacherFeedback: data?.TeacherFeedback },
+      data: {
+        isTeacherCompletes: true,
+        TeacherFeedback: data?.TeacherFeedback,
+      },
       id: FormId,
     };
 
@@ -123,81 +126,196 @@ function TeacherWalkthrough() {
         </div>
       )}
       <Row>
-      <Col md={12}>
+        <Col md={12}>
           <Card title="Observer Response">
             <Card className="mt-4">
-                <div className="d-grid" style={{gridTemplateColumns:"1fr 1fr"}}>
-                <p className="mb-0 fs-5"><b>Name:</b> {formDataList?.grenralDetails?.NameoftheVisitingTeacher?.name}</p>
-                <p className="mb-0 fs-5"><b>Date Of Observation:</b> {getAllTimes(formDataList?.grenralDetails?.DateOfObservation).formattedDate2}</p>
-                <p className="mb-0 fs-5"><b>Class:</b> {formDataList?.grenralDetails?.className}</p>
-                <p className="mb-0 fs-5"><b>Section:</b> {formDataList?.grenralDetails?.Section}</p>
-                <p className="mb-0 fs-5"><b>Subject:</b> {formDataList?.grenralDetails?.Subject}</p>
-                <p className="mb-0 fs-5"><b>Topic:</b> {formDataList?.grenralDetails?.Topic}</p>  
-                </div>
+              <div
+                className="d-grid"
+                style={{ gridTemplateColumns: "1fr 1fr" }}
+              >
+                <p className="mb-0 fs-5">
+                  <b>Name:</b>{" "}
+                  {formDataList?.grenralDetails?.NameoftheVisitingTeacher?.name}
+                </p>
+                <p className="mb-0 fs-5">
+                  <b>Date Of Observation:</b>{" "}
+                  {
+                    getAllTimes(formDataList?.grenralDetails?.DateOfObservation)
+                      .formattedDate2
+                  }
+                </p>
+                <p className="mb-0 fs-5">
+                  <b>Class:</b> {formDataList?.grenralDetails?.className}
+                </p>
+                <p className="mb-0 fs-5">
+                  <b>Section:</b> {formDataList?.grenralDetails?.Section}
+                </p>
+                <p className="mb-0 fs-5">
+                  <b>Subject:</b> {formDataList?.grenralDetails?.Subject}
+                </p>
+                <p className="mb-0 fs-5">
+                  <b>Topic:</b> {formDataList?.grenralDetails?.Topic}
+                </p>
+              </div>
             </Card>
-            <Card className="mt-4" title={'Essential Aggrements'}>
-            {formDataList?.essentialAggrements?.map((item, index) => (
-                 <div key={index} className="d-flex py-2  justify-content-between">
-                   <p className="mb-0">{item?.question}</p>
-                   <p className="mb-0"> {item?.answer}</p>
-                 </div>
+            <Card className="mt-4" title={"Essential Aggrements"}>
+              {formDataList?.essentialAggrements?.map((item, index) => (
+                <div
+                  key={index}
+                  className="d-flex py-2  justify-content-between"
+                >
+                  <p className="mb-0">{item?.question}</p>
+                  {/* <p className="mb-0"> {item?.answer}</p> */}
+                  <p
+                    className={`mb-0 p-2 text-sm rounded-md text-gray-900 font-medium shadow-md border transform transition-all duration-200 hover:scale-105
+                    ${
+                      item?.answer === "1"
+                        ? "bg-red-200 border-red-400 shadow-red-300"
+                        : item?.answer === "2"
+                        ? "bg-yellow-200 border-yellow-400 shadow-yellow-300"
+                        : item?.answer === "3"
+                        ? "bg-blue-200 border-blue-400 shadow-blue-300"
+                        : item?.answer === "4"
+                        ? "bg-green-200 border-green-400 shadow-green-300"
+                        : "bg-gray-200 border-gray-400 shadow-gray-300"
+                    }`}
+                  >
+                    {item?.answer}
+                  </p>
+                </div>
               ))}
-               </Card>
+            </Card>
 
-               <Card className="mt-4" title="Planing And Preparation">
-            {formDataList?.planingAndPreparation?.map((item, index) => (
-                 <div key={index} className="d-flex py-2  justify-content-between">
-                   <p className="mb-0">{item?.question}</p>
-                   <p className="mb-0"> {item?.answer}</p>
-                 </div>
+            <Card className="mt-4" title="Planing And Preparation">
+              {formDataList?.planingAndPreparation?.map((item, index) => (
+                <div
+                  key={index}
+                  className="d-flex py-2  justify-content-between"
+                >
+                  <p className="mb-0">{item?.question}</p>
+                  {/* <p className="mb-0"> {item?.answer}</p> */}
+
+                  <p
+                    className={`mb-0 p-2 text-sm rounded-md text-gray-900 font-medium shadow-md border transform transition-all duration-200 hover:scale-105
+                    ${
+                      item?.answer === "1"
+                        ? "bg-red-200 border-red-400 shadow-red-300"
+                        : item?.answer === "2"
+                        ? "bg-yellow-200 border-yellow-400 shadow-yellow-300"
+                        : item?.answer === "3"
+                        ? "bg-blue-200 border-blue-400 shadow-blue-300"
+                        : item?.answer === "4"
+                        ? "bg-green-200 border-green-400 shadow-green-300"
+                        : "bg-gray-200 border-gray-400 shadow-gray-300"
+                    }`}
+                  >
+                    {item?.answer}
+                  </p>
+                </div>
               ))}
-               </Card>
+            </Card>
 
-               <Card className="mt-4"  title="Class Room Environment">
-            {formDataList?.classRoomEnvironment?.map((item, index) => (
-                 <div key={index} className="d-flex py-2  justify-content-between">
-                   <p className="mb-0">{item?.question}</p>
-                   <p className="mb-0"> {item?.answer}</p>
-                 </div>
+            <Card className="mt-4" title="Class Room Environment">
+              {formDataList?.classRoomEnvironment?.map((item, index) => (
+                <div
+                  key={index}
+                  className="d-flex py-2  justify-content-between"
+                >
+                  <p className="mb-0">{item?.question}</p>
+                  {/* <p className="mb-0"> {item?.answer}</p> */}
+                  <p
+                    className={`mb-0 p-2 text-sm rounded-md text-gray-900 font-medium shadow-md border transform transition-all duration-200 hover:scale-105
+                    ${
+                      item?.answer === "1"
+                        ? "bg-red-200 border-red-400 shadow-red-300"
+                        : item?.answer === "2"
+                        ? "bg-yellow-200 border-yellow-400 shadow-yellow-300"
+                        : item?.answer === "3"
+                        ? "bg-blue-200 border-blue-400 shadow-blue-300"
+                        : item?.answer === "4"
+                        ? "bg-green-200 border-green-400 shadow-green-300"
+                        : "bg-gray-200 border-gray-400 shadow-gray-300"
+                    }`}
+                  >
+                    {item?.answer}
+                  </p>
+                </div>
               ))}
-               </Card>
+            </Card>
 
-
-               <Card className="mt-4" title="Instruction">
-            {formDataList?.instruction?.map((item, index) => (
-                 <div key={index} className="d-flex py-2  justify-content-between">
-                   <p className="mb-0">{item?.question}</p>
-                   <p className="mb-0"> {item?.answer}</p>
-                 </div>
+            <Card className="mt-4" title="Instruction">
+              {formDataList?.instruction?.map((item, index) => (
+                <div
+                  key={index}
+                  className="d-flex py-2  justify-content-between"
+                >
+                  <p className="mb-0">{item?.question}</p>
+                  {/* <p className="mb-0"> {item?.answer}</p> */}
+                  <p
+                    className={`mb-0 p-2 text-sm rounded-md text-gray-900 font-medium shadow-md border transform transition-all duration-200 hover:scale-105
+                    ${
+                      item?.answer === "1"
+                        ? "bg-red-200 border-red-400 shadow-red-300"
+                        : item?.answer === "2"
+                        ? "bg-yellow-200 border-yellow-400 shadow-yellow-300"
+                        : item?.answer === "3"
+                        ? "bg-blue-200 border-blue-400 shadow-blue-300"
+                        : item?.answer === "4"
+                        ? "bg-green-200 border-green-400 shadow-green-300"
+                        : "bg-gray-200 border-gray-400 shadow-gray-300"
+                    }`}
+                  >
+                    {item?.answer}
+                  </p>
+                </div>
               ))}
-               </Card>
+            </Card>
 
-               <Card className="mt-4"  title="Observer Feedback">
-            {formDataList?.ObserverFeedback?.map((item, index) => (
-                 <div key={index} className="d-flex flex-column py-2  justify-content-between">
-                   <p className="mb-0">{item?.question}</p>
-                   <p style={{background:"#f7f7f7"}} className="mb-0 p-2 rounded border mt-2"> {item?.answer}</p>
-                 </div>
+            <Card className="mt-4" title="Observer Feedback">
+              {formDataList?.ObserverFeedback?.map((item, index) => (
+                <div
+                  key={index}
+                  className="d-flex flex-column py-2  justify-content-between"
+                >
+                  <p className="mb-0">{item?.question}</p>
+                  {/* <p style={{background:"#f7f7f7"}} className="mb-0 p-2 rounded border mt-2"> {item?.answer}</p> */}
+                  <p
+                    className={`mb-0 p-2 text-sm rounded-md text-gray-900 font-medium shadow-md border transform transition-all duration-200 hover:scale-105
+                      ${
+                        item?.answer === "1"
+                          ? "bg-red-200 border-red-400 shadow-red-300"
+                          : item?.answer === "2"
+                          ? "bg-yellow-200 border-yellow-400 shadow-yellow-300"
+                          : item?.answer === "3"
+                          ? "bg-blue-200 border-blue-400 shadow-blue-300"
+                          : item?.answer === "4"
+                          ? "bg-green-200 border-green-400 shadow-green-300"
+                          : "bg-gray-200 border-gray-400 shadow-gray-300"
+                      }`}
+                  >
+                    {item?.answer}
+                  </p>
+                </div>
               ))}
-               </Card>
-           
-               <Form form={form} layout="vertical" className="mt-4">
-            {renderSections(
-              "Feedback",
-              ["What went well in the classroom and how can you leverage it in future?", "Describe key learning from your Feedback session"],
-              "TeacherFeedback"
-            )}
-            <Button type="primary" onClick={handleNext}>
-              {" "}
-              Submit
-            </Button>
-          </Form>
+            </Card>
+
+            <Form form={form} layout="vertical" className="mt-4">
+              {renderSections(
+                "Feedback",
+                [
+                  "What went well in the classroom and how can you leverage it in future?",
+                  "Describe key learning from your Feedback session",
+                ],
+                "TeacherFeedback"
+              )}
+              <Button type="primary" onClick={handleNext}>
+                {" "}
+                Submit
+              </Button>
+            </Form>
           </Card>
         </Col>
-        <Col md={5}>
-         
-        </Col>
-        
+        <Col md={5}></Col>
       </Row>
     </Container>
   );
