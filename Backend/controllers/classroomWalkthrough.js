@@ -293,10 +293,6 @@ exports.GetTeacherForm = async (req, res) => {
     }
 }
 
-
-
-
-
 exports.TeacherContinueForm = async (req, res) => {
     const userId = req?.user?.id;
     const FormID = req?.params?.id;
@@ -311,7 +307,9 @@ exports.TeacherContinueForm = async (req, res) => {
             return res.status(403).json({ message: "You do not have permission to update this form." });
         }
         // Find the form
-        const form = await Form2.findById(FormID);
+        // const form = await Form2.findById(FormID);
+        const form = await Form2.findById(FormID).populate('createdBy', 'email name');
+
 
         if (!form) {
             return res.status(404).json({ message: "Form not found." });
@@ -342,7 +340,6 @@ The Admin Team
         res.status(500).json({ message: "An error occurred while updating the form.", error });
     }
 };
-
 
 exports.getClassRoomForms = async (req, res) => {
     const userId = req?.user?.id;

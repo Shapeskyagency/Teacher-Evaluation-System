@@ -94,6 +94,7 @@ function DetailsWalkthrough() {
 
   // Calculate self-assessment score
  // Calculate Total Score and Out Of Score
+ 
 const calculateScore = () => {
   const formValues = form.getFieldsValue();
   let totalScore = 0; // Total points scored
@@ -381,15 +382,100 @@ const SectionSubject = (value) => {
   };
 
 
-  const handleSubmit = async (data) => {
-    const response = await dispatch(CreateWalkThrough(data));
-    if (response?.payload?.status) {
-      message.success(response?.payload?.message);
-      navigate(`/classroom-walkthrough/report/${response?.payload?.form?._id}`);
-    } else {
-      message.error(response?.payload?.message);
-    }
+  // const handleSubmit = async (data) => {
+  //   const response = await dispatch(CreateWalkThrough(data));
+  //   if (response?.payload?.status) {
+  //     message.success(response?.payload?.message);
+  //     navigate(`/classroom-walkthrough/report/${response?.payload?.form?._id}`);
+  //   } else {
+  //     message.error(response?.payload?.message);
+  //   }
+  // };
+
+//   const handleSubmit = async (data) => {
+//   // Add the calculated scores to the data object
+//   const submissionData = {
+//     ...data,
+//     totalScores: totalScore,
+//     scoreOutof: getOutOfScore,
+//     percentageScore: percentageScore,
+//     Grade: grade,
+//     NumberofParametersNotApplicable: numOfParameters,
+//   };
+
+//   // Dispatch the action to create the walkthrough with the updated data
+//   const response = await dispatch(CreateWalkThrough(submissionData));
+  
+//   if (response?.payload?.status) {
+//     message.success(response?.payload?.message);
+//     navigate(`/classroom-walkthrough/report/${response?.payload?.form?._id}`);
+//   } else {
+//     message.error(response?.payload?.message);
+//   }
+// };
+
+const handleSubmit = async (data) => {
+  // Calculate scores directly from form values
+  const { totalScore, getOutOfScore, percentageScore, grade, numOfParameters } = calculateScoreFromData(data);
+
+  const submissionData = {
+    ...data,
+    totalScores: totalScore,
+    scoreOutof: getOutOfScore,
+    percentageScore: percentageScore,
+    Grade: grade,
+    NumberofParametersNotApplicable: numOfParameters,
   };
+
+  const response = await dispatch(CreateWalkThrough(submissionData));
+  if (response?.payload?.status) {
+    message.success(response?.payload?.message);
+    navigate(`/classroom-walkthrough/report/${response?.payload?.form?._id}`);
+  } else {
+    message.error(response?.payload?.message);
+  }
+};
+
+const calculateScoreFromData = (data) => {
+  let totalScore = 0;
+  let outOfScore = 0;
+  let numOfParametersNA = 0;
+
+  sections.forEach((section) => {
+    if (data[section]) {
+      data[section].forEach((item) => {
+        const answer = item?.answer;
+        if (validValues?.includes(answer)) {
+          totalScore += parseInt(answer, 10);
+          outOfScore += 4;
+        }
+        if (["N/A", "NA", "N"].includes(answer)) {
+          numOfParametersNA++;
+        }
+      });
+    }
+  });
+
+  const percentage = outOfScore > 0 ? (totalScore / outOfScore) * 100 : 0;
+  const grade =
+    percentage >= 90
+      ? "A"
+      : percentage >= 80
+      ? "B"
+      : percentage >= 70
+      ? "C"
+      : percentage >= 60
+      ? "D"
+      : "F";
+
+  return {
+    totalScore,
+    getOutOfScore: outOfScore,
+    percentageScore: parseFloat(percentage.toFixed(2)),
+    grade,
+    numOfParameters: numOfParametersNA,
+  };
+};
 
 
 

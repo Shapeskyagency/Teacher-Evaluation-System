@@ -163,7 +163,7 @@ function WalkthroughDoc({ data }) {
               <Text style={styles.Question}>ITEM</Text>
             </View>
             <View style={{ borderRightWidth: 0, padding: 5, width: "20%" }}>
-              <Text style={styles.Question}>REMARKS</Text>
+              <Text style={styles.Question}>REMARKS 2</Text>
             </View>
 
             {/* Question Ans */}
@@ -235,7 +235,7 @@ function WalkthroughDoc({ data }) {
                   width: "50%",
                 }}
               >
-                <Text style={[styles.Question, styles.boldAns]}>28</Text>
+                <Text style={[styles.Question, styles.boldAns]}>{data?.totalScores}</Text>
               </View>
               <View
                 style={{
@@ -256,7 +256,7 @@ function WalkthroughDoc({ data }) {
                   width: "50%",
                 }}
               >
-                <Text style={[styles.Question, styles.boldAns]}>28</Text>
+                <Text style={[styles.Question, styles.boldAns]}>{data?.scoreOutof}</Text>
               </View>
               <View
                 style={{
@@ -277,7 +277,7 @@ function WalkthroughDoc({ data }) {
                   width: "50%",
                 }}
               >
-                <Text style={[styles.Question, styles.boldAns]}>28</Text>
+                <Text style={[styles.Question, styles.boldAns]}>{data?.percentageScore}</Text>
               </View>
               <View
                 style={{
@@ -297,7 +297,7 @@ function WalkthroughDoc({ data }) {
                   width: "50%",
                 }}
               >
-                <Text style={[styles.Question, styles.boldAns]}>28</Text>
+                <Text style={[styles.Question, styles.boldAns]}>{data?.Grade}</Text>
               </View>
 
               <View
@@ -317,7 +317,7 @@ function WalkthroughDoc({ data }) {
                   width: "50%",
                 }}
               >
-                <Text style={[styles.Question, styles.boldAns]}>28</Text>
+                <Text style={[styles.Question, styles.boldAns]}>{data?.NumberofParametersNotApplicable}</Text>
               </View>
             </View>
           </View>
