@@ -163,7 +163,7 @@ function WalkthroughDoc({ data }) {
               <Text style={styles.Question}>ITEM</Text>
             </View>
             <View style={{ borderRightWidth: 0, padding: 5, width: "20%" }}>
-              <Text style={styles.Question}>REMARKS 2</Text>
+              <Text style={styles.Question}>REMARKS</Text>
             </View>
 
             {/* Question Ans */}
