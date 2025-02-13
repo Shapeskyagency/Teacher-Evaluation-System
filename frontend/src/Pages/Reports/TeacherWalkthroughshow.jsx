@@ -4,8 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   GetWalkThroughForm,
   TeacherWalkThroughComplete,
-} from "../../../redux/Form/classroomWalkthroughSlice";
-import { getAllTimes, getUserId } from "../../../Utils/auth";
+} from "../../redux/Form/classroomWalkthroughSlice";
+import { getAllTimes, getUserId } from "../../Utils/auth";
 import {
   Button,
   Card,
@@ -19,7 +19,7 @@ import {
 import { Col, Container, Row } from "react-bootstrap";
 import TextArea from "antd/es/input/TextArea";
 
-function TeacherWalkthrough() {
+function TeacherWalkthroughshow() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({});
@@ -133,7 +133,7 @@ return Arrmap?.answer === "1"
   }
 
   return (
-    <Container className="mt-3">
+    <Container className="mt-3 mb-4">
       {isLoading && (
         <div className="LoaderWrapper bg-opacity-100">
           <Spin size="large" className="position-absolute" />
@@ -263,21 +263,23 @@ return Arrmap?.answer === "1"
                 </div>
               ))}
             </Card>
-
-            <Form form={form} layout="vertical" className="mt-4">
-              {renderSections(
-                "Feedback",
-                [
-                  "What went well in the classroom and how can you leverage it in future?",
-                  "Describe key learning from your Feedback session",
-                ],
-                "TeacherFeedback"
-              )}
-              <Button type="primary" onClick={handleNext}>
-                {" "}
-                Submit
-              </Button>
-            </Form>
+            <Card className="mt-4" title="Teacher Feedback">
+              {formDataList?.TeacherFeedback?.map((item, index) => (
+                <div
+                  key={index}
+                  className="d-flex flex-column py-2  justify-content-between"
+                >
+                  <p className="mb-0">{item?.question}</p>
+                  {/* <p style={{background:"#f7f7f7"}} className="mb-0 p-2 rounded border mt-2"> {item?.answer}</p> */}
+                  <p
+                    className={`mb-0 p-2 text-sm rounded-md text-gray-900 font-medium shadow-md border transform transition-all duration-200 hover:scale-105
+                      ${MapColor(item)}`}
+                  >
+                    {item?.answer}
+                  </p>
+                </div>
+              ))}
+            </Card>
           </Card>
         </Col>
         <Col md={5}></Col>
@@ -286,4 +288,4 @@ return Arrmap?.answer === "1"
   );
 }
 
-export default TeacherWalkthrough;
+export default TeacherWalkthroughshow;

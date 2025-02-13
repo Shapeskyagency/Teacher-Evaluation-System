@@ -7,6 +7,7 @@ import MyDocument from './Documents/MyDocument';
 import WalkthroughDoc from './Documents/WalkthroughDoc';
 import { DownloadOutlined } from '@ant-design/icons';
 import { Button, Spin } from 'antd';
+import TeacherWalkthroughshow from './TeacherWalkthroughshow';
 
 function ClassroomWalkthroughReader() {
 
@@ -44,9 +45,14 @@ function ClassroomWalkthroughReader() {
           <Spin size="large" className="position-absolute" />
         </div>
       )}
+
+
+
      {/* <h2>Fortnightly Monitor Report</h2> */}
      <Button type="primary"  onClick={downloadPDF}><DownloadOutlined/> Download PDF</Button>
      </div>
+     <TeacherWalkthroughshow />
+
       <PDFViewer className="w-100 m-auto d-block" style={{ height: "100vh" }}>
         
         <WalkthroughDoc data={formDataList} />

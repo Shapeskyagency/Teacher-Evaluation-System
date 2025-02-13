@@ -19,10 +19,12 @@ function ClassroomWalkthrough() {
   const [filters, setFilters] = useState({
     className: [],
     section: [],
+    subject: [],
     teacherID: [],
     status: [],
     date: [],
     observerName: [],
+    Observerstatus: [],
   });
 
   useEffect(() => {
@@ -65,6 +67,7 @@ function ClassroomWalkthrough() {
   const getTeachersNames = () => getUniqueValues("NameoftheVisitingTeacher");
   const getClasses = () => getUniqueValues("className");
   const getSections = () => getUniqueValues("Section");
+  const getSubject = () => getUniqueValues("Subject");
   const getObserverNames = () => getUniqueValues("createdBy");
 
   // Handle filter changes
@@ -80,25 +83,29 @@ function ClassroomWalkthrough() {
     setFilters({
       className: [],
       section: [],
+      subject: [],
       teacherID: [],
       status: [],
       date: [],
+      Observerstatus: [],
       observerName: [],
     });
   };
 
   // Apply the filters to the data
   const applyFilters = (data) => {
-    const { className, section, teacherID, status, date, observerName } = filters;
+    const { className, section, subject, teacherID, status, Observerstatus, date, observerName } = filters;
     return data.filter((item) => {
       const matchesClassName = className.length ? className.includes(item.grenralDetails.className) : true;
       const matchesSection = section.length ? section.includes(item.grenralDetails.Section) : true;
+      const matchesSubject = subject.length ? subject.includes(item.grenralDetails.Subject) : true;
       const matchesTeacherID = teacherID.length ? teacherID.includes(item.grenralDetails.NameoftheVisitingTeacher.name) : true;
       const matchesStatus = status.length ? status.includes(item.isTeacherCompletes ? "COMPLETED" : "NOT COMPLETED") : true;
+      const matchesObserverStatus = Observerstatus.length ? Observerstatus.includes(item.isObserverCompleted ? "COMPLETED" : "NOT COMPLETED") : true;
       const matchesDate = date.length ? date.some((d) => moment(item.grenralDetails.DateOfObservation).isSame(d, "day")) : true;
       const matchesObserverName = observerName.length ? observerName.includes(item.createdBy.name) : true;
 
-      return matchesClassName && matchesSection && matchesTeacherID && matchesStatus && matchesDate && matchesObserverName;
+      return matchesClassName &&  matchesSubject &&  matchesObserverStatus && matchesSection && matchesTeacherID && matchesStatus && matchesDate && matchesObserverName;
     });
   };
 
@@ -161,7 +168,7 @@ function ClassroomWalkthrough() {
   }, [GetForms]);
 
   return (
-    <div className="container py-4">
+    <div className="container">
       {isLoading && (
         <div className="LoaderWrapper">
           <Spin size="large" className="position-absolute" />
@@ -177,15 +184,14 @@ function ClassroomWalkthrough() {
             block // Makes the button responsive and full-width on smaller screens
             style={{ marginBottom: "16px", width: "fit-content" }} // Adds spacing below the button
           >
-            Fill New Form
+            Fill New Form 1
           </Button>
         ) : (
           <h2 className="mb-4">Classroom Walkthrough</h2>
         )}
 
         {/* Filter Options - Searchable Multi-Select */}
-        <div style={{ marginBottom: "20px" }}>
-          <Row>
+        <div className="flex flex-wrap gap-4 mb-3">
             {UserRole[1] === getUserId().access && 
                 <Col md={2}>
                 <Select
@@ -250,6 +256,21 @@ function ClassroomWalkthrough() {
                 }))}
               />
             </Col>
+            <Col md={2}>
+              <Select
+                mode="multiple"
+                allowClear
+                showSearch
+                style={{ width: "100%" }}
+                placeholder="Select Subject"
+                value={filters.subject}
+                onChange={(value) => handleFilter("subject", value)}
+                options={getSubject().map((subject) => ({
+                  value: subject,
+                  label: subject,
+                }))}
+              />
+            </Col>
          
             <Col md={2} className="mb-2 mt-2 mb-md-0 mt-md-0">
               <DatePicker
@@ -265,9 +286,24 @@ function ClassroomWalkthrough() {
                 mode="multiple"
                 allowClear
                 style={{ width: "100%" }}
-                placeholder="Select Status"
+                placeholder="Teacher Status"
                 value={filters.status}
                 onChange={(value) => handleFilter("status", value)}
+                options={[
+                  { value: "COMPLETED", label: "Completed" },
+                  { value: "NOT COMPLETED", label: "Not Completed" },
+                ]}
+              />
+            </Col>
+
+            <Col md={2}className="mb-2 mb-md-0 mt-md-0">
+              <Select
+                mode="multiple"
+                allowClear
+                style={{ width: "100%" }}
+                placeholder="Observer Status"
+                value={filters.Observerstatus}
+                onChange={(value) => handleFilter("Observerstatus", value)}
                 options={[
                   { value: "COMPLETED", label: "Completed" },
                   { value: "NOT COMPLETED", label: "Not Completed" },
@@ -280,10 +316,9 @@ function ClassroomWalkthrough() {
                 Reset Filters
               </Button>
             </Col>
-          </Row>
         </div>
 
-        <Table
+        {/* <Table
           columns={columnsWithFilters}
           dataSource={applyFilters(sortedForms)}
           bordered
@@ -294,7 +329,15 @@ function ClassroomWalkthrough() {
             pageSize: 5, // Limits rows per page for better mobile UX
             responsive: true,
           }}
-        />
+        /> */}
+
+         <Table
+                  columns={columnsWithFilters}
+                  dataSource={applyFilters(sortedForms)}
+                  pagination={false}
+                  scroll={{ y: 70 * 5 }}
+                  rowKey="_id"
+                />
       </div>
     </div>
   );

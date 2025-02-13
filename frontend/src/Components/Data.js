@@ -161,7 +161,7 @@ export const Formcolumns1 = [
     )
   },
   {
-    title: "Grade",
+    title: "Class Name",
     dataIndex: "grenralDetails", // Correctly accessing the DateOfObservation
     key: "grenralDetails",
     render: (text) => (
@@ -206,6 +206,20 @@ export const Formcolumns1 = [
       </Space>
     ),
   },
+  {
+    title: Role === UserRole[2] ? "Your Status" : "Observer Status",
+    dataIndex: "isObserverCompleted",
+    key: "isObserverCompleted",
+    render: (text) => (
+      <Space size="middle">
+        {text ? (
+          <Tag color="green">COMPLETED</Tag>
+        ) : (
+          <Tag color="volcano">NOT COMPLETED</Tag>
+        )}
+      </Space>
+    ),
+  },
 
   {
     title: "Action",
@@ -239,9 +253,11 @@ export const Formcolumns1 = [
           </>
         ) : (
           Role === UserRole[1] && (
-            <Button size="large" className="btn-outline-primary">
-              Reminders
-            </Button>
+
+            <Reminder id={record?._id} type={'form2'}/>
+            // <Button size="large" className="btn-outline-primary">
+            //   Reminders
+            // </Button>
           )
         )}
         {Role === UserRole[2] &&
