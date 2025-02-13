@@ -48,9 +48,9 @@ const DashboardLayout = () => {
         <Content style={contentStyle}>
         <Outlet />
         </Content>
-        <Footer style={footerStyle}>
+        {/* <Footer style={footerStyle}>
           <MainFooter/>
-        </Footer>
+        </Footer> */}
       </Layout>
     </Layout>
     
