@@ -106,6 +106,10 @@ function TeacherWalkthrough() {
         isTeacherCompletes: true,
         TeacherFeedback: data?.TeacherFeedback,
       },
+      data: {
+        isTeacherCompletes: true,
+        TeacherFeedback: data?.TeacherFeedback,
+      },
       id: FormId,
     };
 
