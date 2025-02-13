@@ -368,3 +368,130 @@ exports.getClassRoomForms = async (req, res) => {
         res.status(500).send({ error: error, message: "somthing went wrong" })
     }
 }
+
+
+// exports.ReminderFormTwo = async (req, res) => {
+//     try {
+//       const userId = req?.user?.id;
+//       const formId = req?.params?.id;
+  
+//       const [UserDetails, FormDetails] = await Promise.all([
+//         User.findById(userId),
+//         Form2.findById(formId).populate({
+//           path: 'teacherID',
+//           select: '-password -mobile -employeeId -customId'
+//       })
+//       .populate({
+//           path: 'createdBy',
+//           select: '-password -mobile -employeeId -customId'
+//       })
+//       .populate({
+//         path: `grenralDetails.NameoftheVisitingTeacher`,
+//         select: '-password -mobile -employeeId -customId'
+//     }),
+//       ]);
+  
+//       if (!FormDetails) {
+//         return res.status(400).json({ message: "Form not found" });
+//       }
+  
+//       const accessRole = UserDetails?.access;
+//       if (!["Observer", "Teacher"].includes(accessRole)) {
+//         return res.status(403).json({ message: "Unauthorized access" });
+//       }
+  
+//       const isObserver = accessRole === "Observer";
+//       const sender = isObserver ? FormDetails?.grenralDetails?.NameoftheVisitingTeacher?.name || FormDetails?.createdBy?.name 
+//                                 : FormDetails?.teacherID?.name || FormDetails?.userId?.name;
+//       const receiverName = isObserver ? FormDetails?.teacherID?.name || FormDetails?.userId?.name
+//                                       : FormDetails?.grenralDetails?.NameoftheVisitingTeacher?.name || FormDetails?.createdBy?.name;
+//       const receiverEmail = isObserver ? FormDetails?.teacherID?.email || FormDetails?.userId?.email
+//                                        : FormDetails?.grenralDetails?.NameoftheVisitingTeacher?.email || FormDetails?.createdBy?.email;
+  
+  
+//       const subject = "Reminder: Classroom Walkthrough Proforma Submission Pending";
+//       const body = `
+//   Dear ${receiverName},
+//   This is a reminder from ${sender} to review and fill out your section of the Classroom Walkthrough Proforma as soon as possible.
+//   Regards,  
+//   The Admin Team`;
+  
+//       await sendEmail(receiverEmail, subject, body);
+//       return res.status(200).json({ success: true });
+  
+//     } catch (error) {
+//       console.error("Error sending reminder:", error);
+//       return res.status(500).json({ message: "Internal Server Error", error: error.message });
+//     }
+//   };
+
+
+exports.ReminderFormTwo = async (req, res) => {
+    try {
+        const userId = req?.user?.id;
+        const formId = req?.params?.id;
+
+        const [UserDetails, FormDetails] = await Promise.all([
+            User.findById(userId),
+            Form2.findById(formId)
+                .populate({
+                    path: 'teacherID',
+                    select: '-password -mobile -employeeId -customId'
+                })
+                .populate({
+                    path: 'createdBy',
+                    select: '-password -mobile -employeeId -customId'
+                })
+                .populate({
+                    path: 'grenralDetails.NameoftheVisitingTeacher',
+                    select: '-password -mobile -employeeId -customId'
+                })
+        ]);
+
+        if (!FormDetails) {
+            return res.status(400).json({ message: "Form not found" });
+        }
+
+        const accessRole = UserDetails?.access;
+        if (!["Observer", "Teacher"].includes(accessRole)) {
+            return res.status(403).json({ message: "Unauthorized access" });
+        }
+
+        const isObserver = accessRole === "Teacher"; 
+        const sender = isObserver 
+            ? FormDetails?.grenralDetails?.NameoftheVisitingTeacher?.name || FormDetails?.createdBy?.name 
+            : FormDetails?.teacherID?.name || FormDetails?.createdBy?.name;
+
+        const receiverName = isObserver 
+            ? FormDetails?.teacherID?.name || FormDetails?.createdBy?.name
+            : FormDetails?.grenralDetails?.NameoftheVisitingTeacher?.name || FormDetails?.createdBy?.name;
+
+        let receiverEmail = isObserver 
+            ? FormDetails?.teacherID?.email || FormDetails?.createdBy?.email
+            : FormDetails?.grenralDetails?.NameoftheVisitingTeacher?.email || FormDetails?.createdBy?.email;
+
+        if (!receiverEmail) {
+            return res.status(400).json({ message: "Recipient email not found" });
+        }
+
+        const subject = "Reminder: Classroom Walkthrough Proforma Submission Pending";
+        const body = `
+Dear ${receiverName},
+This is a reminder from ${sender} to review and fill out your section of the Classroom Walkthrough Proforma as soon as possible.
+Regards shekhar,  
+The Admin Team`;
+
+        await sendEmail(receiverEmail, subject, body);
+        return res.status(200).json({ success: true, message: "Reminder sent successfully." });
+
+    } catch (error) {
+        console.error("Error sending reminder:", error);
+        return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+};
+
+
+
+
+
+

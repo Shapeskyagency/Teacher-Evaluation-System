@@ -112,6 +112,11 @@ export const UserLogin = createAsyncThunk('UserLogin',async (payload) => {
       return response.data;
   })
 
+  export const FormTwoReminder = createAsyncThunk('FormTwoReminder',async (payload) => {
+    const response = await axiosInstanceToken.post(`classroom-walkthrough/reminder/${payload}`);
+      return response.data;
+  })
+
 
 const userSlice = createSlice({
   name: 'Users',
