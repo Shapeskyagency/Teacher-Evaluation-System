@@ -184,7 +184,7 @@ function ClassroomWalkthrough() {
             block // Makes the button responsive and full-width on smaller screens
             style={{ marginBottom: "16px", width: "fit-content" }} // Adds spacing below the button
           >
-            Fill New Form 1
+            Fill New Form
           </Button>
         ) : (
           <h2 className="mb-4">Classroom Walkthrough</h2>
