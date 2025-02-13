@@ -432,7 +432,7 @@ export const FormOne_Columns4 = [
     width:"200px",
     render: (text, record) => (
       <Link
-        to={`/classroom-walkthrough/report/${record._id}`}
+        to={`/weekly4form/report/${record._id}`}
       >
         <button
           className="px-3 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors"
