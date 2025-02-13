@@ -118,19 +118,17 @@ function TeacherWalkthroughshow() {
     }
   };
 
-  const MapColor = (Arrmap) =>{
-
-return Arrmap?.answer === "1"
+  const MapColor = (Arrmap) => {
+    return Arrmap?.answer === "1"
       ? "bg-red-200 border-red-400 shadow-red-300"
       : Arrmap?.answer === "2"
-      ? "bg-yellow-100 border-yellow-300 shadow-yellow-200"  // Light Yellow
+      ? "bg-yellow-100 border-yellow-300 shadow-yellow-200" // Light Yellow
       : Arrmap?.answer === "3"
-      ? "bg-yellow-300 border-yellow-300 shadow-yellow-300"  // Dark Yellow
+      ? "bg-yellow-300 border-yellow-300 shadow-yellow-300" // Dark Yellow
       : Arrmap?.answer === "4"
       ? "bg-green-200 border-green-400 shadow-green-300"
-      : "bg-gray-200 border-gray-400 shadow-gray-300"
-
-  }
+      : "bg-gray-200 border-gray-400 shadow-gray-300";
+  };
 
   return (
     <Container className="mt-3 mb-4">
@@ -181,12 +179,11 @@ return Arrmap?.answer === "1"
                   <p className="mb-0">{item?.question}</p>
                   {/* <p className="mb-0"> {item?.answer}</p> */}
                   <p
-  className={`mb-0 p-2 text-sm rounded-md text-gray-900 font-medium shadow-md border transform transition-all duration-200 hover:scale-105
+                    className={`mb-0 p-2 text-sm rounded-md text-gray-900 font-medium shadow-md border transform transition-all duration-200 hover:scale-105
   ${MapColor(item)}`}
->
-  {item?.answer}
-</p>
-
+                  >
+                    {item?.answer}
+                  </p>
                 </div>
               ))}
             </Card>
