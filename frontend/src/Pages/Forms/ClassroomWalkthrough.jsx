@@ -3,7 +3,10 @@ import { Button, Spin, Table, Select, DatePicker, Space } from "antd";
 import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { GetcreatedBy, TeacherwalkthroughForms } from "../../redux/Form/classroomWalkthroughSlice";
+import {
+  GetcreatedBy,
+  TeacherwalkthroughForms,
+} from "../../redux/Form/classroomWalkthroughSlice";
 import { Formcolumns1 } from "../../Components/Data";
 import { getUserId } from "../../Utils/auth";
 import { UserRole } from "../../config/config";
@@ -13,7 +16,9 @@ import { Col, Row } from "react-bootstrap";
 function ClassroomWalkthrough() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isLoading, GetForms } = useSelector((state) => state?.walkThroughForm);
+  const { isLoading, GetForms } = useSelector(
+    (state) => state?.walkThroughForm
+  );
   const Role = getUserId().access;
   const [sortedForms, setSortedForms] = useState([]);
   const [filters, setFilters] = useState({
@@ -28,9 +33,9 @@ function ClassroomWalkthrough() {
   });
 
   useEffect(() => {
-    if(Role === UserRole[2]){
+    if (Role === UserRole[2]) {
       dispatch(TeacherwalkthroughForms());
-    }else if(Role === UserRole[1]){
+    } else if (Role === UserRole[1]) {
       dispatch(GetcreatedBy());
     }
   }, [dispatch, Role]);
@@ -51,9 +56,9 @@ function ClassroomWalkthrough() {
   const getUniqueValues = (key) => {
     const values = [];
     GetForms?.forEach((item) => {
-      if(key === "NameoftheVisitingTeacher"){
+      if (key === "NameoftheVisitingTeacher") {
         values.push(item.grenralDetails[key].name);
-      } else if(key === 'createdBy'){
+      } else if (key === "createdBy") {
         values.push(item[key].name);
       } else {
         if (item?.grenralDetails[key]) {
@@ -94,36 +99,85 @@ function ClassroomWalkthrough() {
 
   // Apply the filters to the data
   const applyFilters = (data) => {
-    const { className, section, subject, teacherID, status, Observerstatus, date, observerName } = filters;
+    const {
+      className,
+      section,
+      subject,
+      teacherID,
+      status,
+      Observerstatus,
+      date,
+      observerName,
+    } = filters;
     return data.filter((item) => {
-      const matchesClassName = className.length ? className.includes(item.grenralDetails.className) : true;
-      const matchesSection = section.length ? section.includes(item.grenralDetails.Section) : true;
-      const matchesSubject = subject.length ? subject.includes(item.grenralDetails.Subject) : true;
-      const matchesTeacherID = teacherID.length ? teacherID.includes(item.grenralDetails.NameoftheVisitingTeacher.name) : true;
-      const matchesStatus = status.length ? status.includes(item.isTeacherCompletes ? "COMPLETED" : "NOT COMPLETED") : true;
-      const matchesObserverStatus = Observerstatus.length ? Observerstatus.includes(item.isObserverCompleted ? "COMPLETED" : "NOT COMPLETED") : true;
-      const matchesDate = date.length ? date.some((d) => moment(item.grenralDetails.DateOfObservation).isSame(d, "day")) : true;
-      const matchesObserverName = observerName.length ? observerName.includes(item.createdBy.name) : true;
+      const matchesClassName = className.length
+        ? className.includes(item.grenralDetails.className)
+        : true;
+      const matchesSection = section.length
+        ? section.includes(item.grenralDetails.Section)
+        : true;
+      const matchesSubject = subject.length
+        ? subject.includes(item.grenralDetails.Subject)
+        : true;
+      const matchesTeacherID = teacherID.length
+        ? teacherID.includes(item.grenralDetails.NameoftheVisitingTeacher.name)
+        : true;
+      const matchesStatus = status.length
+        ? status.includes(
+            item.isTeacherCompletes ? "COMPLETED" : "NOT COMPLETED"
+          )
+        : true;
+      const matchesObserverStatus = Observerstatus.length
+        ? Observerstatus.includes(
+            item.isObserverCompleted ? "COMPLETED" : "NOT COMPLETED"
+          )
+        : true;
+      const matchesDate = date.length
+        ? date.some((d) =>
+            moment(item.grenralDetails.DateOfObservation).isSame(d, "day")
+          )
+        : true;
+      const matchesObserverName = observerName.length
+        ? observerName.includes(item.createdBy.name)
+        : true;
 
-      return matchesClassName &&  matchesSubject &&  matchesObserverStatus && matchesSection && matchesTeacherID && matchesStatus && matchesDate && matchesObserverName;
+      return (
+        matchesClassName &&
+        matchesSubject &&
+        matchesObserverStatus &&
+        matchesSection &&
+        matchesTeacherID &&
+        matchesStatus &&
+        matchesDate &&
+        matchesObserverName
+      );
     });
   };
 
   const columnsWithFilters = useMemo(() => {
     const uniqueValues = (key, source) => {
-      return [...new Set(source.flatMap((item) => (item[key] ? item[key] : [])))].map(
-        (value) => ({ text: value, value: value })
-      );
+      return [
+        ...new Set(source.flatMap((item) => (item[key] ? item[key] : []))),
+      ].map((value) => ({ text: value, value: value }));
     };
 
     return Formcolumns1.map((column) => {
-      if (["className", "Section", "NameoftheVisitingTeacher", "createdBy"].includes(column.dataIndex)) {
+      if (
+        [
+          "className",
+          "Section",
+          "NameoftheVisitingTeacher",
+          "createdBy",
+        ].includes(column.dataIndex)
+      ) {
         return {
           ...column,
           filters: uniqueValues(column.dataIndex, GetForms),
           onFilter: (value, record) => {
             if (column.dataIndex === "NameoftheVisitingTeacher") {
-              return record.grenralDetails.NameoftheVisitingTeacher.name === value;
+              return (
+                record.grenralDetails.NameoftheVisitingTeacher.name === value
+              );
             } else if (column.dataIndex === "createdBy") {
               return record.createdBy.name === value;
             } else {
@@ -149,7 +203,9 @@ function ClassroomWalkthrough() {
       if (column.dataIndex === "DateOfObservation") {
         return {
           ...column,
-          sorter: (a, b) => new Date(a.grenralDetails.DateOfObservation) - new Date(b.grenralDetails.DateOfObservation),
+          sorter: (a, b) =>
+            new Date(a.grenralDetails.DateOfObservation) -
+            new Date(b.grenralDetails.DateOfObservation),
           sortDirections: ["ascend", "descend"],
         };
       }
@@ -157,12 +213,13 @@ function ClassroomWalkthrough() {
         return {
           ...column,
           onFilter: (value, record) =>
-            (record.isTeacherCompletes ? "COMPLETED" : "NOT COMPLETED") === value,
+            (record.isTeacherCompletes ? "COMPLETED" : "NOT COMPLETED") ===
+            value,
           sorter: (a, b) => a.isTeacherCompletes - b.isTeacherCompletes,
           sortDirections: ["ascend", "descend"],
         };
       }
-    
+
       return column;
     });
   }, [GetForms]);
@@ -191,131 +248,118 @@ function ClassroomWalkthrough() {
         )}
 
         {/* Filter Options - Searchable Multi-Select */}
-        <div className="flex flex-wrap gap-4 mb-3">
-            {UserRole[1] === getUserId().access && 
-                <Col md={2}>
-                <Select
-                  mode="multiple"
-                  allowClear
-                  showSearch
-                  style={{ width: "100%" }}
-                  placeholder="Select Teacher"
-                  value={filters.teacherID}
-                  onChange={(value) => handleFilter("teacherID", value)}
-                  options={getTeachersNames().map((teacher) => ({
-                    value: teacher,
-                    label: teacher,
-                  }))}
-                />
-              </Col>
-            }
-        {UserRole[2] === getUserId().access && 
-            <Col md={2} className="mt-2 mb-md-0 mt-md-0">
-              <Select
-                mode="multiple"
-                allowClear
-                showSearch
-                style={{ width: "100%" }}
-                placeholder="Select Observer"
-                value={filters.observerName}
-                onChange={(value) => handleFilter("observerName", value)}
-                options={getObserverNames().map((observer) => ({
-                  value: observer,
-                  label: observer,
-                }))}
-              />
-            </Col>
-              }
-            <Col md={2} className="mb-2 mt-2 mb-md-0 mt-md-0">
-              <Select
-                mode="multiple"
-                allowClear
-                showSearch
-                style={{ width: "100%" }}
-                placeholder="Select Class"
-                value={filters.className}
-                onChange={(value) => handleFilter("className", value)}
-                options={getClasses().map((className) => ({
-                  value: className,
-                  label: className,
-                }))}
-              />
-            </Col>
-            <Col md={2}>
-              <Select
-                mode="multiple"
-                allowClear
-                showSearch
-                style={{ width: "100%" }}
-                placeholder="Select Section"
-                value={filters.section}
-                onChange={(value) => handleFilter("section", value)}
-                options={getSections().map((section) => ({
-                  value: section,
-                  label: section,
-                }))}
-              />
-            </Col>
-            <Col md={2}>
-              <Select
-                mode="multiple"
-                allowClear
-                showSearch
-                style={{ width: "100%" }}
-                placeholder="Select Subject"
-                value={filters.subject}
-                onChange={(value) => handleFilter("subject", value)}
-                options={getSubject().map((subject) => ({
-                  value: subject,
-                  label: subject,
-                }))}
-              />
-            </Col>
-         
-            <Col md={2} className="mb-2 mt-2 mb-md-0 mt-md-0">
-              <DatePicker
-                style={{ width: "100%" }}
-                placeholder="Select Date"
-                onChange={(date) =>
-                  handleFilter("date", date ? [date.format("YYYY-MM-DD")] : [])
-                }
-              />
-            </Col>
-            <Col md={2}className="mb-2 mb-md-0 mt-md-0">
-              <Select
-                mode="multiple"
-                allowClear
-                style={{ width: "100%" }}
-                placeholder="Teacher Status"
-                value={filters.status}
-                onChange={(value) => handleFilter("status", value)}
-                options={[
-                  { value: "COMPLETED", label: "Completed" },
-                  { value: "NOT COMPLETED", label: "Not Completed" },
-                ]}
-              />
-            </Col>
+        <div className="mb-3 d-flex flex-wrap align-items-center gap-2">
+          {UserRole[1] === getUserId().access && (
+            <Select
+              mode="multiple"
+              allowClear
+              showSearch
+              style={{ width: "140px" }}
+              placeholder="Select Teacher"
+              value={filters.teacherID}
+              onChange={(value) => handleFilter("teacherID", value)}
+              options={getTeachersNames().map((teacher) => ({
+                value: teacher,
+                label: teacher,
+              }))}
+            />
+          )}
 
-            <Col md={2}className="mb-2 mb-md-0 mt-md-0">
-              <Select
-                mode="multiple"
-                allowClear
-                style={{ width: "100%" }}
-                placeholder="Observer Status"
-                value={filters.Observerstatus}
-                onChange={(value) => handleFilter("Observerstatus", value)}
-                options={[
-                  { value: "COMPLETED", label: "Completed" },
-                  { value: "NOT COMPLETED", label: "Not Completed" },
-                ]}
-              />
-            </Col>
-            
-            <Col md={2}>
-              <Button onClick={handleResetFilters} type="default">
-                Reset Filters
-              </Button>
-            </Col>
+          {UserRole[2] === getUserId().access && (
+            <Select
+              mode="multiple"
+              allowClear
+              showSearch
+              style={{ width: "140px" }}
+              placeholder="Select Observer"
+              value={filters.observerName}
+              onChange={(value) => handleFilter("observerName", value)}
+              options={getObserverNames().map((observer) => ({
+                value: observer,
+                label: observer,
+              }))}
+            />
+          )}
+
+          <Select
+            mode="multiple"
+            allowClear
+            showSearch
+            style={{ width: "140px" }}
+            placeholder="Select Class"
+            value={filters.className}
+            onChange={(value) => handleFilter("className", value)}
+            options={getClasses().map((className) => ({
+              value: className,
+              label: className,
+            }))}
+          />
+
+          <Select
+            mode="multiple"
+            allowClear
+            showSearch
+            style={{ width: "140px" }}
+            placeholder="Select Section"
+            value={filters.section}
+            onChange={(value) => handleFilter("section", value)}
+            options={getSections().map((section) => ({
+              value: section,
+              label: section,
+            }))}
+          />
+
+          <Select
+            mode="multiple"
+            allowClear
+            showSearch
+            style={{ width: "140px" }}
+            placeholder="Select Subject"
+            value={filters.subject}
+            onChange={(value) => handleFilter("subject", value)}
+            options={getSubject().map((subject) => ({
+              value: subject,
+              label: subject,
+            }))}
+          />
+
+          <DatePicker
+            style={{ width: "140px" }}
+            placeholder="Select Date"
+            onChange={(date) =>
+              handleFilter("date", date ? [date.format("YYYY-MM-DD")] : [])
+            }
+          />
+
+          <Select
+            mode="multiple"
+            allowClear
+            style={{ width: "140px" }}
+            placeholder="Teacher Status"
+            value={filters.status}
+            onChange={(value) => handleFilter("status", value)}
+            options={[
+              { value: "COMPLETED", label: "Completed" },
+              { value: "NOT COMPLETED", label: "Not Completed" },
+            ]}
+          />
+
+          <Select
+            mode="multiple"
+            allowClear
+            style={{ width: "150px" }}
+            placeholder="Observer Status"
+            value={filters.Observerstatus}
+            onChange={(value) => handleFilter("Observerstatus", value)}
+            options={[
+              { value: "COMPLETED", label: "Completed" },
+              { value: "NOT COMPLETED", label: "Not Completed" },
+            ]}
+          />
+
+          <Button onClick={handleResetFilters} type="default">
+            Reset Filters
+          </Button>
         </div>
 
         {/* <Table
@@ -331,13 +375,13 @@ function ClassroomWalkthrough() {
           }}
         /> */}
 
-         <Table
-                  columns={columnsWithFilters}
-                  dataSource={applyFilters(sortedForms)}
-                  pagination={false}
-                  scroll={{ y: 70 * 5 }}
-                  rowKey="_id"
-                />
+        <Table
+          columns={columnsWithFilters}
+          dataSource={applyFilters(sortedForms)}
+          pagination={false}
+          scroll={{ y: 70 * 5 }}
+          rowKey="_id"
+        />
       </div>
     </div>
   );

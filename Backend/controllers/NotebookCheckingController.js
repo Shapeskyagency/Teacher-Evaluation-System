@@ -478,6 +478,8 @@ exports.GetNootbookForms = async (req, res) => {
 exports.updateTeacherReflationFeedback = async (req, res) => {
     const { id } = req.params;
     const { reflation } = req.body;
+
+    console.log('Received Request:', req.body);
   
     try {
       const updatedForm = await Form3.findByIdAndUpdate(

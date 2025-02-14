@@ -149,60 +149,194 @@ export const columnsCreate = [
   },
 ];
 
+// export const Formcolumns1 = [
+//   {
+//     title: UserRole[2] === Role ? "Observer Name" : "Teacher Name",
+//     dataIndex: "grenralDetails", // Corrected the typo from 'grenralDetails' to 'generalDetails'
+//     key: "grenralDetails",
+//     render: (text, record) => (
+//       <a>
+//         {UserRole[2] === Role ? record.createdBy.name : text.NameoftheVisitingTeacher.name}
+//       </a>
+//     )
+//   },
+//   {
+//     title: "Class Name",
+//     dataIndex: "grenralDetails", // Correctly accessing the DateOfObservation
+//     key: "grenralDetails",
+//     render: (text) => (
+//       <span>{text?.className}</span>
+//     ), // Formatting the date
+//   },
+//   {
+//     title: "Section",
+//     dataIndex: "grenralDetails", // Correctly accessing the DateOfObservation
+//     key: "grenralDetails",
+//     render: (text) => (
+//       <span>{text?.Section}</span>
+//     ), // Formatting the date
+//   },
+//   {
+//     title: "Subject",
+//     dataIndex: "grenralDetails", // Correctly accessing the DateOfObservation
+//     key: "grenralDetails",
+//     render: (text) => (
+//       <span>{text?.Subject}</span>
+//     ), // Formatting the date
+//   },
+//   {
+//     title: "Observation Date",
+//     dataIndex: "grenralDetails", // Correctly accessing the DateOfObservation
+//     key: "grenralDetails",
+//     render: (text) => (
+//       <span>{getAllTimes(text?.DateOfObservation)?.formattedDate2}</span>
+//     ), // Formatting the date
+//   },
+//   {
+//     title: Role === UserRole[2] ? "Your Status" : "Teacher Status",
+//     dataIndex: "isTeacherCompletes",
+//     key: "isTeacherCompletes",
+//     render: (text) => (
+//       <Space size="middle">
+//         {text ? (
+//           <Tag color="green">COMPLETED</Tag>
+//         ) : (
+//           <Tag color="volcano">NOT COMPLETED</Tag>
+//         )}
+//       </Space>
+//     ),
+//   },
+//   {
+//     title: Role === UserRole[2] ? "Your Status" : "Observer Status",
+//     dataIndex: "isObserverCompleted",
+//     key: "isObserverCompleted",
+//     render: (text) => (
+//       <Space size="middle">
+//         {text ? (
+//           <Tag color="green">COMPLETED</Tag>
+//         ) : (
+//           <Tag color="volcano">NOT COMPLETED</Tag>
+//         )}
+//       </Space>
+//     ),
+//   },
+
+//   {
+//     title: "Action",
+//     dataIndex: "action",
+//     key: "action",
+//     render: (_, record) => (
+//       <Space size="middle">
+//         {(Role === UserRole[2] || Role === UserRole[1]) &&
+//           record?.isTeacherCompletes &&
+//           record?.isObserverCompleted ? (
+//           <>
+//             <Link
+//               // className="btn btn-primary"
+//               to={`/classroom-walkthrough/report/${record._id}`}
+//             >
+//              <button
+//           className="text-nowrap px-3 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors"
+//         >
+//           View Report
+//         </button>
+//             </Link>
+//             {Role === UserRole[1] &&
+//               <Link
+//                 className="btn btn-danger"
+//                 to={`/classroom-walkthrough/edit/${record._id}`}
+//               >
+//                 Edit
+//               </Link>
+//             }
+
+//           </>
+//         ) : (
+//           Role === UserRole[1] && (
+
+//             <Reminder id={record?._id} type={'form2'}/>
+//             // <Button size="large" className="btn-outline-primary">
+//             //   Reminders
+//             // </Button>
+//           )
+//         )}
+//         {Role === UserRole[2] &&
+//           ((!record?.isTeacherCompletes && record?.isObserverCompleted) ||
+//             (!record?.isTeacherCompletes && !record?.isObserverCompleted)) && (
+//             <Link
+//               className="btn text-primary"
+//               to={`/classroom-walkthrough/create/${record._id}`}
+//             >
+//               Continue Form
+//             </Link>
+//           )}
+//         {/*       */}
+//       </Space>
+//     ),
+//   },
+// ];
+
+
 export const Formcolumns1 = [
   {
     title: UserRole[2] === Role ? "Observer Name" : "Teacher Name",
-    dataIndex: "grenralDetails", // Corrected the typo from 'grenralDetails' to 'generalDetails'
+    dataIndex: "grenralDetails",
     key: "grenralDetails",
+    sorter: (a, b) => {
+      const nameA = UserRole[2] === Role 
+        ? (a?.createdBy?.name || "").toLowerCase() 
+        : (a?.grenralDetails?.NameoftheVisitingTeacher?.name || "").toLowerCase();
+      const nameB = UserRole[2] === Role 
+        ? (b?.createdBy?.name || "").toLowerCase() 
+        : (b?.grenralDetails?.NameoftheVisitingTeacher?.name || "").toLowerCase();
+
+      return nameA.localeCompare(nameB);
+    },
     render: (text, record) => (
       <a>
-        {UserRole[2] === Role ? record.createdBy.name : text.NameoftheVisitingTeacher.name}
+        {UserRole[2] === Role ? record.createdBy.name : text?.NameoftheVisitingTeacher?.name}
       </a>
-    )
+    ),
   },
   {
     title: "Class Name",
-    dataIndex: "grenralDetails", // Correctly accessing the DateOfObservation
-    key: "grenralDetails",
-    render: (text) => (
-      <span>{text?.className}</span>
-    ), // Formatting the date
+    dataIndex: "grenralDetails",
+    key: "className",
+    sorter: (a, b) =>
+      (a?.grenralDetails?.className || "").localeCompare(b?.grenralDetails?.className || ""),
+    render: (text) => <span>{text?.className}</span>,
   },
   {
     title: "Section",
-    dataIndex: "grenralDetails", // Correctly accessing the DateOfObservation
-    key: "grenralDetails",
-    render: (text) => (
-      <span>{text?.Section}</span>
-    ), // Formatting the date
+    dataIndex: "grenralDetails",
+    key: "section",
+    sorter: (a, b) =>
+      (a?.grenralDetails?.Section || "").localeCompare(b?.grenralDetails?.Section || ""),
+    render: (text) => <span>{text?.Section}</span>,
   },
   {
     title: "Subject",
-    dataIndex: "grenralDetails", // Correctly accessing the DateOfObservation
-    key: "grenralDetails",
-    render: (text) => (
-      <span>{text?.Subject}</span>
-    ), // Formatting the date
+    dataIndex: "grenralDetails",
+    key: "subject",
+    sorter: (a, b) =>
+      (a?.grenralDetails?.Subject || "").localeCompare(b?.grenralDetails?.Subject || ""),
+    render: (text) => <span>{text?.Subject}</span>,
   },
   {
     title: "Observation Date",
-    dataIndex: "grenralDetails", // Correctly accessing the DateOfObservation
-    key: "grenralDetails",
-    render: (text) => (
-      <span>{getAllTimes(text?.DateOfObservation)?.formattedDate2}</span>
-    ), // Formatting the date
+    dataIndex: "grenralDetails",
+    key: "observationDate",
+    sorter: (a, b) => new Date(a?.grenralDetails?.DateOfObservation) - new Date(b?.grenralDetails?.DateOfObservation),
+    render: (text) => <span>{getAllTimes(text?.DateOfObservation)?.formattedDate2}</span>,
   },
   {
     title: Role === UserRole[2] ? "Your Status" : "Teacher Status",
     dataIndex: "isTeacherCompletes",
     key: "isTeacherCompletes",
+    sorter: (a, b) => (a.isTeacherCompletes === b.isTeacherCompletes ? 0 : a.isTeacherCompletes ? -1 : 1),
     render: (text) => (
       <Space size="middle">
-        {text ? (
-          <Tag color="green">COMPLETED</Tag>
-        ) : (
-          <Tag color="volcano">NOT COMPLETED</Tag>
-        )}
+        {text ? <Tag color="green">COMPLETED</Tag> : <Tag color="volcano">NOT COMPLETED</Tag>}
       </Space>
     ),
   },
@@ -210,17 +344,13 @@ export const Formcolumns1 = [
     title: Role === UserRole[2] ? "Your Status" : "Observer Status",
     dataIndex: "isObserverCompleted",
     key: "isObserverCompleted",
+    sorter: (a, b) => (a.isObserverCompleted === b.isObserverCompleted ? 0 : a.isObserverCompleted ? -1 : 1),
     render: (text) => (
       <Space size="middle">
-        {text ? (
-          <Tag color="green">COMPLETED</Tag>
-        ) : (
-          <Tag color="volcano">NOT COMPLETED</Tag>
-        )}
+        {text ? <Tag color="green">COMPLETED</Tag> : <Tag color="volcano">NOT COMPLETED</Tag>}
       </Space>
     ),
   },
-
   {
     title: "Action",
     dataIndex: "action",
@@ -228,53 +358,35 @@ export const Formcolumns1 = [
     render: (_, record) => (
       <Space size="middle">
         {(Role === UserRole[2] || Role === UserRole[1]) &&
-          record?.isTeacherCompletes &&
-          record?.isObserverCompleted ? (
+        record?.isTeacherCompletes &&
+        record?.isObserverCompleted ? (
           <>
-            <Link
-              // className="btn btn-primary"
-              to={`/classroom-walkthrough/report/${record._id}`}
-            >
-             <button
-          className="text-nowrap px-3 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors"
-        >
-          View Report
-        </button>
+            <Link to={`/classroom-walkthrough/report/${record._id}`}>
+              <button className="text-nowrap px-3 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors">
+                View Report
+              </button>
             </Link>
-            {Role === UserRole[1] &&
-              <Link
-                className="btn btn-danger"
-                to={`/classroom-walkthrough/edit/${record._id}`}
-              >
+            {Role === UserRole[1] && (
+              <Link className="btn btn-danger" to={`/classroom-walkthrough/edit/${record._id}`}>
                 Edit
               </Link>
-            }
-
+            )}
           </>
         ) : (
-          Role === UserRole[1] && (
-
-            <Reminder id={record?._id} type={'form2'}/>
-            // <Button size="large" className="btn-outline-primary">
-            //   Reminders
-            // </Button>
-          )
+          Role === UserRole[1] && <Reminder id={record?._id} type={'form2'} />
         )}
         {Role === UserRole[2] &&
           ((!record?.isTeacherCompletes && record?.isObserverCompleted) ||
             (!record?.isTeacherCompletes && !record?.isObserverCompleted)) && (
-            <Link
-              className="btn text-primary"
-              to={`/classroom-walkthrough/create/${record._id}`}
-            >
+            <Link className="btn text-primary" to={`/classroom-walkthrough/create/${record._id}`}>
               Continue Form
             </Link>
           )}
-        {/*       */}
       </Space>
     ),
   },
 ];
+
 
 export const Formcolumns2 = [
   {
