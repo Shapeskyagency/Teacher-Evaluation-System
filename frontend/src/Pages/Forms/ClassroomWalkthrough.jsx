@@ -379,7 +379,6 @@ function ClassroomWalkthrough() {
           columns={columnsWithFilters}
           dataSource={applyFilters(sortedForms)}
           pagination={false}
-          scroll={{ y: 70 * 5 }}
           rowKey="_id"
         />
       </div>
