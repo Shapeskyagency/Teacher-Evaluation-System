@@ -225,24 +225,20 @@ function ClassroomWalkthrough() {
   }, [GetForms]);
 
   return (
-    <div className="container">
+    <div className="container p-0">
       {isLoading && (
         <div className="LoaderWrapper">
           <Spin size="large" className="position-absolute" />
         </div>
       )}
-      <div style={{ padding: "16px" }}>
+      <div >
         {Role === UserRole[1] ? (
-          <Button
-            onClick={() => navigate("/classroom-walkthrough/create")}
-            type="primary"
-            icon={<PlusCircleOutlined />}
-            size="large"
-            block // Makes the button responsive and full-width on smaller screens
-            style={{ marginBottom: "16px", width: "fit-content" }} // Adds spacing below the button
-          >
-            Fill New Form
-          </Button>
+          <button
+           style={{borderRadius:5}}
+           className="mb-3 bg-[#1a4d2e] p-3 text-white py-2 "
+            onClick={() => navigate("/classroom-walkthrough/create")}>
+            <PlusCircleOutlined /> Fill New Form
+          </button>
         ) : (
           <h2 className="mb-4">Classroom Walkthrough</h2>
         )}
@@ -379,7 +375,8 @@ function ClassroomWalkthrough() {
           columns={columnsWithFilters}
           dataSource={applyFilters(sortedForms)}
           pagination={false}
-          rowKey="_id"
+          scroll={{ y: "100%", x: "100%" }}
+        rowKey="_id"
         />
       </div>
     </div>

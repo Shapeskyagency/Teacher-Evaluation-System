@@ -334,10 +334,16 @@ export const Formcolumns1 = [
     dataIndex: "isTeacherCompletes",
     key: "isTeacherCompletes",
     sorter: (a, b) => (a.isTeacherCompletes === b.isTeacherCompletes ? 0 : a.isTeacherCompletes ? -1 : 1),
-    render: (text) => (
-      <Space size="middle">
-        {text ? <Tag color="green">COMPLETED</Tag> : <Tag color="volcano">NOT COMPLETED</Tag>}
-      </Space>
+    render: (isComplete) => (
+      <span 
+        style={{
+          color: isComplete ? 'green' : 'red', 
+          padding: '2px 6px',
+          borderRadius: '4px'
+        }}
+      >
+        {isComplete ? "COMPLETED" : "NOT COMPLETED"}
+      </span>
     ),
   },
   {
@@ -345,10 +351,16 @@ export const Formcolumns1 = [
     dataIndex: "isObserverCompleted",
     key: "isObserverCompleted",
     sorter: (a, b) => (a.isObserverCompleted === b.isObserverCompleted ? 0 : a.isObserverCompleted ? -1 : 1),
-    render: (text) => (
-      <Space size="middle">
-        {text ? <Tag color="green">COMPLETED</Tag> : <Tag color="volcano">NOT COMPLETED</Tag>}
-      </Space>
+    render: (isComplete) => (
+      <span 
+        style={{
+          color: isComplete ? 'green' : 'red', 
+          padding: '2px 6px',
+          borderRadius: '4px'
+        }}
+      >
+        {isComplete ? "COMPLETED" : "NOT COMPLETED"}
+      </span>
     ),
   },
   {
@@ -367,8 +379,13 @@ export const Formcolumns1 = [
               </button>
             </Link>
             {Role === UserRole[1] && (
-              <Link className="btn btn-danger" to={`/classroom-walkthrough/edit/${record._id}`}>
-                Edit
+              <Link  to={`/classroom-walkthrough/edit/${record._id}`}>
+                <button
+              
+              className="text-nowrap px-3 py-1 bg-red-50 text-red-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors"
+            >
+              Edit
+            </button>
               </Link>
             )}
           </>
@@ -629,6 +646,7 @@ export const Formcolumns3 = [
     title: UserRole[1] === getUserId()?.access ? "Teacher Name" : "Observer Name",
     dataIndex: "grenralDetails",
     key: UserRole[1] === getUserId()?.access ? "Teacher" : "Observer",
+    width:'160px',
     sorter: (a, b) =>
       (a.createdBy?.name || a.teacherID?.name || "").localeCompare(
         b.createdBy?.name || b.teacherID?.name || ""
@@ -640,82 +658,113 @@ export const Formcolumns3 = [
           : text.NameofObserver.name}
       </a>
     ),
-    width:'400px',
   },
   {
     title: "Grade",
     dataIndex: "grenralDetails",
-    key: "className",
-    sorter: (a, b) => (a.grenralDetails.className || "").localeCompare(b.grenralDetails.className || ""),
-    render: (text) => <a>{text.className || "N/A"}</a>,
-    width:'160px',
+    key: "grenralDetails",
+    width:"150px",
+    sorter: (a, b) => (a.className || "").localeCompare(b.grenralDetails?.className || ""),
+    onFilter: (value, record) => record.grenralDetails.className === value,
+    render: (text) => <span>{text.className || "N/A"}</span>,
   },
   {
     title: "Section",
     dataIndex: "grenralDetails",
-    key: "Section",
-    sorter: (a, b) => (a.grenralDetails.Section || "").localeCompare(b.grenralDetails.Section || ""),
-    render: (text) => <a>{text.Section || "N/A"}</a>,
-    width:'160px',
+    key: "grenralDetails",
+    width:"100px",
+    sorter: (a, b) => (a.Section || "").localeCompare(b.grenralDetails?.Section || ""),
+    onFilter: (value, record) => record.grenralDetails.Section === value,
+    render: (text) => <span>{text.Section || "N/A"}</span>,
   },
   {
     title: "Subject",
     dataIndex: "grenralDetails",
-    key: "Subject",
-    sorter: (a, b) => (a.grenralDetails.Subject || "").localeCompare(b.grenralDetails.Subject || ""),
-    render: (text) => <a>{text.Subject || "N/A"}</a>,
-    width:'160px',
+    key: "grenralDetails",
+    width:"100px",
+    sorter: (a, b) => (a.Subject || "").localeCompare(b.grenralDetails?.Subject || ""),
+    onFilter: (value, record) => record.grenralDetails.Subject === value,
+    render: (text) => <span>{text.Subject || "N/A"}</span>,
   },
   {
     title: "Observation Date",
     dataIndex: "grenralDetails",
-    key: "DateOfObservation",
-    sorter: (a, b) => new Date(a.grenralDetails.DateOfObservation) - new Date(b.grenralDetails.DateOfObservation),
-    render: (text) => (
-      <span>{getAllTimes(text.DateOfObservation).formattedDate2 || "N/A"}</span>
-    ),
-    width:'160px',
+    key: "grenralDetails",
+    width:"180px",
+    sorter: (a, b) => new Date(a.DateOfObservation) - new Date(b.grenralDetails.DateOfObservation),
+    render: (date) => <span>{date ? new Date(date?.DateOfObservation).toLocaleDateString() : "N/A"}</span>,
   },
   {
     title: "Teacher Status",
     dataIndex: "isTeacherComplete",
     key: "isTeacherComplete",
-    sorter: (a, b) => a.isTeacherComplete - b.isTeacherComplete,
-    render: (text) => (
-      <Space size="middle">
-        {text ? <Tag color="green">COMPLETED</Tag> : <Tag color="volcano">NOT COMPLETED</Tag>}
-      </Space>
+    filters: [
+      { text: "Completed", value: true },
+      { text: "Not Completed", value: false },
+    ],
+    width:"160px",
+    onFilter: (value, record) => record.isTeacherCompletes === value,
+    render: (isComplete) => (
+      <span 
+        style={{
+          color: isComplete ? 'green' : 'red', 
+          padding: '2px 6px',
+          borderRadius: '4px'
+        }}
+      >
+        {isComplete ? "COMPLETED" : "NOT COMPLETED"}
+      </span>
     ),
-    width:'160px',
   },
   {
     title: "Observer Status",
     dataIndex: "isObserverComplete",
     key: "isObserverComplete",
-    sorter: (a, b) => a.isObserverComplete - b.isObserverComplete,
-    render: (text) => (
-      <Space size="middle">
-        {text ? <Tag color="green">COMPLETED</Tag> : <Tag color="volcano">NOT COMPLETED</Tag>}
-      </Space>
+    width:"160px",
+    filters: [
+      { text: "Completed", value: true },
+      { text: "Not Completed", value: false },
+    ],
+    onFilter: (value, record) => record.isObserverCompleted === value,
+    render: (isComplete) => (
+      <span 
+        style={{
+          color: isComplete ? 'green' : 'red', 
+          padding: '2px 6px',
+          borderRadius: '4px'
+        }}
+      >
+        {isComplete ? "COMPLETED" : "NOT COMPLETED"}
+      </span>
     ),
-    width:'160px',
   },
   {
     title: "Reflection Status",
     dataIndex: "isReflation",
     key: "isReflation",
-    sorter: (a, b) => a.isReflation - b.isReflation,
-    render: (text) => (
-      <Space size="middle">
-        {text ? <Tag color="green">COMPLETED</Tag> : <Tag color="volcano">NOT COMPLETED</Tag>}
-      </Space>
+    width:"160px",
+    filters: [
+      { text: "Completed", value: true },
+      { text: "Not Completed", value: false },
+    ],
+    onFilter: (value, record) => record.isReflation === value,
+    render: (isComplete) => (
+      <span 
+        style={{
+          color: isComplete ? 'green' : 'red', 
+          padding: '2px 6px',
+          borderRadius: '4px'
+        }}
+      >
+        {isComplete ? "COMPLETED" : "NOT COMPLETED"}
+      </span>
     ),
-    width:'160px',
   },
   {
     title: "Action",
     dataIndex: "action",
     key: "action",
+    width:"200px",
     render: (_, record) => (
       <Space size="middle">
         {(Role === UserRole[1] || Role === UserRole[2]) &&
@@ -723,17 +772,31 @@ export const Formcolumns3 = [
           record?.isObserverComplete &&
           record?.isReflation && (
             <>
-              <Link className="btn btn-primary" to={`/notebook-checking-proforma/report/${record?._id}`}>
-                View Report
+              <Link to={`/notebook-checking-proforma/report/${record?._id}`}>
+              <button
+          className="text-nowrap px-3 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors"
+        >
+          View Report
+        </button>
               </Link>
-              <Link className="btn btn-danger" to={`/notebook-checking-proforma/edit/${record?._id}`}>
-                Edit
+              <Link  to={`/notebook-checking-proforma/edit/${record?._id}`}>
+              <button
+              
+              className="text-nowrap px-3 py-1 bg-red-50 text-red-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors"
+            >
+              Edit
+            </button>
               </Link>
             </>
           )}
         {Role === UserRole[2] && record?.isTeacherComplete && record?.isObserverComplete && !record?.isReflation && (
-          <Link className="btn text-primary" to={`/notebook-checking-proforma/complete/${record._id}`}>
-            Continue Form
+          <Link  to={`/notebook-checking-proforma/complete/${record._id}`}>
+            <button
+              
+              className="text-nowrap px-3 py-1  text-blue-600  rounded-md text-sm font-medium transition-colors"
+            >
+              Continue
+            </button>
           </Link>
         )}
         {Role === UserRole[1] && record?.isTeacherComplete && record?.isObserverComplete && !record?.isReflation && (
@@ -742,16 +805,26 @@ export const Formcolumns3 = [
           </Button>
         )}
         {Role === UserRole[2] && !record?.isTeacherComplete && !record?.isObserverComplete && (
-          <Link className="btn text-primary" to={`/notebook-checking-proforma/edit/${record._id}`}>
-            Continue Form
+          <Link  to={`/notebook-checking-proforma/edit/${record._id}`}>
+           <button
+              
+              className="text-nowrap px-3 py-1  text-blue-600  rounded-md text-sm font-medium transition-colors"
+            >
+              Continue
+            </button>
           </Link>
         )}
         {Role === UserRole[2] && record?.isTeacherComplete && !record?.isObserverComplete && (
           <Button size="large" className="btn-outline-primary">Reminders</Button>
         )}
         {Role === UserRole[1] && record?.isTeacherComplete && !record?.isObserverComplete && (
-          <Link className="btn text-primary" to={`/notebook-checking-proforma/create/${record._id}`}>
-            Continue Form
+          <Link  to={`/notebook-checking-proforma/create/${record._id}`}>
+             <button
+              
+              className="text-nowrap px-3 py-1  text-blue-600  rounded-md text-sm font-medium transition-colors"
+            >
+              Continue
+            </button>
           </Link>
         )}
         {Role === UserRole[1] && !record?.isTeacherComplete && !record?.isObserverComplete && (

@@ -44,6 +44,8 @@ function Login() {
           message.success("Logging in...");
           // navigate("/")
           window.location.replace("/");
+        }else{
+          message.error(res?.payload?.message)
         }
       })
 

@@ -195,55 +195,106 @@ const generalDetailsConfig = useMemo(
 //       </Row>
 //     ));
 
-  const RenderRadioFormItem = ({ name, label, question, isTextArea }) => {
-    const [showRemark, setShowRemark] = useState(false);
+  // const RenderRadioFormItem = ({ name, label, question, isTextArea }) => {
+  //   const [showRemark, setShowRemark] = useState(false);
 
-    return (
-      <>
-        <Form.Item
-          className='mb-0'
-          name={[...name, "answer"]}
-          label={<h5 className="text-gray">{label}</h5>}
-          rules={[{ required: true, message: "Please select an answer!" }]}
-        >
-          <Radio.Group
-            size='large'
-            options={yesNoNAOptions.map((value) => ({
-              label: value.label,
-              value: value.value,
-            }))}
-            optionType="button"
-            buttonStyle="solid"
-          />
-        </Form.Item>
-        <Button
-          className='mt-2'
-          type="link"
-          onClick={() => setShowRemark(!showRemark)}
-          style={{ padding: 0 }}
-        >
-          {showRemark ? "Hide Remark" : "Add Remark"}
-        </Button>
-        <Form.Item
-          className="hidden"
-          hidden
-          name={[...name, "question"]}
-          initialValue={question}
-        >
-          <Input />
-        </Form.Item>
-        {showRemark && (
+  //   return (
+  //     <>
+  //       <Form.Item
+  //         className='mb-0'
+  //         name={[...name, "answer"]}
+  //         label={<h5 className="text-gray">{label}</h5>}
+  //         rules={[{ required: true, message: "Please select an answer!" }]}
+  //       >
+  //         <Radio.Group
+  //           size='large'
+  //           options={yesNoNAOptions.map((value) => ({
+  //             label: value.label,
+  //             value: value.value,
+  //           }))}
+  //           optionType="button"
+  //           buttonStyle="solid"
+  //         />
+  //       </Form.Item>
+  //       <Button
+  //         className='mt-2'
+  //         type="link"
+  //         onClick={() => setShowRemark(!showRemark)}
+  //         style={{ padding: 0 }}
+  //       >
+  //         {showRemark ? "Hide Remark" : "Add Remark"}
+  //       </Button>
+  //       <Form.Item
+  //         className="hidden"
+  //         hidden
+  //         name={[...name, "question"]}
+  //         initialValue={question}
+  //       >
+  //         <Input />
+  //       </Form.Item>
+  //       {showRemark && (
+  //         <Form.Item
+  //           name={[...name, "remark"]}
+  //           rules={[{ required: false }]}
+  //           style={{ marginTop: "1rem" }}
+  //         >
+  //           <Input.TextArea rows={3} placeholder="Add your remark here" />
+  //         </Form.Item>
+  //       )}
+  //     </>
+  //   );
+  // }
+
+    const RenderRadioFormItem = ({ name, question }) => {
+      const [showRemark, setShowRemark] = useState(false);
+   
+      return (
+        <div>
+          {/* Answer Field */}
           <Form.Item
-            name={[...name, "remark"]}
-            rules={[{ required: false }]}
-            style={{ marginTop: "1rem" }}
+            name={[...name, "answer"]}
+            label={
+              <div className="d-flex justify-content-between align-items-center">
+                <h5 className="text-gray mb-0">{question}</h5>
+              </div>
+            }
+            rules={[{ required: true, message: "Please select an answer!" }]}
           >
-            <Input.TextArea rows={3} placeholder="Add your remark here" />
+            <Radio.Group
+              size="large"
+              options={yesNoNAOptions.map((option) => ({
+                label: option.label,
+                value: option.value,
+              }))}
+              optionType="button"
+              buttonStyle="solid"
+            />
           </Form.Item>
-        )}
-      </>
-    );
-  }
+          <Button
+            type="link"
+            onClick={() => setShowRemark(!showRemark)}
+            style={{ padding: 0 }}
+          >
+            {showRemark ? "Hide Remark" : "Add Remark"}
+          </Button>
+  
+          {/* Hidden Question Field */}
+          <Form.Item name={[...name, "question"]} initialValue={question} hidden>
+            <Input />
+          </Form.Item>
+  
+          {/* Remark Field */}
+            <Form.Item
+            hidden={!showRemark}
+              name={[...name, "remark"]}
+              rules={[{ required: false }]}
+              style={{ marginTop: "1rem" }}
+            >
+              <Input.TextArea rows={3} placeholder="Add your remark here" />
+            </Form.Item>
+        </div>
+      );
+    };
 
   const renderSections = (title, questions, namePrefix) => (
     <>
@@ -282,6 +333,7 @@ const generalDetailsConfig = useMemo(
       data,
       id: FormId,
     };
+
       const response = await dispatch(EditNoteBook(payload));
       if(response?.payload && response?.payload?.success) {
         navigate('/notebook-checking-proforma');
@@ -289,17 +341,15 @@ const generalDetailsConfig = useMemo(
   };
   };
 
-
-
+   const [totalScore, setTotalScore] = useState(0);
+   const [numOfParameters, setNumOfParameters] = useState(0);
+   const [percentageScore, setPercentageScore] = useState(0);
+   const [getOutOfScore, setGetOutOfScore] = useState(0);
+   const [grade, setGrade] = useState("");
   
-    const [assessmentScore, setAssessmentScore] = useState(0);
-    const [outOfScore, setOutOfScore] = useState(0);
-  
-    const calculateSelfAssessmentScore = (formValues) => {
-      let count = 0; // Initialize score count
-      let outOfCount = 0; // Initialize total count
-  
-      // Array of keys to iterate over
+    const validValues = ["1", "2", "3"]; 
+    const calculateSelfAssessmentScore = () => {
+      // // Array of keys to iterate over
       const keyObject = [
         'maintenanceOfNotebooks',
         'qualityOfOppurtunities',
@@ -307,24 +357,61 @@ const generalDetailsConfig = useMemo(
         'qualityOfLearner',
       ];
   
-      keyObject.forEach((key) => {
-        const answers = formValues[key] || []; // Safely get the answers array
-  
-        answers.forEach((item) => {
-          if (item?.answer) {
-            // Increment score and outOfCount based on answer
-            const score = item.answer === 'N/A' ? 0 : parseInt(item.answer);
-            if (score >= 1 && score <= 3) {
-              count += score;
-              outOfCount += 3;
+      const formValues = form.getFieldsValue();
+      let totalScore = 0; // Total points scored
+      let outOfScore = 0; // Maximum possible score based on valid answers
+      let numOfParametersNA = 0; // Counter for "N/A" answers
+    
+      keyObject.forEach((section) => {
+        if (formValues[section]) {
+          formValues[section].forEach((item) => {
+            const answer = item?.answer;
+    
+            // Only consider valid answers for both totalScore and outOfScore
+            if (validValues?.includes(answer)) {
+              totalScore += parseInt(answer, 10); // Accumulate score
+              outOfScore += 4; // Increment max score (4 points per question)
             }
-          }
-        });
+    
+            // Count "N/A" answers
+            if (["N/A", "NA", "N"].includes(answer)) {
+              numOfParametersNA++; // Increment the count for "N/A"
+            }
+          });
+        }
       });
+    
+      setTotalScore(totalScore); // Set total score
+      setGetOutOfScore(outOfScore); // Set maximum possible score
+      setNumOfParameters(numOfParametersNA); // Update state with total "N/A" answers
+    
+      // Calculate percentage
+      const percentage = outOfScore > 0 ? (totalScore / outOfScore) * 100 : 0;
+      setPercentageScore(parseFloat(percentage.toFixed(2))); // Set percentage
+    
+      // Determine grade
+      const grade =
+        percentage >= 90
+          ? "A"
+          : percentage >= 80
+          ? "B"
+          : percentage >= 70
+          ? "C"
+          : percentage >= 60
+          ? "D"
+          : "F";
+      setGrade(grade); // Set grade
+    
+      // Update form values
+      form.setFieldsValue({
+        totalScores: totalScore,
+        scoreOutof: outOfScore,
+        percentageScore: percentage,
+        Grade: grade,
+        NumberofParametersNotApplicable: numOfParametersNA, // Add the N/A count
+      });
+    
   
-      // Update states with the calculated values
-      setOutOfScore(outOfCount);
-      setAssessmentScore(count);
     };
   const getPercentafe =(get, from)=>{
    const numberVal = get / from * 100;
@@ -423,8 +510,11 @@ const generalDetailsConfig = useMemo(
           </Form>
         </Col>
         <Col md={5}>
-              <h4>Asessment Score: {assessmentScore} out of {outOfScore}</h4>
-              <p>{getPercentafe(assessmentScore,outOfScore)}%</p>
+        <h5>Total Score: {totalScore}</h5>
+          <h5>Out of: {getOutOfScore}</h5>
+          <h5>Percentage: {percentageScore}%</h5>
+          <h5>Grade: {grade}</h5>
+          <h5>Number Of Parameters: {numOfParameters}</h5>
         </Col>
     
       </Row>

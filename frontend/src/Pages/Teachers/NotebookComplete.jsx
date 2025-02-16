@@ -84,11 +84,11 @@ function NotebookComplete() {
 //     }
 //   }, [Id, inputValue, dispatch]);
 const navigate = useNavigate();
-const handleSubmit = useCallback(() => {
+const handleSubmit = () => {
     if (Id && inputValue.trim()) {
       dispatch(updateTeacherReflationFeedback({ id: Id, data: { reflation: inputValue } }))
         .then((res) => {
-          if (res.success) {
+          if (res?.payload?.success) {
             console.log("Reflation updated successfully!");
             navigate(`/notebook-checking-proforma/report/${Id}`);
           } else {
@@ -99,7 +99,7 @@ const handleSubmit = useCallback(() => {
           console.error("Error updating teacher reflation feedback:", error);
         });
     }
-  }, [Id, inputValue, dispatch]);
+  };
   
 
   const keyObject = [

@@ -162,7 +162,7 @@ The Admin Team
 
       // Filter out null forms and send response
       const validForms = teacherForms.filter(Boolean);
-      return res.status(200).json(validForms);
+      return res.status(200).json({  message: "Form created successfully", form: validForms,status:true});
     } else {
       return res.status(400).json({ error: "Invalid or missing data." });
     }
@@ -397,7 +397,13 @@ The Admin Team
 
 exports.GetcreatedByID = async (req, res) => {
   const userId = req?.user?.id;
+  
+  if (!userId) {
+    return res.status(403).json({ message: "You do not have permission." });
+  }
+
   try {
+    // Fetch forms where the user is the creator
     const Form = await Form3.find({ createdBy: userId })
       .populate({
         path: "createdBy",
@@ -408,10 +414,7 @@ exports.GetcreatedByID = async (req, res) => {
         select: "-password -mobile -employeeId -customId",
       });
 
-    if (!userId && !userId?.id) {
-      return res.status(403).json({ message: "You do not have permission." });
-    }
-
+    // Fetch forms where the user is a teacher
     const Form2 = await Form3.find({ teacherID: userId })
       .populate({
         path: "createdBy teacherID",
@@ -421,13 +424,19 @@ exports.GetcreatedByID = async (req, res) => {
         path: "grenralDetails.NameofObserver",
         select: "-password -mobile -employeeId -customId",
       });
-    const combinedForms = [...Form, ...Form2]; // Using spread operator to merge arrays
-    res.status(200).send(combinedForms);
+
+    // Merge arrays and remove duplicates based on _id
+    const uniqueForms = Array.from(
+      new Map([...Form, ...Form2].map((item) => [item._id.toString(), item])).values()
+    );
+
+    res.status(200).json(uniqueForms);
   } catch (error) {
     console.error("Error Getting NoteBook:", error);
     res.status(500).json({ message: "Error Getting NoteBook.", error });
   }
 };
+
 
 exports.GetObseverForm = async (req, res) => {
   const userId = req?.user?.id;

@@ -102,14 +102,8 @@ function NotebookPDF() {
         <DownloadOutlined /> Download PDF
       </Button>
 
-      <Container>
+      <Container className="justify-center items-start">
         <Row className="justify-content-start align-items-start">
-          {/* <Col md={12}>
-            <div className='d-flex gap-4 justify-content-center mb-4'>
-              <img src={Logo} width={100} height={100} alt="Logo" />
-              <img src={LogoBanner} width={400} height={100} alt="Banner" />
-            </div>
-          </Col> */}
 
           <Col xs={12} className="text-center mb-2 mt-2">
             <div className="d-flex flex-md-row align-items-center justify-content-center gap-2">
@@ -130,74 +124,7 @@ function NotebookPDF() {
             </div>
           </Col>
 
-          {/* <Col md={12}>
-            <div className="p-4 rounded border mb-4">
-              <h5>General Details</h5>
-              <div className="d-flex gap-3 mb-4">
-                <p className="m-0">
-                  Name Of Observer:{" "}
-                  <b>{formDataList?.grenralDetails?.NameofObserver?.name}</b>
-                </p>
-                <p className="m-0">
-                  Grade: <b>{formDataList?.grenralDetails?.className}</b>
-                </p>
-                <p className="m-0">
-                  Section: <b>{formDataList?.grenralDetails?.Section}</b>
-                </p>
-                <p className="m-0">
-                  Subject: <b>{formDataList?.grenralDetails?.Subject}</b>
-                </p>
-                <p className="m-0">
-                  Date Of Observation:{" "}
-                  <b>
-                    {
-                      getAllTimes(
-                        formDataList?.grenralDetails?.DateOfObservation
-                      ).formattedDate2
-                    }
-                  </b>
-                </p>
-              </div>
-
-              <h5>Observer Notebook</h5>
-              <div className="d-flex gap-3 mb-4">
-                <p className="m-0">
-                  Absentees: <b>{formDataList?.NotebooksObserver?.Absentees}</b>
-                </p>
-                <p className="m-0">
-                  Class Strength:{" "}
-                  <b>{formDataList?.NotebooksObserver?.ClassStrength}</b>
-                </p>
-                <p className="m-0">
-                  Defaulters:{" "}
-                  <b>{formDataList?.NotebooksObserver?.Defaulters}</b>
-                </p>
-                <p className="m-0">
-                  Notebooks Submitted:{" "}
-                  <b>{formDataList?.NotebooksObserver?.NotebooksSubmitted}</b>
-                </p>
-              </div>
-
-              <h5>Teacher Notebook</h5>
-              <div className="d-flex gap-3">
-                <p className="m-0">
-                  Absentees: <b>{formDataList?.NotebooksTeacher?.Absentees}</b>
-                </p>
-                <p className="m-0">
-                  Class Strength:{" "}
-                  <b>{formDataList?.NotebooksTeacher?.ClassStrength}</b>
-                </p>
-                <p className="m-0">
-                  Defaulters:{" "}
-                  <b>{formDataList?.NotebooksTeacher?.Defaulters}</b>
-                </p>
-                <p className="m-0">
-                  Notebooks Submitted:{" "}
-                  <b>{formDataList?.NotebooksTeacher?.NotebooksSubmitted}</b>
-                </p>
-              </div>
-            </div>
-          </Col> */}
+       
 
           <Col xs={12}>
             <div className="p-4 rounded border mb-4">
@@ -205,7 +132,11 @@ function NotebookPDF() {
               <div className="d-flex flex-column flex-md-row gap-3 mb-4">
                 <p className="m-0">
                   Name Of Observer:{" "}
-                  <b>{formDataList?.grenralDetails?.NameofObserver?.name}</b>
+                  <b>{formDataList?.grenralDetails?.NameofObserver?.name || formDataList?.createdBy?.name}</b>
+                </p>
+                <p className="m-0">
+                  Name Of Teacher:{" "}
+                  <b>{formDataList?.teacherID?.name || formDataList?.createdBy?.name}</b>
                 </p>
                 <p className="m-0">
                   Grade: <b>{formDataList?.grenralDetails?.className}</b>
@@ -268,25 +199,13 @@ function NotebookPDF() {
             </div>
           </Col>
 
-          <Col md={6}>
-            <h3>Observer Response</h3>
-          </Col>
-          <Col md={6} className="mt-4">
+          <Col md={6} >
             <h3>Teacher Response</h3>
           </Col>
-
-          <Col md={6}>
-            {keyObject.map((title, index) => (
-              <TableCard
-                key={index}
-                title={title}
-                dataSource={getField(
-                  Object.keys(formDataList?.ObserverForm || {})[index]
-                )}
-              />
-            ))}
+          <Col md={6} className="mt-md-0 mt-4">
+            <h3>Observer Response</h3>
           </Col>
-
+         
           <Col md={6}>
             {keyObject.map((title, index) => (
               <TableCard
@@ -301,13 +220,28 @@ function NotebookPDF() {
           </Col>
 
           <Col md={6}>
-            <Card title="Observer Feedback" className="mt-4">
-              <p>{formDataList?.observerFeedback}</p>
-            </Card>
+            {keyObject.map((title, index) => (
+              <TableCard
+                key={index}
+                title={title}
+                dataSource={getField(
+                  Object.keys(formDataList?.ObserverForm || {})[index]
+                )}
+              />
+            ))}
           </Col>
+
+         
+
+          
           <Col md={6}>
             <Card title="Teacher Reflation Feedback" className="mt-4">
               <p>{formDataList?.teacherReflationFeedback}</p>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card title="Observer Feedback" className="mt-4">
+              <p>{formDataList?.observerFeedback}</p>
             </Card>
           </Col>
         </Row>
