@@ -116,27 +116,24 @@ function FortnightlyMonitor() {
   return (
     <div>
       {Role === UserRole[2] && (
-        <Button
-          className="mb-3"
+        <button
+          style={{borderRadius:5}}
+          className="mb-3 bg-[#1a4d2e] p-3 text-white py-2 "
           onClick={() => navigate("/fortnightly-monitor/create")}
-          type="primary"
-          icon={<PlusCircleOutlined />}
-          size="large"
         >
-          New Form
-        </Button>
+          <PlusCircleOutlined /> New Form
+        </button>
       )}
 
       {Role === UserRole[1] && (
-        <Button
-          className="mb-3"
+        <button
+            style={{borderRadius:5}}
+          className="mb-3 bg-[#1a4d2e] p-3 text-white py-2 "
           onClick={() => navigate("/fortnightly-monitor/form-initiation")}
-          type="primary"
-          icon={<PlusCircleOutlined />}
-          size="large"
+          
         >
-          Form Initiation
-        </Button>
+         <PlusCircleOutlined /> Form Initiation
+        </button>
       )}
       <div className=" flex flex-wrap gap-4">
         {/* Observer Filter */}

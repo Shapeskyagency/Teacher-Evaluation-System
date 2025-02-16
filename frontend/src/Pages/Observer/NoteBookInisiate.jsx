@@ -44,11 +44,16 @@ function NoteBookInisiate() {
       setLoading(true);
       try {
         const response = await dispatch(createInitiate(payload)).unwrap();
-        message.success(response?.message);
-        form.resetFields(); // Reset the form fields after submission
-        navigate(`/notebook-checking-proforma`);
+        if(response?.status){
+          message.success(response?.message);
+          form.resetFields(); // Reset the form fields after submission
+          navigate(`/notebook-checking-proforma`);
+        }else{
+          message.error("Somthing went wrong");
+        }
+       
       } catch (error) {
-        message.error("Error creating Fortnightly Monitor");
+        message.error("Error creating Nootbook Checking");
         console.error(error);
       } finally {
         setLoading(false);

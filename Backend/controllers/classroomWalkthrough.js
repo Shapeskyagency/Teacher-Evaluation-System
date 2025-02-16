@@ -308,7 +308,7 @@ exports.TeacherContinueForm = async (req, res) => {
         }
         // Find the form
         // const form = await Form2.findById(FormID);
-        const form = await Form2.findById(FormID).populate('createdBy', 'email name');
+        const form = await Form2.findById(FormID).populate('createdBy', 'email name').populate('grenralDetails.NameoftheVisitingTeacher',"email name");
 
 
         if (!form) {
