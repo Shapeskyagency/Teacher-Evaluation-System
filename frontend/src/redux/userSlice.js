@@ -117,6 +117,11 @@ export const UserLogin = createAsyncThunk('UserLogin',async (payload) => {
       return response.data;
   })
 
+  export const FormThreeReminder = createAsyncThunk('FormThreeReminder',async (payload) => {
+    const response = await axiosInstanceToken.post(`notebook-checking-proforma/reminder/${payload}`);
+    return response.data;
+  })
+
 
 const userSlice = createSlice({
   name: 'Users',

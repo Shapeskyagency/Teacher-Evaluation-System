@@ -478,7 +478,7 @@ exports.ReminderFormTwo = async (req, res) => {
         const body = `
 Dear ${receiverName},
 This is a reminder from ${sender} to review and fill out your section of the Classroom Walkthrough Proforma as soon as possible.
-Regards shekhar,  
+Regards,  
 The Admin Team`;
 
         await sendEmail(receiverEmail, subject, body);

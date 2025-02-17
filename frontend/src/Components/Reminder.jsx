@@ -1,7 +1,7 @@
 import { Button } from 'antd'
 import React from 'react'
 import { useDispatch } from 'react-redux';
-import { FormOneReminder, FormTwoReminder } from '../redux/userSlice';
+import { FormOneReminder, FormThreeReminder, FormTwoReminder } from '../redux/userSlice';
 
 function Reminder({id,type}) {
     const dispatch =  useDispatch()
@@ -11,7 +11,10 @@ function Reminder({id,type}) {
                 let Response;
                 if(type==='form2'){
                    Response  = await dispatch(FormTwoReminder(ID));
-                }else{
+                } else if(type==='form3'){
+                  Response = await dispatch(FormThreeReminder(ID));
+                }
+                else{
                    Response = await dispatch(FormOneReminder(ID));
                 }
                 

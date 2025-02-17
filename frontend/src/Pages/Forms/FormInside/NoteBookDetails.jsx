@@ -444,8 +444,7 @@ const disableFutureDates = (current) => {
 
   const validValues = ["1", "2", "3"]; 
   const calculateSelfAssessmentScore = () => {
-    // let count = 0; // Initialize score count
-    // let outOfCount = 0; // Initialize total count
+    
 
     // // Array of keys to iterate over
     const keyObject = [
@@ -454,27 +453,6 @@ const disableFutureDates = (current) => {
       'qualityOfTeacherFeedback',
       'qualityOfLearner',
     ];
-
-    // keyObject.forEach((key) => {
-    //   const answers = formValues[key] || []; // Safely get the answers array
-
-    //   answers.forEach((item) => {
-    //     if (item?.answer) {
-    //       // Increment score and outOfCount based on answer
-    //       const score = item.answer === 'N/A' ? 0 : parseInt(item.answer);
-    //       if (score >= 1 && score <= 3) {
-    //         count += score;
-    //         outOfCount += 3;
-    //       }
-    //     }
-    //   });
-    // });
-
-    // // Update states with the calculated values
-    // setOutOfScore(outOfCount);
-    // setAssessmentScore(count);
-
-
 
 
     const formValues = form.getFieldsValue();
@@ -490,7 +468,7 @@ const disableFutureDates = (current) => {
           // Only consider valid answers for both totalScore and outOfScore
           if (validValues?.includes(answer)) {
             totalScore += parseInt(answer, 10); // Accumulate score
-            outOfScore += 4; // Increment max score (4 points per question)
+            outOfScore += 3; // Increment max score (4 points per question)
           }
   
           // Count "N/A" answers
