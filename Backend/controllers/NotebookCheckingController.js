@@ -276,7 +276,6 @@ exports.getSignleForm = async (req, res) => {
 //   }
 // };
 
-
 exports.updateObserverFields = async (req, res) => {
     const userId = req.user?.id; // Ensure `req.user` exists via middleware
     const formId = req.params?.id; // Get form ID from URL parameters
@@ -306,7 +305,12 @@ exports.updateObserverFields = async (req, res) => {
             path: "teacherID",
             select: "name email",
             options: { strictPopulate: false }, // Override strict populate
-        });
+        })
+        .populate({
+          path: "createdBy",
+          select: "name email",
+          options: { strictPopulate: false }, // Override strict populate
+      })
 
         if (!existingForm) {
             return res.status(404).json({ message: "Form not found." });
@@ -315,7 +319,7 @@ exports.updateObserverFields = async (req, res) => {
         // console.log("Form Details Before Update:", existingForm);
 
         // Extract observer details
-        const teacher = existingForm.teacherID; 
+        const teacher = existingForm?.teacherID || existingForm?.createdBy; 
 
         // console.log("Teacher Details:", teacher);
 
@@ -354,14 +358,14 @@ exports.updateObserverFields = async (req, res) => {
             return res.status(404).json({ message: "Form not found after update." });
         }
 
-        console.log("Updated Form Data:", updatedForm);
+        // console.log("Updated Form Data:", updatedForm);
 
         // Send email to teacher if they exist
         if (teacher?.email) {
             const subject = "Observer Submission for Notebook Checking Proforma";
             const body = `
 Dear ${teacher.name},
-
+   
 ${observer.name} has completed their section of the Notebook Checking Proforma on ${new Date().toLocaleString()}. Please review the updates.
 
 Regards,
@@ -369,7 +373,7 @@ The Admin Team
             `;
 
             try {
-                await sendEmail(teacher.email, subject, body);
+                await sendEmail(teacher?.email, subject, body);
                 console.log("Email sent successfully to:", teacher.email);
             } catch (emailError) {
                 console.error("Failed to send email:", emailError);
@@ -392,8 +396,6 @@ The Admin Team
         });
     }
 };
-
-
 
 exports.GetcreatedByID = async (req, res) => {
   const userId = req?.user?.id;
@@ -436,7 +438,6 @@ exports.GetcreatedByID = async (req, res) => {
     res.status(500).json({ message: "Error Getting NoteBook.", error });
   }
 };
-
 
 exports.GetObseverForm = async (req, res) => {
   const userId = req?.user?.id;
@@ -593,8 +594,6 @@ const updatePayload = (existingForm, userId, changes) => {
 //     }
 // };
 
-
-
 exports.EditUpdateNotebook = async (req, res) => {
     const formId = req.params.id;
     const userId = req?.user?.access;
@@ -680,12 +679,6 @@ The Admin Team
     }
 };
 
-
-
-
-
-
-
 exports.GetNootbookForms = async (req, res) => {
   const userId = req?.user?.id;
   try {
@@ -713,13 +706,49 @@ exports.GetNootbookForms = async (req, res) => {
   }
 };
 
+// exports.updateTeacherReflationFeedback = async (req, res) => {
+//   const { id } = req.params;
+//   const { reflation } = req.body;
+
+//   console.log("Received Request:", req.body);
+
+//   try {
+//     const updatedForm = await Form3.findByIdAndUpdate(
+//       id,
+//       {
+//         teacherReflationFeedback: reflation,
+//         isReflation: reflation ? true : false,
+//       },
+//       { new: true }
+//     );
+
+//     if (!updatedForm) {
+//       return res.status(404).json({ message: "Form not found" });
+//     }
+
+//     res.status(200).json({ success: true });
+//   } catch (error) {
+//     console.error("Error updating teacher reflation feedback:", error);
+//     res.status(500).json({ message: "Server error, please try again later" });
+//   }
+// };
+
+
 exports.updateTeacherReflationFeedback = async (req, res) => {
   const { id } = req.params;
   const { reflation } = req.body;
 
-  console.log("Received Request:", req.body);
+  // console.log("Received Request:", req.body);
 
   try {
+    // Find the existing form details
+    const form = await Form3.findById(id).populate("createdBy"); // Fetch creator details
+
+    if (!form) {
+      return res.status(404).json({ message: "Form not found" });
+    }
+
+    // Update the form with the teacher's reflection
     const updatedForm = await Form3.findByIdAndUpdate(
       id,
       {
@@ -729,13 +758,114 @@ exports.updateTeacherReflationFeedback = async (req, res) => {
       { new: true }
     );
 
-    if (!updatedForm) {
-      return res.status(404).json({ message: "Form not found" });
+    // Fetch Observer's Details
+    const observer = await User.findById(form.grenralDetails.NameofObserver);
+    const teacher = form.createdBy; // Teacher who submitted the form
+
+    if (!observer) {
+      return res.status(404).json({ message: "Observer not found" });
     }
 
-    res.status(200).json({ success: true });
+    // Email Subject & Body
+    const subject = "Notebook Checking Proforma Teacher Reflection Submitted";
+    const body = ` 
+Dear ${observer.name},
+
+${teacher.name} has submitted their reflections of Notebook Checking Proforma on ${new Date().toLocaleDateString()}. Please review and proceed accordingly.
+
+Regards,  
+The Admin Team
+    `;
+
+    // Send Email to Observer
+    await sendEmail(observer.email, subject, body);
+
+    res.status(200).json({ success: true, message: "Reflection updated & email sent to observer" });
+
   } catch (error) {
-    console.error("Error updating teacher reflation feedback:", error);
+    console.error("Error updating teacher reflection feedback:", error);
     res.status(500).json({ message: "Server error, please try again later" });
   }
 };
+
+
+exports.ReminderFormThree = async (req, res) => {
+  try {
+    const userId = req?.user?.id;
+    const formId = req?.params?.id;
+
+    if (!userId || !formId) {
+      return res.status(400).json({ message: "User ID or Form ID is missing" });
+    }
+
+    const [UserDetails, FormDetails] = await Promise.all([
+      User.findById(userId),
+      Form3.findById(formId)
+        .populate({
+          path: "teacherID",
+          select: "-password -mobile -employeeId -customId",
+        })
+        .populate({
+          path: "createdBy",
+          select: "-password -mobile -employeeId -customId",
+        })
+        .populate({
+          path: `grenralDetails.NameofObserver`,
+          select: "-password -mobile -employeeId -customId",
+        }),
+    ]);
+
+    if (!UserDetails) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!FormDetails) {
+      return res.status(404).json({ message: "Form not found" });
+    }
+
+    const accessRole = UserDetails?.access;
+    if (!["Observer", "Teacher"].includes(accessRole)) {
+      return res.status(403).json({ message: "Unauthorized access" });
+    }
+
+    // Define whether the sender is a Teacher
+    const isTeacher = accessRole === "Teacher";
+
+    // Determine sender and receiver
+    const sender =
+      (isTeacher
+        ?( FormDetails?.teacherID?.name || FormDetails?.createdBy?.name)
+        :( FormDetails?.grenralDetails?.NameofObserver?.name || FormDetails?.createdBy?.name))
+
+    const receiverName =
+      (isTeacher ? ( FormDetails?.grenralDetails?.NameofObserver?.name || FormDetails?.createdBy?.name) 
+      :(FormDetails?.teacherID?.name || FormDetails?.createdBy?.name))
+
+    let receiverEmail =
+      (isTeacher ? (FormDetails?.grenralDetails?.NameofObserver?.email || FormDetails?.createdBy?.email)
+      :(FormDetails?.teacherID?.email || FormDetails?.createdBy?.email))
+
+    if (!receiverEmail) {
+      return res.status(400).json({ message: "Recipient email not found" });
+    }
+
+    const subject = "Reminder: Notebook Checking Proforma Submission Pending";
+    const body = `
+Dear ${receiverName},
+
+This is a reminder from ${sender} to complete your section of the Notebook Checking Proforma.
+
+The Admin Team`;
+
+    await sendEmail(receiverEmail, subject, body);
+
+    return res.status(200).json({ success: true, message: "Reminder sent successfully." });
+
+  } catch (error) {
+    console.error("Error sending reminder:", error);
+    return res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+
+

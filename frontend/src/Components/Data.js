@@ -800,9 +800,7 @@ export const Formcolumns3 = [
           </Link>
         )}
         {Role === UserRole[1] && record?.isTeacherComplete && record?.isObserverComplete && !record?.isReflation && (
-          <Button size="large" className="btn-outline-primary">
-            Reminders
-          </Button>
+          <Reminder id={record?._id} type={'form3'} />
         )}
         {Role === UserRole[2] && !record?.isTeacherComplete && !record?.isObserverComplete && (
           <Link  to={`/notebook-checking-proforma/edit/${record._id}`}>
@@ -815,7 +813,7 @@ export const Formcolumns3 = [
           </Link>
         )}
         {Role === UserRole[2] && record?.isTeacherComplete && !record?.isObserverComplete && (
-          <Button size="large" className="btn-outline-primary">Reminders</Button>
+          <Reminder id={record?._id} type={'form3'} />
         )}
         {Role === UserRole[1] && record?.isTeacherComplete && !record?.isObserverComplete && (
           <Link  to={`/notebook-checking-proforma/create/${record._id}`}>
@@ -831,7 +829,7 @@ export const Formcolumns3 = [
           <Button size="large" className="btn-outline-primary">Reminders</Button>
         )}
         {Role === UserRole[1] && !record?.isTeacherComplete && record?.isObserverComplete && (
-          <Button size="large" className="btn-outline-primary">Reminders</Button>
+          <Reminder id={record?._id} type={'form3'} />
         )}
       </Space>
     ),
