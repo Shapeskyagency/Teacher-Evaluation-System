@@ -10,6 +10,7 @@ import LogoBanner from "./Imgs/image.png";
 import { GetNoteBookForm } from "../../redux/Form/noteBookSlice";
 import NoteBookDoc from "./Documents/NoteBookDoc";
 import { getAllTimes } from "../../Utils/auth";
+import DynamicScroreThree from "../../Components/DynamicScroreThree";
 
 const TableCard = React.memo(({ title, dataSource }) => (
   <Card title={title} className="mt-4">
@@ -73,85 +74,11 @@ function NotebookPDF() {
 
     // Clean up the object URL
     URL.revokeObjectURL(url);
-
-
-
   }, [formDataList, Id]);
-
-
-   const [totalScore, setTotalScore] = useState(0);
-    const [numOfParameters, setNumOfParameters] = useState(0);
-    const [percentageScore, setPercentageScore] = useState(0);
-    const [getOutOfScore, setGetOutOfScore] = useState(0);
-    const [grade, setGrade] = useState("");
-  
-    const validValues = ["1", "2", "3"]; 
-    const calculateSelfAssessmentScore = () => {
-      
-  
-      // // Array of keys to iterate over
-      const keyObject = [
-        'maintenanceOfNotebooks',
-        'qualityOfOppurtunities',
-        'qualityOfTeacherFeedback',
-        'qualityOfLearner',
-      ];
-  console.log(formDataList?.ObserverForm)
-  
-      const formValues = formDataList?.ObserverForm;
-      let totalScore = 0; // Total points scored
-      let outOfScore = 0; // Maximum possible score based on valid answers
-      let numOfParametersNA = 0; // Counter for "N/A" answers
-    
-      keyObject.forEach((section) => {
-        if (formValues[section]) {
-          formValues[section].forEach((item) => {
-            const answer = item?.answer;
-    
-            // Only consider valid answers for both totalScore and outOfScore
-            if (validValues?.includes(answer)) {
-              totalScore += parseInt(answer, 10); // Accumulate score
-              outOfScore += 3; // Increment max score (4 points per question)
-            }
-    
-            // Count "N/A" answers
-            if (["N/A", "NA", "N"].includes(answer)) {
-              numOfParametersNA++; // Increment the count for "N/A"
-            }
-          });
-        }
-      });
-    
-      setTotalScore(totalScore); // Set total score
-      setGetOutOfScore(outOfScore); // Set maximum possible score
-      setNumOfParameters(numOfParametersNA); // Update state with total "N/A" answers
-    
-      // Calculate percentage
-      const percentage = outOfScore > 0 ? (totalScore / outOfScore) * 100 : 0;
-      setPercentageScore(parseFloat(percentage.toFixed(2))); // Set percentage
-    
-      // Determine grade
-      const grade =
-        percentage >= 90
-          ? "A"
-          : percentage >= 80
-          ? "B"
-          : percentage >= 70
-          ? "C"
-          : percentage >= 60
-          ? "D"
-          : "F";
-      setGrade(grade); // Set grade
-    
-     
-    
-  
-    };
 
   useEffect(() => {
     if (Id) {
       dispatch(GetNoteBookForm(Id));
-      calculateSelfAssessmentScore();
     }
   }, [Id, dispatch]);
 
@@ -178,7 +105,6 @@ function NotebookPDF() {
 
       <Container className="justify-center items-start">
         <Row className="justify-content-start align-items-start">
-
           <Col xs={12} className="text-center mb-2 mt-2">
             <div className="d-flex flex-md-row align-items-center justify-content-center gap-2">
               <img
@@ -198,19 +124,23 @@ function NotebookPDF() {
             </div>
           </Col>
 
-       
-
           <Col xs={12}>
             <div className="p-4 rounded border mb-4">
               <h5>General Details</h5>
               <div className="d-flex flex-column flex-md-row gap-3 mb-4">
                 <p className="m-0">
                   Name Of Observer:{" "}
-                  <b>{formDataList?.grenralDetails?.NameofObserver?.name || formDataList?.createdBy?.name}</b>
+                  <b>
+                    {formDataList?.grenralDetails?.NameofObserver?.name ||
+                      formDataList?.createdBy?.name}
+                  </b>
                 </p>
                 <p className="m-0">
                   Name Of Teacher:{" "}
-                  <b>{formDataList?.teacherID?.name || formDataList?.createdBy?.name}</b>
+                  <b>
+                    {formDataList?.teacherID?.name ||
+                      formDataList?.createdBy?.name}
+                  </b>
                 </p>
                 <p className="m-0">
                   Grade: <b>{formDataList?.grenralDetails?.className}</b>
@@ -273,13 +203,13 @@ function NotebookPDF() {
             </div>
           </Col>
 
-          <Col md={6} >
+          <Col md={6}>
             <h3>Teacher Response</h3>
           </Col>
           <Col md={6} className="mt-md-0 mt-4">
             <h3>Observer Response</h3>
           </Col>
-         
+
           <Col md={6}>
             {keyObject.map((title, index) => (
               <TableCard
@@ -305,9 +235,6 @@ function NotebookPDF() {
             ))}
           </Col>
 
-         
-
-          
           <Col md={6}>
             <Card title="Teacher Reflation Feedback" className="mt-4">
               <p>{formDataList?.teacherReflationFeedback}</p>
@@ -318,17 +245,25 @@ function NotebookPDF() {
               <p>{formDataList?.observerFeedback}</p>
             </Card>
           </Col>
-           {/* <Col md={6}>
-                            <Card>
-                          
-          
-                              <h5>Total Score: {totalScore}</h5>
-                    <h5>Out of: {getOutOfScore}</h5>
-                    <h5>Percentage: {percentageScore}%</h5>
-                    <h5>Grade: {grade}</h5>
-                    <h5>Number Of Parameters: {numOfParameters}</h5>
-                            </Card>
-                          </Col> */}
+          {/* <Col md={6}>
+            <Card>
+              <h5>Total Score: {totalScore}</h5>
+              <h5>Out of: {getOutOfScore}</h5>
+              <h5>Percentage: {percentageScore}%</h5>
+              <h5>Grade: {grade}</h5>
+              <h5>Number Of Parameters: {numOfParameters}</h5>
+            </Card>
+          </Col> */}
+            <DynamicScroreThree
+              col={6}
+              formName={formDataList?.TeacherForm}
+              className="md:w-1/2"
+            />
+            <DynamicScroreThree
+              col={6}
+              formName={formDataList?.ObserverForm}
+              className="w-full md:w-1/2"
+            />
         </Row>
       </Container>
     </div>
