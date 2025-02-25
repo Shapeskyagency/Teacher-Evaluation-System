@@ -19,6 +19,10 @@ const activitySchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    title: {
+        type: String, // ✅ Title field added
+        required: true, // Required karna hai ya optional?
+    },
     form1:messageSchema,
     createdAt: {
       type: Date,

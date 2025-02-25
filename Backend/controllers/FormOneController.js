@@ -124,6 +124,7 @@ exports.FormInitiation = async (req, res) => {
            // Save activity log
            const newActivity = new activity({
             userId,
+            title: "Fortnightly Monitor",
             form1: {
               message: "Fortnightly Monitor Form Created",
               router: `fortnightly-monitor/create/${formData._id}`
