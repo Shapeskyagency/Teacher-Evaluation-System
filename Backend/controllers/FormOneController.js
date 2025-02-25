@@ -3,6 +3,8 @@ const sendEmail = require('../utils/emailService');
 const Form1 = require('../models/Form1');
 const Notification = require('../models/notification');
 const ClassDetails = require('../models/ClassDetails');
+const activity = require('../models/Activity');
+
 
 exports.createForm = async (req, res) => {
   const { className, section, date, isCoordinator, coordinatorID, isTeacher, teacherID } = req.body;
@@ -118,6 +120,16 @@ exports.FormInitiation = async (req, res) => {
 
             // Save the form
            FormData =  await formData.save();
+
+           // Save activity log
+           const newActivity = new activity({
+            userId,
+            form1: {
+              message: "Fortnightly Monitor Form Created",
+              router: `fortnightly-monitor/create/${formData._id}`
+            }
+          });
+          await newActivity.save();
           
 
             const notification = new Notification({
