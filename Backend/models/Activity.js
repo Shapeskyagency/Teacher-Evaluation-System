@@ -20,10 +20,26 @@ const activitySchema = new mongoose.Schema(
       required: true,
     },
     title: {
-        type: String, // ✅ Title field added
-        required: true, // Required karna hai ya optional?
+        type: String,
+        required: true, 
     },
     form1:messageSchema,
+    className: {
+      type: String, 
+      required: true,
+    },
+    section: {
+      type: String,
+      required: true,
+    },
+    subject: {
+      type: String, 
+      required: false,
+    },
+    userName: {
+      type: String, 
+      required: true,
+    },
     createdAt: {
       type: Date,
       default: Date.now,

@@ -1,114 +1,213 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { getAllTimes, getUserId } from '../../Utils/auth';
-import { GetTodoForms } from '../../redux/Form/fortnightlySlice';
-import { Card, Button, Tag, Table } from 'antd';
-import { Container, Row as BootstrapRow, Col as BootstrapCol, Row, Col } from 'react-bootstrap';
-import { Link } from 'react-router-dom'; // For page redirection
-import { Formcolumns2 } from '../../Components/Data';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  UserCircle,
+  FileText,
+  LayoutDashboard,
+  LogOut,
+  ClipboardCheck,
+  BookOpen,
+  ChevronDown,
+  Activity,
+} from "lucide-react";
+import { Card, List, Typography, Tag, Space } from "antd";
+import { getRecentActivities } from "../../redux/Activity/activitySlice";
 
-function TeacherDashboard() {
-  const dispatch= useDispatch()
-  const userID = getUserId()?.id;
-  const FormData = useSelector((state)=>state?.Forms?.GetTodoFormList?.forms) ;
-  useEffect(()=>{
-    dispatch(GetTodoForms({TeacherID:userID}))
-  },[dispatch])
+const { Title, Text } = Typography;
 
+const RecentActivity = [
+  {
+    id: 1,
+    type: "Fortnightly Monitor",
+    user: "John Doe",
+    action: "Created new report",
+    subject: "Mathematics - Grade 10",
+    time: "2 hours ago",
+    status: "Completed",
+    color: "text-green-600",
+    bgColor: "bg-green-50",
+  },
+  {
+    id: 2,
+    type: "Classroom Walkthrough",
+    user: "Sarah Johnson",
+    action: "Updated report",
+    subject: "Science - Grade 9",
+    time: "4 hours ago",
+    status: "In Progress",
+    color: "text-orange-600",
+    bgColor: "bg-orange-50",
+  },
+  {
+    id: 3,
+    type: "Notebook Checking",
+    user: "Mike Wilson",
+    action: "Completed review",
+    subject: "English - Grade 11",
+    time: "1 day ago",
+    status: "Completed",
+    color: "text-blue-600",
+    bgColor: "bg-blue-50",
+  },
+  {
+    id: 4,
+    type: "Weekly Learning Checklist",
+    user: "Alice Brown",
+    action: "Started new checklist",
+    subject: "History - Grade 12",
+    time: "1 day ago",
+    status: "In Progress",
+    color: "text-purple-600",
+    bgColor: "bg-purple-50",
+  },
+];
+
+const stats = [
+  {
+    title: "Fortnightly Monitor",
+    value: 24,
+    change: "+12% this month",
+    pending: 3,
+    color: "#E6F7FF",
+  },
+  {
+    title: "Classroom Walkthrough",
+    value: 18,
+    change: "+5% this month",
+    pending: 5,
+    color: "#FFF7E6",
+  },
+  {
+    title: "Notebook Checking",
+    value: 32,
+    change: "+8% this month",
+    pending: 7,
+    color: "#F0F5FF",
+  },
+  {
+    title: "Weekly Learning Checklist",
+    value: 45,
+    change: "+15% this month",
+    pending: 4,
+    color: "#F9F0FF",
+  },
+];
+const ObserverDashboard = () => {
+  const dispatch = useDispatch();
+  const { activities } = useSelector((state) => state.activity);
+
+  useEffect(() => {
+    dispatch(getRecentActivities());
+  }, [dispatch]);
+
+  const filteredRecentActivity = RecentActivity.filter(
+    (activity) => !activities.some((a) => a.title === activity.type)
+  );
 
   return (
-    <Container>
-    <BootstrapRow className="my-3">
-      <BootstrapCol md={4}>
-        <Link to={'/fortnightly-monitor'} className='text-decoration-none'>
-        <Card className='shadow-sm mb-3'>
-          <h3 className='mb-3'>Fortnightly Monitor</h3>
-          <p className="fs-5 bg-primary-subtle px-3 rounded-5 text-primary" style={{ width: "fit-content" }}>
-            {FormData?.length} invitation
-          </p>
-        </Card>
-        </Link>
-      </BootstrapCol>
-      <BootstrapCol md={4}>
-        <Link to={'/fortnightly-monitor'} className='text-decoration-none'>
-        <Card className='shadow-sm mb-3'>
-          <h3 className='mb-3'>Classroom Walkthrough</h3>
-          <p className="fs-5 bg-primary-subtle px-3 rounded-5 text-primary" style={{ width: "fit-content" }}>
-            0 invitation
-          </p>
-        </Card>
-        </Link>
-      </BootstrapCol>
-      <BootstrapCol md={4}>
-        <Link to={'/fortnightly-monitor'} className='text-decoration-none'>
-        <Card className='shadow-sm mb-3'>
-          <h3 className='mb-3'>Notebook Checking</h3>
-          <p className="fs-5 bg-primary-subtle px-3 rounded-5 text-primary" style={{ width: "fit-content" }}>
-            0 invitation
-          </p>
-        </Card>
-        </Link>
-      </BootstrapCol>
-    </BootstrapRow>
+    <div className="flex min-h-screen ">
+      <div className="flex-1 flex flex-col">
+        <div className="flex-1 p-6">
+          <div className="flex mb-3 flex-md-row flex-wrap">
+            {stats.map((stat, index) => (
+              <div className="col-lg-3 col-md-6 col-1 px-2 mb-3 flex">
+                <div
+                  className="p-3 rounded-md w-100 "
+                  key={index}
+                  style={{ background: stat.color }}
+                >
+                  <div className="flex gap-2 justify-between">
+                    <div className="d-flex flex-col">
+                      <Title level={5}>{stat.title}</Title>
+                      <Title level={4} className="m-0">
+                        {stat.value}
+                      </Title>
+                    </div>
+                    <div className="d-flex justify-between flex-col">
+                      <Text style={{ fontSize: "10px" }}>{stat.change}</Text>
+                      <Text style={{ fontSize: "10px" }}>
+                        Pending: {stat.pending}
+                      </Text>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* <Space size="middle" style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap",marginBottom:20 }}>
+       
+      </Space> */}
+          <div className="bg-white rounded-lg ">
+            <div className="border-b px-4 py-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Activity className="w-5 h-5 text-gray-400" />
+                <h3 className="font-medium">Recent Activity</h3>
+              </div>
+            </div>
+            {activities &&
+              activities.map((activity) => (
+                <div key={activity._id} className="p-4 hover:bg-gray-50">
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-green-50 text-green-600 text-sm font-medium px-2 py-1 rounded">
+                        {activity.title}
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        {new Date(activity.createdAt).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-700 text-sm">
+                    <span>{activity.form1?.message}</span>
+                    <span>|</span>
+                    <span>{activity.section}</span>
+                    <span>|</span>
+                    <span>{activity.className}</span>
+                  </div>
+                </div>
+              ))}
+            <div className="divide-y divide-gray-100">
+              {filteredRecentActivity.map((activity) => (
+                <div key={activity.id} className="p-4 hover:bg-gray-50">
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`${activity.bgColor} ${activity.color} text-sm font-medium px-2 py-1 rounded`}
+                      >
+                        {activity.type}
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        {activity.time}
+                      </span>
+                    </div>
+                    <span
+                      className={`text-sm ${
+                        activity.status === "Completed"
+                          ? "text-green-600"
+                          : "text-orange-600"
+                      }`}
+                    >
+                      {activity.status}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="font-medium">{activity.user}</span>
+                      <span className="text-gray-500"> {activity.action}</span>
+                      <span className="text-gray-700">
+                        {" "}
+                        - {activity.subject}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-   <Container>
-    <Row>
-
-      <Col md={6}>
-      
-      <p className='fs-5 mb-2 lh-lg'>Fortnightly Monitor Form To Do Items</p>
-
-<Table
-      columns={Formcolumns2}
-      dataSource={FormData}
-      bordered
-      scroll={{
-        x: "max-content", // Makes the table horizontally scrollable for mobile
-      }}
-      pagination={{
-        pageSize: 5, // Limits rows per page for better mobile UX
-        responsive: true,
-      }}
-    /></Col>
-     <Col md={6}>
-      
-      <p className='fs-5 mb-2 lh-lg'>Classroom Walkthrough Form To Do Items</p>
-
-<Table
-      columns={Formcolumns2}
-      dataSource={FormData}
-      bordered
-      scroll={{
-        x: "max-content", // Makes the table horizontally scrollable for mobile
-      }}
-      pagination={{
-        pageSize: 5, // Limits rows per page for better mobile UX
-        responsive: true,
-      }}
-    /></Col>
-
-<Col md={6}>
-      
-      <p className='fs-5 mb-2 lh-lg'>Notebook Checking Form To Do Items</p>
-
-<Table
-      columns={Formcolumns2}
-      dataSource={FormData}
-      bordered
-      scroll={{
-        x: "max-content", // Makes the table horizontally scrollable for mobile
-      }}
-      pagination={{
-        pageSize: 5, // Limits rows per page for better mobile UX
-        responsive: true,
-      }}
-    /></Col>
-    </Row>
-
-   </Container>
-
-  </Container>
-  )
-}
-
-export default TeacherDashboard
+export default ObserverDashboard;
