@@ -229,7 +229,7 @@ exports.GetObserverForm01 = async (req, res) => {
 };
 
 
-
+//teacher form 1 ko jab edit karta hai tab tab ye function kam karta hai  
 exports.EditUpdate = async (req, res) => {
     const formId = req.params.id;
 

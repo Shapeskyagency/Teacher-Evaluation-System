@@ -5,6 +5,8 @@ const Notification = require("../models/notification");
 const ClassDetails = require("../models/ClassDetails");
 const activity = require("../models/Activity");
 
+//jab teacher form 1 ko direct init karta hai tab ye function kam karta hai
+
 exports.createForm = async (req, res) => {
   const {
     className,
@@ -69,12 +71,10 @@ exports.createForm = async (req, res) => {
 
     // Save the form
     if (!formData) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "Invalid data. Either coordinator or teacher details are required.",
-        });
+      return res.status(400).json({
+        message:
+          "Invalid data. Either coordinator or teacher details are required.",
+      });
     }
 
     await formData.save();
@@ -91,7 +91,6 @@ exports.createForm = async (req, res) => {
       },
     });
     await tactivity.save();
-    
 
     // Send email and notification if recipient exists
     if (recipientEmail) {
@@ -104,8 +103,6 @@ exports.createForm = async (req, res) => {
       //   `;
       //       await sendEmail(recipientEmail, subject, body);
 
-      
-
       const notifications = new Notification({
         title: "You are invited to fill the Fortnightly Monitor Form",
         route: `fortnightly-monitor/create/${formData._id}`,
@@ -115,12 +112,10 @@ exports.createForm = async (req, res) => {
       });
       await notifications.save();
     }
-    res
-      .status(201)
-      .json({
-        message: "Fortnightly Monitor created successfully!",
-        form: formData,
-      });
+    res.status(201).json({
+      message: "Fortnightly Monitor created successfully!",
+      form: formData,
+    });
   } catch (error) {
     console.error("Error creating Fortnightly Monitor:", error);
     res
@@ -129,6 +124,7 @@ exports.createForm = async (req, res) => {
   }
 };
 
+// jab observer form 1 ko init karata hai tab ye function kam karta hai
 exports.FormInitiation = async (req, res) => {
   const { isTeacher, teacherIDs } = req.body;
   const userId = req?.user?.id;
@@ -297,6 +293,8 @@ exports.getSingleuserForm = async (req, res) => {
   }
 };
 
+//jab teacher and observer dono  form 1 ko fill karta hai jab obverser init kya uske bad
+
 exports.FormFill = async (req, res) => {
   const formId = req.params.id;
   try {
@@ -408,6 +406,55 @@ The Admin Team
       await notifications.save();
     }
 
+    const userId = updatedForm?.userId?._id;
+    const teacherId = updatedForm?.teacherID?._id;
+    
+    console.log("User ID is:", userId);
+    console.log("Teacher ID is:", teacherId);
+    
+    const updateOrCreateActivity = async (userId, message) => {
+      if (!userId) {
+        console.log("No userId found, skipping activity creation.");
+        return;
+      }
+    
+      try {
+        console.log(`Checking existing activity for User ID: ${userId}`);
+    
+        const existingActivity = await activity.findOne({
+          userId, 
+          "form1.router": `fortnightly-monitor/create/${updatedForm?._id}`,
+        });
+    
+        if (existingActivity && existingActivity.form1.message === message) {
+          console.log(`⚠️ Activity with the same message already exists for User ID: ${userId}. Skipping.`);
+        } else {
+          await activity.create({
+            userId,
+            form1: {
+              message,
+              router: `fortnightly-monitor/create/${updatedForm?._id}`,
+            },
+            title: "Fortnightly Monitor",
+          });
+        }
+      } catch (error) {
+        console.error("Error saving activity:", error);
+      }
+    };
+    
+    (async () => {
+      if (updatedForm?.isObserverInitiation && !updatedForm?.isTeacherComplete) {
+        await updateOrCreateActivity(userId, "Observer has completed the form. Please review.");
+      }
+    
+      if (updatedForm?.isTeacherComplete) {
+        await updateOrCreateActivity(teacherId, "Teacher has completed the form. Please review.");
+      }
+    })();
+    
+    
+
     // Send a success response with the updated form
     res.status(200).json({
       message: "Form updated successfully!",
@@ -446,11 +493,9 @@ exports.getObserverDashboard = async (req, res) => {
     }
 
     if (forms?.length === 0) {
-      return res
-        .status(404)
-        .json({
-          message: "No Fortnightly Monitor Forms available for filling.",
-        });
+      return res.status(404).json({
+        message: "No Fortnightly Monitor Forms available for filling.",
+      });
     }
 
     res.status(200).json({ forms });
