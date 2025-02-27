@@ -92,7 +92,7 @@ const stats = [
     color: "#F9F0FF",
   },
 ];
-const ObserverDashboard = () => {
+const TeacherDashboard = () => {
   const dispatch = useDispatch();
   const { activities } = useSelector((state) => state.activity);
 
@@ -210,4 +210,4 @@ const ObserverDashboard = () => {
   );
 };
 
-export default ObserverDashboard;
+export default TeacherDashboard;

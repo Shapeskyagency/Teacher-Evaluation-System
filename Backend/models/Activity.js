@@ -21,24 +21,16 @@ const activitySchema = new mongoose.Schema(
     },
     title: {
         type: String,
-        required: true, 
     },
     form1:messageSchema,
     className: {
       type: String, 
-      required: true,
     },
     section: {
       type: String,
-      required: true,
-    },
-    subject: {
-      type: String, 
-      required: false,
     },
     userName: {
       type: String, 
-      required: true,
     },
     createdAt: {
       type: Date,
