@@ -7,6 +7,7 @@ import { getAllTimes, getUserId } from "../../Utils/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllWeeklyFrom } from "../../redux/userSlice";
 import moment from "moment";
+import Reminder from "../../Components/Reminder";
 
 const { Option } = Select;
 
@@ -26,6 +27,10 @@ function Weely4Page() {
   useEffect(() => {
     dispatch(getAllWeeklyFrom());
   }, [dispatch]);
+  const handleSendReminder = (id) => {
+    console.log(`Sending reminder for ID: ${id}`);
+    // Add logic to send the reminder (e.g., API call)
+  };
 
   const uniqueObservers = [
     ...new Set(
@@ -249,20 +254,14 @@ function Weely4Page() {
                   )}
                   {UserRole[1] === getUserId().access &&
                     !record?.isCompleted && (
-                      // <Link to={`/weekly4form/create/${record?._id}`}>
-                      //   <Button variant="solid" color="" size="large">
-                      //     Push Notification
-                      //   </Button>
-                      // </Link>
-                      <Link to={`/weekly4form/create/${record?._id}`}>
-                        <button className="px-3 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors">
-                          Push Notification
-                        </button>
+                      <Link
+                        onClick={() => handleSendReminder(record._id)}
+                       
+                      >
+                        <Reminder id={record?._id} type={"form4"} />
                       </Link>
                     )}
-                  {/* <Link to={`/weekly4form/${record?._id}`}>
-                    <Button variant='solid' color='primary' size='small'>View</Button>
-                  </Link> */}
+                 
                 </span>
               ),
             },

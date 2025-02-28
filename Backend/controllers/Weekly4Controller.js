@@ -377,3 +377,123 @@ exports.getAllweeklyForms = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+// exports.ReminderFormFour = async (req, res) => {
+//   try {
+//     const userId = req?.user?.id;
+//     const formId = req?.params?.id;
+
+//     const [UserDetails, FormDetails] = await Promise.all([
+//       User.findById(userId),
+//       Weekly4Form.findById(formId).populate({
+//         path: 'teacherId',
+//         select: '-password -mobile -employeeId -customId'
+//     })
+//     .populate({
+//         path: 'userId',
+//         select: '-password -mobile -employeeId -customId'
+//     })
+//     .populate({
+//       path: 'coordinatorID',
+//       select: '-password -mobile -employeeId -customId'
+//   }),
+//     ]);
+
+//     if (!FormDetails) {
+//       return res.status(400).json({ message: "Form not found" });
+//     }
+
+//     const accessRole = UserDetails?.access;
+//     if (!["Observer", "Teacher"].includes(accessRole)) {
+//       return res.status(403).json({ message: "Unauthorized access" });
+//     }
+
+//     const isObserver = accessRole === "Observer";
+//     const sender = isObserver ? FormDetails?.coordinatorID?.name || FormDetails?.userId?.name 
+//                               : FormDetails?.teacherId?.name || FormDetails?.userId?.name;
+//     const receiverName = isObserver ? FormDetails?.teacherId?.name || FormDetails?.userId?.name
+//                                     : FormDetails?.coordinatorID?.name || FormDetails?.userId?.name;
+//     const receiverEmail = isObserver ? FormDetails?.teacherId?.email || FormDetails?.userId?.email
+//                                      : FormDetails?.coordinatorID?.email || FormDetails?.userId?.email;
+
+
+//     const subject = "Reminder: Fortnightly Monitor Form Submission Pending";
+//     const body = `
+// Dear ${receiverName},
+// This is a gentle reminder from ${sender} to complete your section of the Fortnightly Monitor form at the earliest.
+
+// Regards,  
+// The Admin Team`;
+
+//     await sendEmail(receiverEmail, subject, body);
+//     return res.status(200).json({ success: true });
+
+//   } catch (error) {
+//     console.error("Error sending reminder:", error);
+//     return res.status(500).json({ message: "Internal Server Error", error: error.message });
+//   }
+// };
+
+
+exports.ReminderFormFour = async (req, res) => {
+  try {
+    const userId = req?.user?.id;
+    const formId = req?.params?.id;
+
+    const [UserDetails, FormDetails] = await Promise.all([
+      User.findById(userId),
+      Weekly4Form.findById(formId)
+        .populate({ path: 'teacherId', select: '-password -mobile -employeeId -customId' })
+        .populate({ path: 'userId', select: '-password -mobile -employeeId -customId' })
+        .populate({ path: 'coordinatorID', select: '-password -mobile -employeeId -customId' })
+        .populate({ path: 'isInitiated.Observer', select: '-password -mobile -employeeId -customId' })
+
+    ]);
+
+    if (!FormDetails) {
+      return res.status(400).json({ message: "Form not found" });
+    }
+// console.log(FormDetails);
+    const accessRole = UserDetails?.access;
+    if (!["Observer", "Teacher"].includes(accessRole)) {
+      return res.status(403).json({ message: "Unauthorized access" });
+    }
+
+    // Define sender and receiver correctly
+    let sender, receiverName, receiverEmail;
+
+    if (accessRole === "Observer") {
+      sender = FormDetails?.coordinatorID?.name || FormDetails?.isInitiated?.Observer?.name;
+      receiverName = FormDetails?.teacherId?.name || FormDetails?.userId?.name;
+      receiverEmail = FormDetails?.teacherId?.email || FormDetails?.userId?.email;
+    } else {
+      sender = FormDetails?.teacherId?.name || FormDetails?.userId?.name;
+      receiverName = FormDetails?.coordinatorID?.name || FormDetails?.userId?.name;
+      receiverEmail = FormDetails?.coordinatorID?.email || FormDetails?.userId?.email;
+    }
+
+    // Check if receiverEmail exists before sending
+    if (!receiverEmail) {
+      console.error("❌ No valid receiver email found.");
+      return res.status(400).json({ message: "Receiver email is missing" });
+    }
+
+    // console.log(`📩 Sending Email to: ${receiverEmail} | Name: ${receiverName}`);
+
+    const subject = "Learning Progress Checklist Initiated";
+    const body = `
+Dear ${receiverName},
+The Learning Progress Checklist has been initiated by ${sender} on ${new Date()}. Please fill out your section at your earliest convenience.
+Regards,  
+The Admin Team`;
+
+    await sendEmail(receiverEmail, subject, body);
+
+    return res.status(200).json({ success: true });
+
+  } catch (error) {
+    console.error("Error sending reminder:", error);
+    return res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};
