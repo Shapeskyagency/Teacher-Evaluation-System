@@ -442,18 +442,20 @@ The Admin Team
         console.error("Error saving activity:", error);
       }
     };
-    
     (async () => {
-      if (updatedForm?.isObserverInitiation && !updatedForm?.isTeacherComplete) {
-        await updateOrCreateActivity(userId, "Observer has completed the form. Please review.");
+      if (updatedForm?.isCoordinatorComplete) {
+        await updateOrCreateActivity(
+          userId,
+          "Observer has completed the form. Please review."
+        );
       }
-    
       if (updatedForm?.isTeacherComplete) {
-        await updateOrCreateActivity(teacherId, "Teacher has completed the form. Please review.");
+        await updateOrCreateActivity(
+          teacherId,
+          "Teacher has completed the form. Please review."
+        );
       }
     })();
-    
-    
 
     // Send a success response with the updated form
     res.status(200).json({

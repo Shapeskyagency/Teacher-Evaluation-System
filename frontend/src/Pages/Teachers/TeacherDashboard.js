@@ -152,8 +152,22 @@ const TeacherDashboard = () => {
                       <span className="bg-green-50 text-green-600 text-sm font-medium px-2 py-1 rounded">
                         {activity.title}
                       </span>
-                      <span className="text-sm text-gray-500">
+                      {/* <span className="text-sm text-gray-500">
                         {new Date(activity.createdAt).toLocaleString()}
+                      </span> */}
+
+                      <span className="text-sm text-gray-500">
+                        {activity.createdAt === activity.updatedAt ? (
+                          <>
+                            Created At:{" "}
+                            {new Date(activity.createdAt).toLocaleString()}
+                          </>
+                        ) : (
+                          <>
+                            Last Updated:{" "}
+                            {new Date(activity.updatedAt).toLocaleString()}
+                          </>
+                        )}
                       </span>
                     </div>
                   </div>
