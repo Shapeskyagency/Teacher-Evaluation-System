@@ -2,6 +2,7 @@ const User = require('../models/User');
 const sendEmail = require('../utils/emailService');
 const Form1 = require('../models/Form1');
 const Notification = require('../models/notification');
+const Activity = require("../models/Activity");
 
 // Create Form
 exports.createForm = async (req, res) => {
@@ -229,9 +230,10 @@ exports.GetObserverForm01 = async (req, res) => {
 };
 
 
-
+//teacher form 1 ko jab edit karta hai tab tab ye function kam karta hai  
 exports.EditUpdate = async (req, res) => {
     const formId = req.params.id;
+    const userId = req?.user?.id;
 
     // Validate form ID
     if (!formId) {
@@ -257,6 +259,35 @@ exports.EditUpdate = async (req, res) => {
         if (!updatedForm) {
             return res.status(404).json({ message: 'Form not found', success: false });
         }
+
+        // const newActivity = new Activity({
+        //              userId,
+        //              title: "Fortnightly Monitor",
+        //              form1: {
+        //                message: "Fortnightly Monitor Form edit successfully",
+        //                router: `fortnightly-monitor/update/id`,
+        //              },
+        //            });
+        //            await newActivity.save();
+
+        const newActivity = await Activity.findOneAndUpdate(
+          { 
+            userId, 
+            "form1.router": `fortnightly-monitor/update/id` 
+          }, 
+          { 
+            $set: { 
+              title: "Fortnightly Monitor",
+              "form1.message": "Fortnightly Monitor Form edit successfully",
+              updatedAt: new Date()
+            } 
+          }, 
+          { 
+            new: true, // Return the updated document
+            upsert: true// Create a new entry if not found
+          }
+        );
+        
 
         // Send a success response
         res.status(200).json({
