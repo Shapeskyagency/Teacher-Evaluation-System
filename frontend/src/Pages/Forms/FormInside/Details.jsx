@@ -28,6 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { UserRole } from "../../../config/config";
 import { getCreateClassSection, GetObserverList } from "../../../redux/userSlice";
 import { questions } from "../../../Components/normalData";
+import { CreateActivityApi } from "../../../redux/Activity/activitySlice";
 const { Option } = Select;
 const Details = () => {
   const [form] = Form.useForm();
@@ -43,6 +44,7 @@ const Details = () => {
   const GetUserAccess = getUserId()?.access;
   const isLoading2 = useSelector((state) => state?.Forms?.loading);
   const [betaLoading,setBetaLoading] =useState(false);
+  const [appnewData,setAppnewData] =useState(null);
   const [newData,setNewData] =useState(false);
   const CurrectUserRole = getUserId().access;
   const ObserverList = useSelector((state) => state.user.GetObserverLists);
@@ -132,63 +134,94 @@ const Details = () => {
  
 
 
-  // Form submission handler
-  const onFinish = (values) => {
-    let payload;
 
-    if (
-      GetUserAccess === UserRole[1] && !formDetails?.isCoordinatorComplete
-    ) {
-      payload = {
-        id: Id,
-        data: {
-          isCoordinatorComplete: true,
-          observerForm: values,
-        },
+  const onFinish = async (values) => {
+    if (!Id || !GetUserAccess) {
+      message.error("Invalid form submission!");
+      return;
+    }
+  
+    let payload = {
+      id: Id,
+      data: {}
+    };
+  
+    // Assign payload based on user role and form status
+    if (GetUserAccess === UserRole[1] && !formDetails?.isCoordinatorComplete) {
+      payload.data = {
+        isCoordinatorComplete: true,
+        observerForm: values,
       };
-    } else if(GetUserAccess === UserRole[2] && !formDetails?.isTeacherComplete && formDetails.isObserverInitiation){
-      
-      payload = {
-        id: Id,
-        data: {
-          isTeacherComplete: true,
-          teacherForm: values,
-          className:values?.className,
-          date:values?.date,
-          Section:values?.section,
-        }
+    } else if (GetUserAccess === UserRole[2] && !formDetails?.isTeacherComplete) {
+      payload.data = {
+        isTeacherComplete: true,
+        teacherForm: values,
+      };
+  
+      if (formDetails.isObserverInitiation) {
+        payload.data = {
+          ...payload.data,
+          className: values?.className,
+          date: values?.date,
+          Section: values?.section,
+        };
       }
-
-    } else if (
-      GetUserAccess === UserRole[2] && !formDetails?.isTeacherComplete
-    ) {
-      payload = {
-        id: Id,
-        data: {
-          isTeacherComplete: true,
-          teacherForm: values
-        },
-      };
     } else {
       message.error("You do not have permission to complete this form!");
       return;
     }
-
-
-    dispatch(GetSingleFormComplete(payload))
-      .then((res) => {
-        if (res.payload.message) {
-          message.success("Form submitted successfully!");
-          navigate(`/fortnightly-monitor/report/${Id}`);
-        } else {
-          message.error(res.payload.message || "Error submitting the form.");
+  
+    
+  
+    try {
+      // Dispatch form submission
+      const res = await dispatch(GetSingleFormComplete(payload));
+  
+      if (res.payload.message) {
+        setAppnewData(res?.payload?.form);
+        message.success("Form submitted successfully!");
+        // Activity object
+    const receiverId =  UserRole[2] === getUserId().access ? res?.payload?.form?.coordinatorID?._id || res?.payload?.form?.userId?._id : formDetails?.teacherID?._id || formDetails?.userId?._id;
+    const observerMessage = payload?.data?.className
+      ? `${res?.payload?.form?.teacherID?.name || res?.payload?.form?.userId?.name} has completed the Fortnightly Monitor Form for ${res?.payload?.form?.className} | ${res?.payload?.form?.section}`
+      : UserRole[1] === getUserId().access ? `You have completed the Fortnightly Monitor Form for ${formDetails?.className} | ${formDetails?.section}` :
+      `${formDetails?.teacherID?.name || formDetails?.userId?.name } has completed the Fortnightly Monitor Form for ${formDetails?.className} | ${formDetails?.section}`
+      ;
+  
+    const teacherMessage = payload?.data?.className
+      ? `You have completed the Fortnightly Monitor Form for ${res?.payload?.form?.className} | ${res?.payload?.form?.section}`
+      : UserRole[1] === getUserId().access ? `${formDetails?.coordinatorID?.name || formDetails?.userId?.name} has completed the Fortnightly Monitor Form for ${formDetails?.className} | ${formDetails?.section}`:
+      `You have completed the Fortnightly Monitor Form for ${formDetails?.className} | ${formDetails?.section}`
+      ;
+  
+        const activity = {
+          observerMessage,
+          teacherMessage,
+          route: `/fortnightly-monitor/report/${Id}`,
+          date: new Date(),
+          reciverId: receiverId,
+          senderId: getUserId()?.id,
+          fromNo: 1,
+          data: res.payload,
+        };
+      
+        const activitiRecord = await dispatch(CreateActivityApi(activity));
+        if (!activitiRecord?.payload?.success) {
+          message.error("Error on Activity Record");
         }
-      })
-      .catch(() => {
-        message.error("There was an error submitting the form.");
-      });
-  };
+        navigate(`/fortnightly-monitor/report/${Id}`);
+      } else {
+        throw new Error(res.payload.message || "Error submitting the form.");
+      }
 
+    
+  
+     
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
+  
   // Calculate self-assessment score
   const calculateScore = () => {
     const values = form.getFieldsValue();

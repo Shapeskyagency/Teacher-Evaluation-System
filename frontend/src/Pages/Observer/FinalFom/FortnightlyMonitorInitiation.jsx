@@ -6,6 +6,7 @@ import { getUserId } from "../../../Utils/auth";
 import { UserRole } from "../../../config/config";
 import { GetTeacherList } from "../../../redux/userSlice";
 import { FormInitiationAction, GetFormsOne } from "../../../redux/Form/fortnightlySlice";
+import { CreateActivityApi } from "../../../redux/Activity/activitySlice";
 
 const { Option } = Select;
 
@@ -46,8 +47,26 @@ function FortnightlyMonitorInitiation() {
   
       setLoading(true);
       try {
+        
         const response = await dispatch(FormInitiationAction(payload)).unwrap();
         message.success(response?.message);
+        const activity ={
+          observerMessage:"You have Initiated New Fortnightly Monitor Form.",
+          teacherMessage:`${getUserId()?.name} has Initiated New Fortnightly Monitor Form.`,
+          route:"/fortnightly-monitor", 
+          date: new Date(),
+          reciverId:values?.teacherIDs || "",
+          senderId: getUserId().id,
+          fromNo: 1,
+          data: payload
+        }
+        const activitiRecord = await dispatch(CreateActivityApi(activity))
+       
+        if(activitiRecord?.payload?.success){
+          // message.success(activitiRecord.payload.message);
+        }else{
+          message.error("Error On Activity Record");
+        }
         form.resetFields(); // Reset the form fields after submission
         navigate(`/fortnightly-monitor`);
         dispatch(GetFormsOne());
