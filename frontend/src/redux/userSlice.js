@@ -10,6 +10,12 @@ export const UserLogin = createAsyncThunk('UserLogin',async (payload) => {
       return response.data;
   })
 
+
+  export const FromDataAuth = createAsyncThunk('FromDataAuth',async (payload) => {
+    const response = await axiosInstanceToken.get(`/auth/form-data`,payload);
+      return response.data;
+  })
+
   export const GetUserList = createAsyncThunk('GetUserList',async (payload) => {
     const response = await axiosInstanceToken.get(`/user/get`);
       return response.data;

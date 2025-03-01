@@ -3,6 +3,10 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const sendEmail = require('../utils/emailService');
+const Form1 = require('../models/Form1');
+const Form2 = require('../models/Form2');
+const Form3 = require('../models/Form3');
+const Weekly4Form = require('../models/Weekly4Form');
 
 const register = async (req, res) => {
     try {
@@ -112,4 +116,67 @@ const changePassword = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
-module.exports = { register, login,requestPasswordReset, resetPassword, changePassword }; 
+
+const FromCount = async (req, res) => {
+    try {
+        // Use await to ensure proper execution of asynchronous queries
+        // Use $or to check if any of the specified fields are false
+        const formTotalOneCount = await Form1.countDocuments({});
+        const formTotalTwoCount = await Form2.countDocuments({});
+        const formTotalThreeCount = await Form3.countDocuments({});
+        const formTotalFourCount = await Weekly4Form.countDocuments({});
+        const formOneCount = await Form1.countDocuments({
+            $or: [{ isTeacherComplete: false }, { isCoordinatorComplete: false }]
+        });
+
+        const formTwoCount = await Form2.countDocuments({
+            $or: [{ isTeacherCompletes: false }, { isObserverCompleted: false }]
+        });
+
+        const formThreeCount = await Form3.countDocuments({
+            $or: [{ isTeacherComplete: false }, { isObserverComplete: false }]
+        });
+        const formFourCount = await Weekly4Form.countDocuments({isCompleted: false});
+
+        const payload = [
+            {
+                fromName: "Fortnightly Monitor",
+                count: formTotalOneCount,
+                pending: formOneCount,
+                color: "#E6F7FF",
+                route: "/fortnightly-monitor",
+            },
+            {
+                fromName: "Classroom Walkthrough",
+                count: formTotalTwoCount,
+                pending: formTwoCount,
+                color: "#FFF7E6",
+                route: "/classroom-walkthrough",
+            },
+            {
+                fromName: "Notebook Checking",
+                count: formTotalThreeCount,
+                pending: formThreeCount,
+                color: "#F0F5FF",
+                route: "/notebook-checking-proforma",
+            },
+            {
+                fromName: "Weekly Learning Checklist",
+                count: formFourCount,
+                pending: formTotalFourCount,
+                color: "#F9F0FF",
+                route: "/weekly4form",
+            },
+        ];
+
+        // Send the payload as a JSON response
+        res.status(200).json(payload);
+
+    } catch (error) {
+        console.error("Error fetching form counts:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+
+module.exports = { register, login,requestPasswordReset, resetPassword, changePassword,FromCount}; 

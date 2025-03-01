@@ -14,6 +14,20 @@ export const getRecentActivities = createAsyncThunk(
   }
 );
 
+
+export const CreateActivityApi = createAsyncThunk('CreateActivityApi',async (payload) => {
+  const response = await axiosInstanceToken.post(`activity/create`,payload);
+  return response.data;
+})
+
+export const getSingleActivityApi = createAsyncThunk('getSingleActivityApi',async (payload) => {
+  const response = await axiosInstanceToken.get(`activity/get/${payload?.id}?fromNo=${payload?.fromNo}`);
+  return response.data;
+})
+
+
+
+
 const activitySlice = createSlice({
   name: "activity",
   initialState: {
@@ -28,18 +42,35 @@ const activitySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getRecentActivities.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(getRecentActivities.fulfilled, (state, action) => {
-        state.loading = false;
-        state.activities = action.payload;
-      })
-      .addCase(getRecentActivities.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
+    .addCase(getSingleActivityApi.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    }
+    )
+    .addCase(getSingleActivityApi.fulfilled, (state, action) => {
+
+      state.loading = false;
+      state.activities = action.payload;
+    }
+    )
+    .addCase(getSingleActivityApi.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    }
+    )
+
+      // .addCase(getRecentActivities.pending, (state) => {
+      //   state.loading = true;
+      //   state.error = null;
+      // })
+      // .addCase(getRecentActivities.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   state.activities = action.payload;
+      // })
+      // .addCase(getRecentActivities.rejected, (state, action) => {
+      //   state.loading = false;
+      //   state.error = action.payload;
+      // });
   },
 });
 

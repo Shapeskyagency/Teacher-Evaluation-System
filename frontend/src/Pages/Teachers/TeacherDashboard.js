@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   UserCircle,
@@ -11,7 +11,8 @@ import {
   Activity,
 } from "lucide-react";
 import { Card, List, Typography, Tag, Space } from "antd";
-import { getRecentActivities } from "../../redux/Activity/activitySlice";
+import { getRecentActivities, getSingleActivityApi } from "../../redux/Activity/activitySlice";
+import { getUserId } from "../../Utils/auth";
 
 const { Title, Text } = Typography;
 
@@ -94,16 +95,42 @@ const stats = [
 ];
 const TeacherDashboard = () => {
   const dispatch = useDispatch();
-  const { activities } = useSelector((state) => state.activity);
-
+  const [FromOne, setFromOne] = useState('');
+  const [FromTwo, setFromTwo] = useState('');
+  const UserId = getUserId()?.id;
   useEffect(() => {
+    const payload = {
+      id: UserId,
+      fromNo: 1,
+    }
+    const payload2 = {
+      id: UserId,
+      fromNo: 2,
+    }
     dispatch(getRecentActivities());
+      dispatch(getSingleActivityApi(payload)).unwrap().then((res) => {
+        setFromOne(res?.activities);
+      });
+      //
+      //  
+      dispatch(getSingleActivityApi(payload2)).unwrap().then((res) => {
+        setFromTwo(res?.activities);
+      }
+      );
   }, [dispatch]);
 
-  const filteredRecentActivity = RecentActivity.filter(
-    (activity) => !activities.some((a) => a.title === activity.type)
-  );
 
+  const recentEntrySort = (activities) =>{
+    if (!activities || activities.length === 0) {
+      return null; // Return null if array is empty
+    }
+    
+    return [...activities] // Create a copy to avoid mutating the original array
+      .sort((a, b) => new Date(b.date) - new Date(a.date))[0]; // Get the most recent entry
+  };
+
+  const recentEntry = recentEntrySort(FromOne);
+  const recentEntry2 = recentEntrySort(FromTwo);
   return (
     <div className="flex min-h-screen ">
       <div className="flex-1 flex flex-col">
@@ -144,79 +171,37 @@ const TeacherDashboard = () => {
                 <h3 className="font-medium">Recent Activity</h3>
               </div>
             </div>
-            {activities &&
-              activities.map((activity) => (
-                <div key={activity._id} className="p-4 hover:bg-gray-50">
-                  <div className="flex items-center justify-between mb-1">
+            <div className="p-4 hover:bg-gray-50">
+                  <div className="flex  items-center justify-between mb-1">
                     <div className="flex items-center gap-2">
                       <span className="bg-green-50 text-green-600 text-sm font-medium px-2 py-1 rounded">
-                        {activity.title}
+                      Fortnightly Monitor
                       </span>
-                      {/* <span className="text-sm text-gray-500">
-                        {new Date(activity.createdAt).toLocaleString()}
-                      </span> */}
-
                       <span className="text-sm text-gray-500">
-                        {activity.createdAt === activity.updatedAt ? (
+                        {recentEntry?.createdAt === recentEntry?.updatedAt ? (
                           <>
                             Created At:{" "}
-                            {new Date(activity.createdAt).toLocaleString()}
+                            {new Date(recentEntry?.createdAt).toLocaleString()}
                           </>
                         ) : (
                           <>
                             Last Updated:{" "}
-                            {new Date(activity.updatedAt).toLocaleString()}
+                            {new Date(recentEntry?.updatedAt).toLocaleString()}
                           </>
                         )}
                       </span>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-700 text-sm">
-                    <span>{activity.form1?.message}</span>
-                    <span>|</span>
-                    <span>{activity.section}</span>
-                    <span>|</span>
-                    <span>{activity.className}</span>
-                  </div>
-                </div>
-              ))}
-            <div className="divide-y divide-gray-100">
-              {filteredRecentActivity.map((activity) => (
-                <div key={activity.id} className="p-4 hover:bg-gray-50">
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={`${activity.bgColor} ${activity.color} text-sm font-medium px-2 py-1 rounded`}
-                      >
-                        {activity.type}
-                      </span>
-                      <span className="text-sm text-gray-500">
-                        {activity.time}
-                      </span>
-                    </div>
-                    <span
-                      className={`text-sm ${
-                        activity.status === "Completed"
-                          ? "text-green-600"
-                          : "text-orange-600"
-                      }`}
-                    >
-                      {activity.status}
-                    </span>
+                   
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="font-medium">{activity.user}</span>
-                      <span className="text-gray-500"> {activity.action}</span>
                       <span className="text-gray-700">
-                        {" "}
-                        - {activity.subject}
+                      {recentEntry?.teacherMessage}
                       </span>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+       
           </div>
         </div>
       </div>
