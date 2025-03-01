@@ -1,102 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  UserCircle,
-  FileText,
-  LayoutDashboard,
-  LogOut,
-  ClipboardCheck,
-  BookOpen,
-  ChevronDown,
   Activity,
 } from "lucide-react";
-import { Card, List, Typography, Tag, Space } from "antd";
 import { getRecentActivities, getSingleActivityApi } from "../../redux/Activity/activitySlice";
 import { getUserId } from "../../Utils/auth";
+import DashboardCard from "../../Components/DashboardCard";
+import Skeleton from "react-loading-skeleton";
+import { FromDataAuth } from "../../redux/userSlice";
 
-const { Title, Text } = Typography;
-
-const RecentActivity = [
-  {
-    id: 1,
-    type: "Fortnightly Monitor",
-    user: "John Doe",
-    action: "Created new report",
-    subject: "Mathematics - Grade 10",
-    time: "2 hours ago",
-    status: "Completed",
-    color: "text-green-600",
-    bgColor: "bg-green-50",
-  },
-  {
-    id: 2,
-    type: "Classroom Walkthrough",
-    user: "Sarah Johnson",
-    action: "Updated report",
-    subject: "Science - Grade 9",
-    time: "4 hours ago",
-    status: "In Progress",
-    color: "text-orange-600",
-    bgColor: "bg-orange-50",
-  },
-  {
-    id: 3,
-    type: "Notebook Checking",
-    user: "Mike Wilson",
-    action: "Completed review",
-    subject: "English - Grade 11",
-    time: "1 day ago",
-    status: "Completed",
-    color: "text-blue-600",
-    bgColor: "bg-blue-50",
-  },
-  {
-    id: 4,
-    type: "Weekly Learning Checklist",
-    user: "Alice Brown",
-    action: "Started new checklist",
-    subject: "History - Grade 12",
-    time: "1 day ago",
-    status: "In Progress",
-    color: "text-purple-600",
-    bgColor: "bg-purple-50",
-  },
-];
-
-const stats = [
-  {
-    title: "Fortnightly Monitor",
-    value: 24,
-    change: "+12% this month",
-    pending: 3,
-    color: "#E6F7FF",
-  },
-  {
-    title: "Classroom Walkthrough",
-    value: 18,
-    change: "+5% this month",
-    pending: 5,
-    color: "#FFF7E6",
-  },
-  {
-    title: "Notebook Checking",
-    value: 32,
-    change: "+8% this month",
-    pending: 7,
-    color: "#F0F5FF",
-  },
-  {
-    title: "Weekly Learning Checklist",
-    value: 45,
-    change: "+15% this month",
-    pending: 4,
-    color: "#F9F0FF",
-  },
-];
 const TeacherDashboard = () => {
   const dispatch = useDispatch();
   const [FromOne, setFromOne] = useState('');
   const [FromTwo, setFromTwo] = useState('');
+    const [stats, setStats] = useState([]);
+    const [stateLoading, setStateLoading] = useState(false);
   const UserId = getUserId()?.id;
   useEffect(() => {
     const payload = {
@@ -117,8 +35,19 @@ const TeacherDashboard = () => {
         setFromTwo(res?.activities);
       }
       );
+
+      GetDashbardData();
   }, [dispatch]);
 
+
+    const GetDashbardData = async () => {
+      setStateLoading(true);
+   const response = await dispatch(FromDataAuth()).unwrap();
+   if(response){
+    setStateLoading(false);
+    setStats(response);
+   }
+    }
 
   const recentEntrySort = (activities) =>{
     if (!activities || activities.length === 0) {
@@ -136,29 +65,14 @@ const TeacherDashboard = () => {
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-6">
           <div className="flex mb-3 flex-md-row flex-wrap">
-            {stats.map((stat, index) => (
-              <div className="col-lg-3 col-md-6 col-1 px-2 mb-3 flex">
-                <div
-                  className="p-3 rounded-md w-100 "
-                  key={index}
-                  style={{ background: stat.color }}
-                >
-                  <div className="flex gap-2 justify-between">
-                    <div className="d-flex flex-col">
-                      <Title level={5}>{stat.title}</Title>
-                      <Title level={4} className="m-0">
-                        {stat.value}
-                      </Title>
-                    </div>
-                    <div className="d-flex justify-between flex-col">
-                      <Text style={{ fontSize: "10px" }}>{stat.change}</Text>
-                      <Text style={{ fontSize: "10px" }}>
-                        Pending: {stat.pending}
-                      </Text>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          {stats.map((stat, index) => (
+              stateLoading ? 
+                <Skeleton  containerClassName="col-md-3 col-sm-6 col-12 px-1 min-h-[100px]" className="h-full"  key={index}  count={1} />  
+               :
+             <DashboardCard
+             index={index}
+             stat={stat}
+             />
             ))}
           </div>
           {/* <Space size="middle" style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap",marginBottom:20 }}>
