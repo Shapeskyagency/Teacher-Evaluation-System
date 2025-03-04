@@ -780,7 +780,7 @@ The Admin Team
     // Send Email to Observer
     await sendEmail(observer.email, subject, body);
 
-    res.status(200).json({ success: true, message: "Reflection updated & email sent to observer" });
+    res.status(200).json({ success: true, message: "Reflection updated & email sent to observer", form: updatedForm});
 
   } catch (error) {
     console.error("Error updating teacher reflection feedback:", error);

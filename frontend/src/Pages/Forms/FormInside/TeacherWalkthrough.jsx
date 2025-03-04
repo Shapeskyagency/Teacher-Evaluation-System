@@ -18,6 +18,7 @@ import {
 } from "antd";
 import { Col, Container, Row } from "react-bootstrap";
 import TextArea from "antd/es/input/TextArea";
+import { CreateActivityApi } from "../../../redux/Activity/activitySlice";
 
 function TeacherWalkthrough() {
   const dispatch = useDispatch();
@@ -116,6 +117,25 @@ function TeacherWalkthrough() {
     const response = await dispatch(TeacherWalkThroughComplete(payload));
     if (response?.payload?.message) {
       message.success(response?.payload?.message);
+      const receiverId = formDataList?.createdBy?._id;
+          const observerMessage = `${formDataList?.grenralDetails?.NameoftheVisitingTeacher?.name} has been completed Classroom Walkthrough Form for ${formDataList?.grenralDetails?.className} | ${formDataList?.grenralDetails?.Section} | ${formDataList?.grenralDetails?.Subject}.`;
+          const teacherMessage = `You have been completed Clasroom Walkthrough form for ${formDataList?.grenralDetails?.className} | ${formDataList?.grenralDetails?.Section} | ${formDataList?.grenralDetails?.Subject}.`;
+          const activity = {
+                    observerMessage,
+                    teacherMessage,
+                    route: `/classroom-walkthrough/report/${formDataList?._id}`,
+                    date: new Date(),
+                    reciverId: receiverId,
+                    senderId: getUserId()?.id,
+                    fromNo: 2,
+                    data: response?.payload,
+                  };
+                
+                  const activitiRecord = await dispatch(CreateActivityApi(activity));
+                  if (!activitiRecord?.payload?.success) {
+                    message.error("Error on Activity Record");
+                  }
+
       navigate(`/classroom-walkthrough/report/${FormId}`);
     } else {
       message.error(response?.payload?.message);
