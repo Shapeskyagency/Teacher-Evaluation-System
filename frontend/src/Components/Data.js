@@ -78,15 +78,16 @@ export const Menu = {
       route: "/notebook-checking-proforma",
       icon: <BookFilled />,
     },
-    // {
-    //   name: "Wing Coordinator",
-    //   route: "/wing-coordinator",
-    //   icon: <BookFilled />,
-    // },
+   
     {
       name: " Learning Progress Checklist",
       route: "weekly4form",
       icon: <DatabaseFilled />,
+    },
+    {
+      name: "Wing Coordinator",
+      route: "/wing-coordinator",
+      icon: <BookFilled />,
     },
   ],
   Teacher: [

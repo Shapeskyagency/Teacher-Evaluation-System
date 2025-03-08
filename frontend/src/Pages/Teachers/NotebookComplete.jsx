@@ -79,7 +79,6 @@ const handleSubmit =  () => {
       dispatch(updateTeacherReflationFeedback({ id: Id, data: { reflation: inputValue } }))
         .then(async(res)  => {
           if (res?.payload?.success) {
-            console.log("Reflation updated successfully!");
             const userInfo = res?.payload?.form?.grenralDetails
             const activity = {
               observerMessage: `${getUserId()?.name} has completed the Notebook Checking Proforma Reflection Feedback For ${userInfo?.className} | ${userInfo?.Subject} | ${userInfo?.Section}.`,

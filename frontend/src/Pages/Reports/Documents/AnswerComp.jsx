@@ -59,7 +59,6 @@ function AnswerComp({ data, type }) {
   );
 
 
-  console.log(selfAssessCount)
 
   const fields = [
     "classCleanliness",

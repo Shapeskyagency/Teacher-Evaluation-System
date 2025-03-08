@@ -349,8 +349,8 @@ function Weekly4Form() {
             message.error("Error on Activity Record");
           }
 
-          // setThankYou(true);
-          // setTimeout(() => (window.location.href = "/weekly4form"), 1000);
+          setThankYou(true);
+          setTimeout(() => (window.location.href = "/weekly4form"), 1000);
         } else {
           message.error("Something went wrong!");
         }
@@ -385,7 +385,7 @@ function Weekly4Form() {
             message.error("Error on Activity Record");
           }
 
-          // window.location.href = "/weekly4form"; 
+          window.location.href = "/weekly4form"; 
         } else {
           message.error("Something went wrong!");
         }

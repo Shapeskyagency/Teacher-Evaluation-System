@@ -10,6 +10,6 @@ const weekly4FormSchema = new Schema({
     isInitiated: { status: { type: Boolean }, Observer: { type: Schema.Types.ObjectId, ref: 'User' } },
     isCompleted: { type: Boolean, default:false },
     FormData: {type: Array}
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model('weekly4Form', weekly4FormSchema);

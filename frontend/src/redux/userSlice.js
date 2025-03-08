@@ -16,6 +16,12 @@ export const UserLogin = createAsyncThunk('UserLogin',async (payload) => {
       return response.data;
   })
 
+  export const getFilteredData = createAsyncThunk('getFilteredData',async (payload) => {
+    const response = await axiosInstanceToken.post(`/auth/getFilteredData`,payload);
+      return response.data;
+  })
+
+
   export const GetUserList = createAsyncThunk('GetUserList',async (payload) => {
     const response = await axiosInstanceToken.get(`/user/get`);
       return response.data;
@@ -132,6 +138,15 @@ export const UserLogin = createAsyncThunk('UserLogin',async (payload) => {
     const response = await axiosInstanceToken.post(`weekly4form/reminder/${payload}`);
     return response.data;
   })
+  export const createWingForm = createAsyncThunk('createWingForm',async (payload) => {
+    const response = await axiosInstanceToken.post(`/wing-coordinator`,payload);
+    return response.data;
+  })
+
+  export const GetWingFrom = createAsyncThunk('createWingForm',async (payload) => {
+    const response = await axiosInstanceToken.get(`/wing-coordinator/${payload}`);
+    return response.data;
+  })
 
 
 const userSlice = createSlice({
@@ -145,6 +160,8 @@ const userSlice = createSlice({
     loading: false,
     error: null,
     signupSuccess: false, 
+    getFilteredDataList :null,
+    getWingFormlist:null,
     message: '', 
 
   },
@@ -175,6 +192,31 @@ const userSlice = createSlice({
       state.error = action.payload;
     })
 
+.addCase(getFilteredData.pending,(state)=>{
+  state.loading = true;
+  state.error = null;
+})
+.addCase(getFilteredData.fulfilled,(state,action)=>{
+  state.loading = false;
+  state.getFilteredDataList = action.payload;
+})
+.addCase(getFilteredData.rejected,(state,action)=>{
+  state.loading = false;
+  state.error = action.payload;
+})
+
+.addCase(GetWingFrom.pending,(state)=>{
+  state.loading = true;
+  state.error = null;
+})
+.addCase(GetWingFrom.fulfilled,(state,action)=>{
+  state.loading = false;
+  state.getWingFormlist = action.payload;
+})
+.addCase(GetWingFrom.rejected,(state,action)=>{
+  state.loading = false;
+  state.error = action.payload;
+})
 
       // Get user profile
       .addCase(GetUserList.pending, (state) => {

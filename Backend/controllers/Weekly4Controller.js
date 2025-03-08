@@ -322,7 +322,6 @@ exports.updateWeekly4Form = async (req, res) => {
     if (!updatedForm) {
       return res.status(404).json({ message: 'Form not found' });
     }
-    console.log('Observer Email:', updatedForm.isInitiated?.Observer?.email);
 
     // Send email to the observer about the teacher's submission
     if (updatedForm.isInitiated?.Observer?.email) {
@@ -454,7 +453,6 @@ exports.ReminderFormFour = async (req, res) => {
     if (!FormDetails) {
       return res.status(400).json({ message: "Form not found" });
     }
-// console.log(FormDetails);
     const accessRole = UserDetails?.access;
     if (!["Observer", "Teacher"].includes(accessRole)) {
       return res.status(403).json({ message: "Unauthorized access" });
@@ -479,7 +477,6 @@ exports.ReminderFormFour = async (req, res) => {
       return res.status(400).json({ message: "Receiver email is missing" });
     }
 
-    // console.log(`📩 Sending Email to: ${receiverEmail} | Name: ${receiverName}`);
 
     const subject = "Learning Progress Checklist Initiated";
     const body = `

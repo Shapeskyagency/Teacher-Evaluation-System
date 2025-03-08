@@ -32,7 +32,7 @@ const classroomWalkthrough = new Schema({
     isTeacherCompletes:{type:Boolean},
     TeacherFeedback:{type:Array},
     teacherID: { type: Schema.Types.ObjectId, ref: 'User' },
-})
+}, { timestamps: true })
 
 const Form2 = mongoose.model('Form2', classroomWalkthrough);
 module.exports = Form2;

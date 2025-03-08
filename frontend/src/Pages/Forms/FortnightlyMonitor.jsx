@@ -10,7 +10,7 @@ import {
 import { UserRole } from "../../config/config";
 import { FormcolumnsForm1 } from "../../Components/Data";
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { useNavigate, useNavigation } from "react-router-dom";
+import { Link, useNavigate, useNavigation } from "react-router-dom";
 const { Option } = Select;
 
 function FortnightlyMonitor() {
@@ -121,19 +121,17 @@ function FortnightlyMonitor() {
           className="mb-3 bg-[#1a4d2e] p-3 text-white py-2 "
           onClick={() => navigate("/fortnightly-monitor/create")}
         >
-          <PlusCircleOutlined /> New Form
+          <PlusCircleOutlined /> Fill New Form
         </button>
       )}
 
       {Role === UserRole[1] && (
-        <button
-            style={{borderRadius:5}}
-          className="mb-3 bg-[#1a4d2e] p-3 text-white py-2 "
-          onClick={() => navigate("/fortnightly-monitor/form-initiation")}
-          
-        >
-         <PlusCircleOutlined /> Form Initiation
-        </button>
+        <Link to="/fortnightly-monitor/form-initiation"> 
+        <button  style={{borderRadius:5}} className="mb-3 bg-[#1a4d2e] p-3 text-white py-2 ">
+           <PlusCircleOutlined /> Form Initiation
+         </button>
+        </Link>
+       
       )}
       <div className=" flex flex-wrap gap-4">
         {/* Observer Filter */}

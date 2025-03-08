@@ -20,7 +20,6 @@ function Reminder({id,type}) {
                    Response = await dispatch(FormOneReminder(ID));
                 }
                 
-                console.log("Response",Response)
               } catch (error) {
                 console.log('error')
               }

@@ -57,7 +57,6 @@ function Weekly() {
               key: UserRole[1] === getUserId().access ? `teacherId` : "isInitiated",
               render: (text, record) => (
                 <span key={record?._id}>
-                    {console.log(record)}
                   {text?.Observer?.name || "N/A"}
                 </span>
               ),

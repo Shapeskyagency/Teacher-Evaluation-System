@@ -179,7 +179,7 @@ const ObserverDashboard = () => {
               <div className="flex  items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
                   <span className="bg-blue-50 text-blue-600 text-sm font-medium px-2 py-1 rounded">
-                  NootBook Checking Proforma
+                  NoteBook Checking Proforma
                   </span>
                   <span className="text-sm text-gray-500">
                     {recentEntry3?.createdAt === recentEntry3?.updatedAt && (
@@ -206,7 +206,7 @@ const ObserverDashboard = () => {
         <div className="p-4 hover:bg-gray-50">
               <div className="flex  items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
-                  <span className="bg-blue-50 text-blue-600 text-sm font-medium px-2 py-1 rounded">
+                  <span className="bg-amber-50 text-amber-600 text-sm font-medium px-2 py-1 rounded">
                   Learning Progress Checklist
                   </span>
                   <span className="text-sm text-gray-500">

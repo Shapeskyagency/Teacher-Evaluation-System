@@ -179,4 +179,64 @@ const FromCount = async (req, res) => {
 };
 
 
-module.exports = { register, login,requestPasswordReset, resetPassword, changePassword,FromCount}; 
+const getFillterForms = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { range, className } = req.body;
+
+        if (!range || range.length !== 2 || !className) {
+            return res.status(400).json({ message: "Invalid request parameters" });
+        }
+
+        const [fromDate, toDate] = range;
+        
+
+        // Convert to Date objects
+        const from = new Date(fromDate);
+        const to = new Date(toDate);
+        to.setHours(23, 59, 59, 999); // Ensure we include the entire 'to' day
+        
+        // Fetch filtered forms
+        const form1 = await Form1.find({
+            className: className,
+            createdAt: { $gte: from, $lte: to },
+            isTeacherComplete:true,
+            isCoordinator:true,
+            $or: [{ coordinatorID: userId }, { userId: userId }]
+        }).populate("userId teacherID","-password -mobile -employeeId")
+
+        const form2 = await Form2.find({
+            "grenralDetails.className": className,  // Ensure "grenralDetails" is the correct field name
+            createdAt: { $gte: from, $lte: to },
+            createdBy: userId,
+            isTeacherCompletes:true,
+            isObserverCompleted:true,
+        }).populate("grenralDetails.NameoftheVisitingTeacher createdBy","-password -mobile -employeeId")
+
+        const form3 = await Form3.find({
+            "grenralDetails.className": className, 
+            createdAt: { $gte: from, $lte: to },
+            isTeacherComplete:true,
+            isObserverComplete:true,
+            isReflation:true,
+            $or: [{ 'grenralDetails.NameofObserver': userId },{ createdBy: userId }]
+        }).populate("teacherID createdBy","-password -mobile -employeeId")
+
+        const form4 = await Weekly4Form.find({
+            createdAt: { $gte: from, $lte: to },
+            // $or: [{ coordinatorID: userId }, { userID: userId }]
+        });
+
+        res.json({
+             form1,
+             form2,
+            form3,
+            // form4
+        });
+
+    } catch (error) {
+        console.error("Error fetching filtered forms:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+module.exports = { register, login,requestPasswordReset, resetPassword, changePassword,FromCount,getFillterForms}; 

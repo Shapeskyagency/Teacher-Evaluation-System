@@ -316,12 +316,10 @@ exports.updateObserverFields = async (req, res) => {
             return res.status(404).json({ message: "Form not found." });
         }
 
-        // console.log("Form Details Before Update:", existingForm);
 
         // Extract observer details
         const teacher = existingForm?.teacherID || existingForm?.createdBy; 
 
-        // console.log("Teacher Details:", teacher);
 
         // Build the payload dynamically to include only provided fields
         const payload = {
@@ -358,7 +356,6 @@ exports.updateObserverFields = async (req, res) => {
             return res.status(404).json({ message: "Form not found after update." });
         }
 
-        // console.log("Updated Form Data:", updatedForm);
 
         // Send email to teacher if they exist
         if (teacher?.email) {
@@ -374,7 +371,6 @@ The Admin Team
 
             try {
                 await sendEmail(teacher?.email, subject, body);
-                console.log("Email sent successfully to:", teacher.email);
             } catch (emailError) {
                 console.error("Failed to send email:", emailError);
             }
@@ -706,39 +702,12 @@ exports.GetNootbookForms = async (req, res) => {
   }
 };
 
-// exports.updateTeacherReflationFeedback = async (req, res) => {
-//   const { id } = req.params;
-//   const { reflation } = req.body;
-
-//   console.log("Received Request:", req.body);
-
-//   try {
-//     const updatedForm = await Form3.findByIdAndUpdate(
-//       id,
-//       {
-//         teacherReflationFeedback: reflation,
-//         isReflation: reflation ? true : false,
-//       },
-//       { new: true }
-//     );
-
-//     if (!updatedForm) {
-//       return res.status(404).json({ message: "Form not found" });
-//     }
-
-//     res.status(200).json({ success: true });
-//   } catch (error) {
-//     console.error("Error updating teacher reflation feedback:", error);
-//     res.status(500).json({ message: "Server error, please try again later" });
-//   }
-// };
 
 
 exports.updateTeacherReflationFeedback = async (req, res) => {
   const { id } = req.params;
   const { reflation } = req.body;
 
-  // console.log("Received Request:", req.body);
 
   try {
     // Find the existing form details

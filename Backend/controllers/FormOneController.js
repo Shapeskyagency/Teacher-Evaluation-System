@@ -409,8 +409,6 @@ The Admin Team
     const userId = updatedForm?.userId?._id;
     const teacherId = updatedForm?.teacherID?._id;
     
-    console.log("User ID is:", userId);
-    console.log("Teacher ID is:", teacherId);
     
     const updateOrCreateActivity = async (userId, message) => {
       if (!userId) {
@@ -419,7 +417,6 @@ The Admin Team
       }
     
       try {
-        console.log(`Checking existing activity for User ID: ${userId}`);
     
         const existingActivity = await activity.findOne({
           userId, 

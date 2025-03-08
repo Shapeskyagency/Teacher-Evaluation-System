@@ -358,19 +358,6 @@ function ClassroomWalkthrough() {
           </Button>
         </div>
 
-        {/* <Table
-          columns={columnsWithFilters}
-          dataSource={applyFilters(sortedForms)}
-          bordered
-          scroll={{
-            x: "max-content", // Makes the table horizontally scrollable for mobile
-          }}
-          pagination={{
-            pageSize: 5, // Limits rows per page for better mobile UX
-            responsive: true,
-          }}
-        /> */}
-
         <Table
           columns={columnsWithFilters}
           dataSource={applyFilters(sortedForms)}
