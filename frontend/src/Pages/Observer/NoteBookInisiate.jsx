@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { GetTeacherList } from '../../redux/userSlice';
 import { UserRole } from '../../config/config';
 import { createInitiate } from '../../redux/Form/noteBookSlice';
+import { CreateActivityApi } from '../../redux/Activity/activitySlice';
 
 const { Option } = Select;
 function NoteBookInisiate() {
@@ -46,6 +47,22 @@ function NoteBookInisiate() {
         const response = await dispatch(createInitiate(payload)).unwrap();
         if(response?.status){
           message.success(response?.message);
+
+          const activity = {
+                        observerMessage:`You have Initiated Notebook Checking Proforma Form.` ,
+                        teacherMessage:`${getUserId()?.name} has Initiated Notebook Checking Proforma Form.` ,
+                        route: `/notebook-checking-proforma/report/${response?.form?._id}`,
+                        date: new Date(),
+                        reciverId: payload?.teacherIDs,
+                        senderId: getUserId()?.id,
+                        fromNo: 3,
+                        data: response,
+                      };
+                    
+                      const activitiRecord = await dispatch(CreateActivityApi (activity));
+                      if (!activitiRecord?.payload?.success) {
+                        message.error("Error on Activity Record");
+                      }
           form.resetFields(); // Reset the form fields after submission
           navigate(`/notebook-checking-proforma`);
         }else{

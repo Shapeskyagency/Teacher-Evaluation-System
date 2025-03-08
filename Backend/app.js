@@ -10,6 +10,7 @@ const finalFormRoutes = require('./routes/finalFormRoutes');
 const ClassRoutes = require('./routes/ClassRoutes');
 const Weekly4Routes = require('./routes/Weekly4Routes');
 const activityRoutes = require('./routes/activityRoutes');
+const wingCoordinatorRoutes = require('./routes/wingCoordinatorRoutes');
 require('dotenv').config();
 const cors = require('cors')
 const app = express();
@@ -42,5 +43,6 @@ app.use('/api/wing-coordinator',finalFormRoutes)
 app.use('/api/class',ClassRoutes)
 app.use('/api', Weekly4Routes);
 app.use('/api/activity', activityRoutes);
+app.use('/api/wing-coordinator',wingCoordinatorRoutes)
 
 module.exports = app;

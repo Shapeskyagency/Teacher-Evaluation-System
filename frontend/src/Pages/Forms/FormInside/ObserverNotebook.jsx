@@ -15,9 +15,10 @@ import {
 } from "antd";
 import { Col, Container, Row, Table } from "react-bootstrap";
 import TextArea from "antd/es/input/TextArea";
-import { getAllTimes } from '../../../Utils/auth';
+import { getAllTimes, getUserId } from '../../../Utils/auth';
 import { BsEmojiFrown, BsEmojiNeutral, BsEmojiSmile } from 'react-icons/bs';
 import './css/Walkthrough.css'
+import { CreateActivityApi } from '../../../redux/Activity/activitySlice';
 function ObserverNotebook() {
 
   const dispatch = useDispatch();
@@ -239,6 +240,24 @@ function ObserverNotebook() {
     const response = await dispatch(ObserverNotebookComplete(payload));
     if (response?.payload?.message) {
       message.success(response?.payload?.message);
+
+       const userInfo = response?.payload?.data?.grenralDetails
+            const activity = {
+              observerMessage: `You have completed Notebook Checking Proforma Form For ${userInfo?.className} | ${userInfo?.Subject} | ${userInfo?.Section}.`,
+              teacherMessage: `${getUserId()?.name} has completed the Notebook Checking Proforma Form For ${userInfo?.className} | ${userInfo?.Subject} | ${userInfo?.Section}.`,
+              route: `/notebook-checking-proforma/report/${response?.payload?.data?._id}`,
+              date: new Date(),
+              reciverId: response?.payload?.data?.createdBy,
+              senderId: getUserId()?.id,
+              fromNo: 3,
+              data: response?.payload?.data
+            };
+      
+            const activitiRecord = await dispatch(CreateActivityApi(activity));
+            if (!activitiRecord?.payload?.success) {
+              message.error("Error on Activity Record");
+            }
+      
       navigate(`/notebook-checking-proforma/report/${FormId}`);
     } else {
       message.error(response?.payload?.message);

@@ -19,6 +19,7 @@ import { BsEmojiFrown, BsEmojiNeutral, BsEmojiSmile } from "react-icons/bs";
 import { CreateNoteBookForm, GetNoteBookForm } from "../../../redux/Form/noteBookSlice";
 import { getUserId } from "../../../Utils/auth";
 import { UserRole } from "../../../config/config";
+import { CreateActivityApi } from "../../../redux/Activity/activitySlice";
 
 
 
@@ -36,61 +37,61 @@ const NoteBookDetails = () => {
   const FormId = useParams()?.id
   const { loading, GetObserverLists } = useSelector((state) => state?.user);
   //   const {isLoading,formDataList} = useSelector((state)=>state?.walkThroughForm)
-// Fetch notebook form details
-const fetchNoteBookForm = async () => {
-  try {
-    const response = await dispatch(GetNoteBookForm(FormId));
-    const { isTeacherComplete, createdBy, isObserverComplete } = response?.payload;
-    const userId = getUserId().id;
-    const userAccess = getUserId().access;
+  // Fetch notebook form details
+  const fetchNoteBookForm = async () => {
+    try {
+      const response = await dispatch(GetNoteBookForm(FormId));
+      const { isTeacherComplete, createdBy, isObserverComplete } = response?.payload;
+      const userId = getUserId().id;
+      const userAccess = getUserId().access;
 
-    if (
-      (isTeacherComplete && createdBy?._id === userId && userAccess === UserRole[2]) ||
-      (isObserverComplete && createdBy?._id === userId && userAccess === UserRole[1])
-    ) {
-      navigate(`/notebook-checking-proforma/report/${FormId}`);
-    } else {
-      message.error("Something went wrong!");
+      if (
+        (isTeacherComplete && createdBy?._id === userId && userAccess === UserRole[2]) ||
+        (isObserverComplete && createdBy?._id === userId && userAccess === UserRole[1])
+      ) {
+        navigate(`/notebook-checking-proforma/report/${FormId}`);
+      } else {
+        message.error("Something went wrong!");
+      }
+    } catch (error) {
+      console.error("Error fetching notebook form:", error);
+      message.error("Failed to fetch notebook form details.");
     }
-  } catch (error) {
-    console.error("Error fetching notebook form:", error);
-    message.error("Failed to fetch notebook form details.");
-  }
-};
+  };
 
-// Fetch class and section data
-const fetchClassData = async () => {
-  try {
-    const response = await dispatch(getCreateClassSection());
-    if (response?.payload?.success) {
-      setNewData(
-        response?.payload?.classDetails.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        )
-      );
-    } else {
-      message.error("Failed to fetch class data.");
+  // Fetch class and section data
+  const fetchClassData = async () => {
+    try {
+      const response = await dispatch(getCreateClassSection());
+      if (response?.payload?.success) {
+        setNewData(
+          response?.payload?.classDetails.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          )
+        );
+      } else {
+        message.error("Failed to fetch class data.");
+      }
+    } catch (error) {
+      console.error("Error fetching class data:", error);
+      message.error("An error occurred while fetching class data.");
     }
-  } catch (error) {
-    console.error("Error fetching class data:", error);
-    message.error("An error occurred while fetching class data.");
-  }
-};
+  };
 
-useEffect(() => {
-  fetchClassData();
-  if (FormId) {
-    fetchNoteBookForm();
-  } else {
-    dispatch(GetObserverList());
-  }
-}, [dispatch, FormId]);
+  useEffect(() => {
+    fetchClassData();
+    if (FormId) {
+      fetchNoteBookForm();
+    } else {
+      dispatch(GetObserverList());
+    }
+  }, [dispatch, FormId]);
 
-const disableFutureDates = (current) => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return current && current.toDate() > today;
-};
+  const disableFutureDates = (current) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return current && current.toDate() > today;
+  };
 
   const steps = [
     { title: "General Details" },
@@ -255,7 +256,7 @@ const disableFutureDates = (current) => {
 
   const RadioFormItem = ({ name, question }) => {
     const [showRemark, setShowRemark] = useState(false);
- 
+
     return (
       <div>
         {/* Answer Field */}
@@ -292,14 +293,14 @@ const disableFutureDates = (current) => {
         </Form.Item>
 
         {/* Remark Field */}
-          <Form.Item
+        <Form.Item
           hidden={!showRemark}
-            name={[...name, "remark"]}
-            rules={[{ required: false }]}
-            style={{ marginTop: "1rem" }}
-          >
-            <Input.TextArea rows={3} placeholder="Add your remark here" />
-          </Form.Item>
+          name={[...name, "remark"]}
+          rules={[{ required: false }]}
+          style={{ marginTop: "1rem" }}
+        >
+          <Input.TextArea rows={3} placeholder="Add your remark here" />
+        </Form.Item>
       </div>
     );
   };
@@ -429,22 +430,39 @@ const disableFutureDates = (current) => {
     const data = await dispatch(CreateNoteBookForm(finalData))
     if (data?.payload?.status) {
       message.success(data?.payload?.message);
+      const userInfo = data?.payload?.form?.grenralDetails
+      const activity = {
+        observerMessage: `${getUserId()?.name} has completed the Notebook Checking Proforma Form For ${userInfo?.className} | ${userInfo?.Subject} | ${userInfo?.Section}.`,
+        teacherMessage: `You have completed Notebook Checking Proforma Form For ${userInfo?.className} | ${userInfo?.Subject} | ${userInfo?.Section}..`,
+        route: `/notebook-checking-proforma/report/${data?.payload?.form?._id}`,
+        date: new Date(),
+        reciverId: userInfo?.NameofObserver,
+        senderId: getUserId()?.id,
+        fromNo: 3,
+        data: data?.payload?.form
+      };
+
+      const activitiRecord = await dispatch(CreateActivityApi(activity));
+      if (!activitiRecord?.payload?.success) {
+        message.error("Error on Activity Record");
+      }
+
       navigate(`/notebook-checking-proforma/report/${data?.payload?.form?._id}`)
     } else {
       message.success(data?.payload?.message);
     }
   };
 
- 
+
   const [totalScore, setTotalScore] = useState(0);
   const [numOfParameters, setNumOfParameters] = useState(0);
   const [percentageScore, setPercentageScore] = useState(0);
   const [getOutOfScore, setGetOutOfScore] = useState(0);
   const [grade, setGrade] = useState("");
 
-  const validValues = ["1", "2", "3"]; 
+  const validValues = ["1", "2", "3"];
   const calculateSelfAssessmentScore = () => {
-    
+
 
     // // Array of keys to iterate over
     const keyObject = [
@@ -459,18 +477,18 @@ const disableFutureDates = (current) => {
     let totalScore = 0; // Total points scored
     let outOfScore = 0; // Maximum possible score based on valid answers
     let numOfParametersNA = 0; // Counter for "N/A" answers
-  
+
     keyObject.forEach((section) => {
       if (formValues[section]) {
         formValues[section].forEach((item) => {
           const answer = item?.answer;
-  
+
           // Only consider valid answers for both totalScore and outOfScore
           if (validValues?.includes(answer)) {
             totalScore += parseInt(answer, 10); // Accumulate score
             outOfScore += 3; // Increment max score (4 points per question)
           }
-  
+
           // Count "N/A" answers
           if (["N/A", "NA", "N"].includes(answer)) {
             numOfParametersNA++; // Increment the count for "N/A"
@@ -478,28 +496,28 @@ const disableFutureDates = (current) => {
         });
       }
     });
-  
+
     setTotalScore(totalScore); // Set total score
     setGetOutOfScore(outOfScore); // Set maximum possible score
     setNumOfParameters(numOfParametersNA); // Update state with total "N/A" answers
-  
+
     // Calculate percentage
     const percentage = outOfScore > 0 ? (totalScore / outOfScore) * 100 : 0;
     setPercentageScore(parseFloat(percentage.toFixed(2))); // Set percentage
-  
+
     // Determine grade
     const grade =
       percentage >= 90
         ? "A"
         : percentage >= 80
-        ? "B"
-        : percentage >= 70
-        ? "C"
-        : percentage >= 60
-        ? "D"
-        : "F";
+          ? "B"
+          : percentage >= 70
+            ? "C"
+            : percentage >= 60
+              ? "D"
+              : "F";
     setGrade(grade); // Set grade
-  
+
     // Update form values
     form.setFieldsValue({
       totalScores: totalScore,
@@ -508,13 +526,13 @@ const disableFutureDates = (current) => {
       Grade: grade,
       NumberofParametersNotApplicable: numOfParametersNA, // Add the N/A count
     });
-  
+
 
   };
-const getPercentafe =(get, from)=>{
- const numberVal = get / from * 100;
- return numberVal || '0'
-}
+  const getPercentafe = (get, from) => {
+    const numberVal = get / from * 100;
+    return numberVal || '0'
+  }
 
   return (
     <div className="container">
@@ -557,10 +575,10 @@ const getPercentafe =(get, from)=>{
                     <h6>Precentage {getPercentafe(assessmentScore,outOfScore)}%</h6> */}
 
                     <h5>Total Score: {totalScore}</h5>
-          <h5>Out of: {getOutOfScore}</h5>
-          <h5>Percentage: {percentageScore}%</h5>
-          <h5>Grade: {grade}</h5>
-          <h5>Number Of Parameters: {numOfParameters}</h5>
+                    <h5>Out of: {getOutOfScore}</h5>
+                    <h5>Percentage: {percentageScore}%</h5>
+                    <h5>Grade: {grade}</h5>
+                    <h5>Number Of Parameters: {numOfParameters}</h5>
                   </Card>
                 </Col>
 

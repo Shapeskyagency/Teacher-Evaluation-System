@@ -48,6 +48,7 @@ import NotebookComplete from "../Pages/Teachers/NotebookComplete";
 import TextBox from "../Pages/TextBox";
 import AdminReport from "../Pages/Admin/AdminReport";
 import ObserverReports from "../Pages/Observer/ObserverReports"
+import OB_Wing from "../Pages/Observer/Form/wing-coordinator/OB_Wing";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken() : null;
@@ -129,8 +130,6 @@ const protects = {
         { path: "/classroom-walkthrough/report/:id", element: <ClassroomWalkthroughReader /> },
         { path: '/notebook-checking-proforma', element: <Notebook /> },
         { path: '/notebook-checking-proforma/create/:id', element: <ObserverNotebook /> },
-        { path: "/wing-coordinator", element: <WingCoordinator /> },
-        { path: "/wing-coordinator/create", element: <FinalReport /> },
         { path: "/fortnightly-monitor/form-initiation", element: <FortnightlyMonitorInitiation /> },
         { path: '/fortnightly-monitor/edit/:id', element: <OB_FortnightlyMonitorEdit /> },
         { path: "/classroom-walkthrough/edit/:id", element: <OB_WalkthroughEdit /> },
@@ -141,6 +140,8 @@ const protects = {
         { path: "/weekly4form/create", element: <Weely4Form /> },
         { path: "/weekly4form/edit/:id", element: <Weely4Form /> },
         { path: "/weekly4form/report/:id", element: <Weekly4FormReport /> },
+        {path:"/wing-coordinator",element:<WingCoordinator/>},
+        {path:"/wing-coordinator/create",element:<OB_Wing/>},
         { path: "*", element: <NotFound404 /> },
 
       ],

@@ -13,29 +13,50 @@ const TeacherDashboard = () => {
   const dispatch = useDispatch();
   const [FromOne, setFromOne] = useState('');
   const [FromTwo, setFromTwo] = useState('');
+  const [FromThree, setFromThree] = useState('');
+  const [FromFour, setFromFour] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const [stats, setStats] = useState([]);
     const [stateLoading, setStateLoading] = useState(false);
   const UserId = getUserId()?.id;
   useEffect(() => {
-    const payload = {
-      id: UserId,
-      fromNo: 1,
-    }
-    const payload2 = {
-      id: UserId,
-      fromNo: 2,
-    }
-    dispatch(getRecentActivities());
-      dispatch(getSingleActivityApi(payload)).unwrap().then((res) => {
-        setFromOne(res?.activities);
-      });
-      //
-      //  
-      dispatch(getSingleActivityApi(payload2)).unwrap().then((res) => {
-        setFromTwo(res?.activities);
-      }
-      );
-
+        const payload = {
+          id: UserId,
+          fromNo: 1,
+        }
+        const payload2 = {
+          id: UserId,
+          fromNo: 2,
+        }
+        const payload3 = {
+          id: UserId,
+          fromNo: 3,
+        }
+        const payload4 = {
+          id: UserId,
+          fromNo: 4,
+        }
+        setIsLoading(true);
+        dispatch(getRecentActivities());
+        dispatch(getSingleActivityApi(payload)).unwrap().then((res) => {
+          setFromOne(res?.activities);
+          setIsLoading(false);
+        });
+        //
+        //  
+        dispatch(getSingleActivityApi(payload2)).unwrap().then((res) => {
+          setFromTwo(res?.activities);
+          setIsLoading(false);
+      })
+      dispatch(getSingleActivityApi(payload3)).unwrap().then((res) => {
+        setFromThree(res?.activities);
+        setIsLoading(false);
+    })
+    dispatch(getSingleActivityApi(payload4)).unwrap().then((res) => {
+      setFromFour(res?.activities);
+      setIsLoading(false);
+  })
+  
       GetDashbardData();
   }, [dispatch]);
 
@@ -60,6 +81,8 @@ const TeacherDashboard = () => {
 
   const recentEntry = recentEntrySort(FromOne);
   const recentEntry2 = recentEntrySort(FromTwo);
+  const recentEntry3 =  recentEntrySort(FromThree);
+  const recentEntry4 = recentEntrySort(FromFour);
   return (
     <div className="flex min-h-screen ">
       <div className="flex-1 flex flex-col">
@@ -115,7 +138,89 @@ const TeacherDashboard = () => {
                     </div>
                   </div>
                 </div>
-       
+       {/* Form 2 */}
+               <div className="p-4 hover:bg-gray-50">
+                     <div className="flex  items-center justify-between mb-1">
+                       <div className="flex items-center gap-2">
+                         <span className="bg-orange-50 text-orange-600 text-sm font-medium px-2 py-1 rounded">
+                         Classroom Walkthrough
+                         </span>
+                         <span className="text-sm text-gray-500">
+                           {recentEntry2?.createdAt === recentEntry2?.updatedAt && (
+                             <>
+                               Created At:{" "}
+                               {recentEntry2?.createdAt ? new Date(recentEntry2?.createdAt).toLocaleString() : "No Recent Activity"}
+                             </>
+                           ) }
+                         </span>
+                       </div>
+                      
+                     </div>
+                     <div className="flex items-center justify-between">
+                     <div className="w-full">
+                     <span className="text-gray-700 w-full">
+                           {isLoading ? <Skeleton  /> :
+                        recentEntry2?.teacherMessage || "No Recent Activity" }
+                         </span>
+                       </div>
+                     </div>
+                   </div>
+
+                      {/* Form 2 */}
+               <div className="p-4 hover:bg-gray-50">
+                     <div className="flex  items-center justify-between mb-1">
+                       <div className="flex items-center gap-2">
+                         <span className="bg-blue-50 text-blue-600 text-sm font-medium px-2 py-1 rounded">
+                         NoteBook Checking Proforma
+                         </span>
+                         <span className="text-sm text-gray-500">
+                           {recentEntry3?.createdAt === recentEntry3?.updatedAt && (
+                             <>
+                               Created At:{" "}
+                               {recentEntry3?.createdAt ? new Date(recentEntry3?.createdAt).toLocaleString() : "No Recent Activity"}
+                             </>
+                           ) }
+                         </span>
+                       </div>
+                      
+                     </div>
+                     <div className="flex items-center justify-between">
+                     <div className="w-full">
+                     <span className="text-gray-700 w-full">
+                           {isLoading ? <Skeleton  /> :
+                        recentEntry3?.teacherMessage || "No Recent Activity" }
+                         </span>
+                       </div>
+                     </div>
+                   </div>
+
+                      {/* Form 4 */}
+                           <div className="p-4 hover:bg-gray-50">
+                                 <div className="flex  items-center justify-between mb-1">
+                                   <div className="flex items-center gap-2">
+                                     <span className="bg-amber-50 text-amber-600 text-sm font-medium px-2 py-1 rounded">
+                                     Learning progress checklist 
+                                     </span>
+                                     <span className="text-sm text-gray-500">
+                                       {recentEntry4?.createdAt === recentEntry4?.updatedAt && (
+                                         <>
+                                           Created At:{" "}
+                                           {recentEntry4?.createdAt ? new Date(recentEntry4?.createdAt).toLocaleString() : "No Recent Activity"}
+                                         </>
+                                       ) }
+                                     </span>
+                                   </div>
+                                  
+                                 </div>
+                                 <div className="flex items-center justify-between">
+                                 <div className="w-full">
+                                 <span className="text-gray-700 w-full">
+                                       {isLoading ? <Skeleton  /> :
+                                    recentEntry4?.teacherMessage || "No Recent Activity" }
+                                     </span>
+                                   </div>
+                                 </div>
+                               </div>
           </div>
         </div>
       </div>

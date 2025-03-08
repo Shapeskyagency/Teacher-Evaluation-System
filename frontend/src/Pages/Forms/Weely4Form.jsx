@@ -15,6 +15,7 @@ import "./Weekly4Form.css"; // Import custom CSS for animation
 import { UserRole } from "../../config/config";
 import TextArea from "antd/es/input/TextArea";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { CreateActivityApi } from "../../redux/Activity/activitySlice";
 
 function Weekly4Form() {
   const [isInitiate, setIsInitiate] = useState(false);
@@ -152,28 +153,28 @@ function Weekly4Form() {
                       </Col>
 
                       <Col xs={12} md={4}>
-  <Form.Item
-    {...restField}
-    name={[name, "answer"]}
-    fieldKey={[fieldKey, "answer"]}
-    rules={[
-      {
-        required: true,
-        message: "Please select an answer",
-      },
-    ]}
-  >
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-      <Radio.Group
-        size="middle"
-        options={yesNoNAOptions}
-        optionType="button"
-        buttonStyle="solid"
-      />
-      <MinusCircleOutlined style={{ marginLeft: "5px", cursor: "pointer" }} onClick={() => remove(name)} />
-    </div>
-  </Form.Item>
-</Col>
+                        <Form.Item
+                          {...restField}
+                          name={[name, "answer"]}
+                          fieldKey={[fieldKey, "answer"]}
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please select an answer",
+                            },
+                          ]}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                            <Radio.Group
+                              size="middle"
+                              options={yesNoNAOptions}
+                              optionType="button"
+                              buttonStyle="solid"
+                            />
+                            <MinusCircleOutlined style={{ marginLeft: "5px", cursor: "pointer" }} onClick={() => remove(name)} />
+                          </div>
+                        </Form.Item>
+                      </Col>
 
                     </Row>
                   ))}
@@ -294,7 +295,23 @@ function Weekly4Form() {
         };
 
         const res = await dispatch(initiateFromObserver(payload));
-        if (res.payload.success) {
+        if (res?.payload?.success) {
+          const userInfo=res?.payload?.data[0]?.teacherId
+          const activity = {
+            observerMessage: `You have Initiated the Learning Progress Checklist.`,
+            teacherMessage: `${getUserId()?.name} has Initiated the Learning Progress Checklist.`,
+            route: `/weekly4form/create/${res?.payload?.data[0]?._id}`,
+            date: new Date(),
+            reciverId: userInfo,
+            senderId: getUserId()?.id,
+            fromNo: 4,
+            data: res?.payload?.data
+          };
+
+          const activitiRecord = await dispatch(CreateActivityApi(activity));
+          if (!activitiRecord?.payload?.success) {
+            message.error("Error on Activity Record");
+          }
           setThankYou(true);
           setTimeout(() => (window.location.href = "/weekly4form"), 3000);
         } else {
@@ -314,6 +331,24 @@ function Weekly4Form() {
 
         const res = await dispatch(initiateFromObserver(payload));
         if (res.payload.success) {
+
+          const userInfo=res?.payload?.data?.isInitiated?.Observer
+          const activity = {
+            observerMessage: `You have complete the Learning Progress Checklist.`,
+            teacherMessage: `${getUserId()?.name} has been complete the Learning Progress Checklist.`,
+            route: `/weekly4form/report/${res?.payload?.data?._id}`,
+            date: new Date(),
+            reciverId: userInfo,
+            senderId: getUserId()?.id,
+            fromNo: 4,
+            data: res?.payload?.data
+          };
+
+          const activitiRecord = await dispatch(CreateActivityApi(activity));
+          if (!activitiRecord?.payload?.success) {
+            message.error("Error on Activity Record");
+          }
+
           setThankYou(true);
           setTimeout(() => (window.location.href = "/weekly4form"), 1000);
         } else {
@@ -332,7 +367,25 @@ function Weekly4Form() {
 
         const res = await dispatch(UpdateFromObserver(payload));
         if (res?.payload?.isCompleted) {
-          window.location.href = "/weekly4form";
+
+          const userInfo=res?.payload?.isInitiated?.Observer?._id
+          const activity = {
+            observerMessage: `${getUserId()?.name} has been completed your initiated Learning Progress Checklist Form.`,
+            teacherMessage: `You have complete the Learning Progress Checklist initiated by ${res?.payload?.isInitiated?.Observer?.name}.`,
+            route: `/weekly4form/report/${res?.payload?._id}`,
+            date: new Date(),
+            reciverId: userInfo,
+            senderId: getUserId()?.id,
+            fromNo: 4,
+            data: res?.payload
+          };
+
+          const activitiRecord = await dispatch(CreateActivityApi(activity));
+          if (!activitiRecord?.payload?.success) {
+            message.error("Error on Activity Record");
+          }
+
+          window.location.href = "/weekly4form"; 
         } else {
           message.error("Something went wrong!");
         }

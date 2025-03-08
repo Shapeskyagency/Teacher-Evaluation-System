@@ -1,9 +1,9 @@
-import { PlusCircleFilled, PlusCircleOutlined } from "@ant-design/icons";
+import {  PlusCircleOutlined } from "@ant-design/icons";
 import { Button, DatePicker, Select, Table, Tag } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { UserRole } from "../../config/config";
-import { getAllTimes, getUserId } from "../../Utils/auth";
+import { getUserId } from "../../Utils/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllWeeklyFrom } from "../../redux/userSlice";
 import moment from "moment";
@@ -28,7 +28,6 @@ function Weely4Page() {
     dispatch(getAllWeeklyFrom());
   }, [dispatch]);
   const handleSendReminder = (id) => {
-    console.log(`Sending reminder for ID: ${id}`);
     // Add logic to send the reminder (e.g., API call)
   };
 
@@ -75,10 +74,14 @@ function Weely4Page() {
   });
   return (
     <div>
-      <div className="container py-4">
+      <div className="container py-0 px-0">
         {UserRole[1] === getUserId()?.access && (
           <Link to="/weekly4form/create?Initiate=true">
-            <Button
+            <button    style={{borderRadius:5}}
+           className="mb-3 bg-[#1a4d2e] p-3 text-white py-2 ">
+              <PlusCircleOutlined /> Form Initiation
+            </button>
+            {/* <Button
               className="mb-4"
               variant="solid"
               color="primary"
@@ -87,12 +90,16 @@ function Weely4Page() {
               {" "}
               <PlusCircleOutlined />
               Form Initiation
-            </Button>
+            </Button> */}
           </Link>
         )}
         {UserRole[2] === getUserId()?.access && (
           <Link to="/weekly4form/create">
-            <Button
+            <button  style={{borderRadius:5}}
+           className="mb-3 bg-[#1a4d2e] p-3 text-white py-2 ">
+              <PlusCircleOutlined /> Fill New Form
+            </button>
+            {/* <Button
               className="mb-4"
               variant="solid"
               color="primary"
@@ -100,7 +107,7 @@ function Weely4Page() {
             >
               {" "}
               <PlusCircleOutlined /> New Form
-            </Button>
+            </Button> */}
           </Link>
         )}
 

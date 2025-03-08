@@ -40,6 +40,6 @@ const NotebookCheckingProforma = new Schema({
     isReflation:{type:Boolean, default:false},
     teacherReflationFeedback:{type:String, default:null}
 
-})
+}, { timestamps: true })
 const Form3 = mongoose.model('Form3',  NotebookCheckingProforma);
 module.exports = Form3;

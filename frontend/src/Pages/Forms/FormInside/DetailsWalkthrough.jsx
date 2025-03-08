@@ -9,6 +9,7 @@ import { getCreateClassSection, GetTeacherList } from "../../../redux/userSlice"
 import { getUserId } from "../../../Utils/auth";
 import "./DetailsWalkthrough.css";
 import { max } from "moment";
+import { CreateActivityApi } from "../../../redux/Activity/activitySlice";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -429,11 +430,30 @@ const handleSubmit = async (data) => {
 
   const response = await dispatch(CreateWalkThrough(submissionData));
   if (response?.payload?.status) {
-    message.success(response?.payload?.message);
-    navigate(`/classroom-walkthrough/report/${response?.payload?.form?._id}`);
-  } else {
-    message.error(response?.payload?.message);
-  }
+    const receiverId = response?.payload?.form?.grenralDetails?.NameoftheVisitingTeacher || response?.payload?.form?.teacherID;
+    const BasicData = response?.payload?.form?.grenralDetails
+    const observerMessage = `You have completed the walkthrough form for ${BasicData?.className} | ${BasicData?.Section} | ${BasicData?.Subject}.`;
+    const teacherMessage = `A new walkthrough form has been completed by ${getUserId()?.name} for ${BasicData?.className} | ${BasicData?.Section} | ${BasicData?.Subject}.`;
+    const activity = {
+              observerMessage,
+              teacherMessage,
+              route: `/classroom-walkthrough/report/${response?.payload?.form?._id}`,
+              date: new Date(),
+              reciverId: receiverId,
+              senderId: getUserId()?.id,
+              fromNo: 2,
+              data: response?.payload,
+            };
+          
+            const activitiRecord = await dispatch(CreateActivityApi(activity));
+            if (!activitiRecord?.payload?.success) {
+              message.error("Error on Activity Record");
+            }
+            message.success(response?.payload?.message);
+            navigate(`/classroom-walkthrough/report/${response?.payload?.form?._id}`);
+          } else {
+            throw new Error(response.payload.message || "Error submitting the form.");
+          }
 };
 
 const calculateScoreFromData = (data) => {

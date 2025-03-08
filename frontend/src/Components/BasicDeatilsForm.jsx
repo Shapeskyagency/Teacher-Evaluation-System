@@ -94,25 +94,6 @@ function BasicDetailsForm() {
       const response = await dispatch(CreateFormOne(payload)).unwrap();
       message.success(response?.message);
 
-//       // Activity Record
-//  const activity ={
-//            observerMessage:`${getUserId().name} has Been Competed Fortnightly Monitor Form for ${response?.className} ${response?.section}`,
-//            teacherMessage:`You have Competed Fortnightly Monitor Form for ${response?.className} ${response?.section}`,
-//            route:"/fortnightly-monitor/report/"+response?.form?._id, 
-//            date: new Date(),
-//            reciverId:values?.coordinatorID  || "",
-//            senderId: getUserId().id,
-//            fromNo: 1,
-//            data: response
-//          }
-//          const activitiRecord = await dispatch(CreateActivityApi(activity))
-        
-//          if(activitiRecord?.payload?.success){
-//            // message.success(activitiRecord.payload.message);
-//          }else{
-//            message.error("Error On Activity Record");
-//          }
-
   
       form.resetFields(); // Reset the form fields after submission
       navigate(`/fortnightly-monitor/create/${response?.form?._id}`);

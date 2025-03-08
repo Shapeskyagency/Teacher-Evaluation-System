@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { Button, Card, Spin, Table, Tag } from "antd";
+import { Button, Card, message, Spin, Table, Tag } from "antd";
 import { Container, Row, Col } from "react-bootstrap";
 import Logo from "../Reports/Imgs/Logo.png";
 import LogoBanner from "../Reports/Imgs/image.png";
 import { GetNoteBookForm, updateTeacherReflationFeedback } from "../../redux/Form/noteBookSlice";
-import { getAllTimes } from "../../Utils/auth";
+import { getAllTimes, getUserId } from "../../Utils/auth";
 import { useNavigate } from "react-router-dom";
+import { CreateActivityApi } from "../../redux/Activity/activitySlice";
 
 const TableCard = React.memo(({ title, dataSource }) => (
   <Card title={title} className="mt-4">
@@ -71,25 +72,30 @@ function NotebookComplete() {
     }
   }, [formDataList]);
 
-//   const handleSubmit = useCallback(() => {
-//     if (Id && inputValue.trim()) {
-//       dispatch(updateTeacherReflationFeedback({ id: Id, data: { reflation: inputValue } }))
-//         .unwrap()
-//         .then(() => {
-//           console.log("Reflation updated successfully!");
-//         })
-//         .catch((error) => {
-//           console.error("Error updating teacher reflation feedback:", error);
-//         });
-//     }
-//   }, [Id, inputValue, dispatch]);
+
 const navigate = useNavigate();
-const handleSubmit = () => {
+const handleSubmit =  () => {
     if (Id && inputValue.trim()) {
       dispatch(updateTeacherReflationFeedback({ id: Id, data: { reflation: inputValue } }))
-        .then((res) => {
+        .then(async(res)  => {
           if (res?.payload?.success) {
-            console.log("Reflation updated successfully!");
+            const userInfo = res?.payload?.form?.grenralDetails
+            const activity = {
+              observerMessage: `${getUserId()?.name} has completed the Notebook Checking Proforma Reflection Feedback For ${userInfo?.className} | ${userInfo?.Subject} | ${userInfo?.Section}.`,
+              teacherMessage: `You have completed the Notebook Checking Proforma Reflection Feedback For ${userInfo?.className} | ${userInfo?.Subject} | ${userInfo?.Section}.`,
+              route: `/notebook-checking-proforma/report/${res?.payload?.form?._id}`,
+              date: new Date(),
+              reciverId: userInfo?.NameofObserver,
+              senderId: getUserId()?.id,
+              fromNo: 3,
+              data: res?.payload?.form
+            };
+      
+            const activitiRecord = await dispatch(CreateActivityApi(activity));
+            if (!activitiRecord?.payload?.success) {
+              message.error("Error on Activity Record");
+            }
+
             navigate(`/notebook-checking-proforma/report/${Id}`);
           } else {
             console.log("Unexpected response:", res);
