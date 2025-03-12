@@ -9,6 +9,8 @@ const WingCoordinator = new Schema({
     form3:{type:Array},
     form4:{type:Array},
     userId:{ type: Schema.Types.ObjectId, ref: 'User',require:true },
+    isComplete:{type:Boolean},
+    isDraft:{type:Boolean}
 }, { timestamps: true });
 
 module.exports = mongoose.model('WingCoordinator', WingCoordinator);
