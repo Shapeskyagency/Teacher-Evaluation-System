@@ -102,7 +102,7 @@ const handleSubmit =  () => {
           }
         })
         .catch((error) => {
-          console.error("Error updating teacher reflation feedback:", error);
+          console.error("Error updating teacher Reflection feedback:", error);
         });
     }
   };
@@ -243,12 +243,12 @@ const handleSubmit =  () => {
         </Row>
         <Row className="mt-4">
           <Col md={8} className="justify-content-start align-items-start">
-            <h5 className="mb-3">Teacher Reflation</h5>
+            <h5 className="mb-3">Teacher Reflection</h5>
             <textarea
               name="reflation"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Enter your thoughts or reflation"
+              placeholder="Enter your thoughts or Reflection"
               className="form-control w-75"
               rows={5}
               style={{ resize: "none" }}

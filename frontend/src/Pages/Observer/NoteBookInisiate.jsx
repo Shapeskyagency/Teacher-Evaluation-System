@@ -70,7 +70,7 @@ function NoteBookInisiate() {
         }
        
       } catch (error) {
-        message.error("Error creating Nootbook Checking");
+        message.error("Error creating Notebook Checking");
         console.error(error);
       } finally {
         setLoading(false);

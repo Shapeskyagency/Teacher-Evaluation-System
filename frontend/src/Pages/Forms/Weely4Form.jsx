@@ -477,7 +477,7 @@ function Weekly4Form() {
                     "I have completed last week's plan.",
                     "I have uploaded experiential/active Lesson Plan for the next week that includes triggers/visual or auditory stimulus.",
                     "My last corrected work is not beyond a fortnight.",
-                    "Names of Detained Students with Class.",
+                    "Name of L.O.W. Students with Class & Section.",
                     "Name of I Care Forms filled along with reason",
                   ],
                   "FormData"

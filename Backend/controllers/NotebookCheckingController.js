@@ -77,7 +77,7 @@ exports.createForm = async (req, res) => {
     const savedForm = await newForm.save();
 
     const notification = await createNotification({
-      title: "You are invited to fill the Nootbook Checking",
+      title: "You are invited to fill the Notebook Checking",
       route: `notebook-checking-proforma/create/${savedForm._id}`,
       reciverId: NameofObserver,
     });
