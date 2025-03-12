@@ -143,11 +143,25 @@ export const UserLogin = createAsyncThunk('UserLogin',async (payload) => {
     return response.data;
   })
 
-  export const GetWingFrom = createAsyncThunk('createWingForm',async (payload) => {
+  export const updateWingForm = createAsyncThunk('updateWingForm',async (payload) => {
+    const response = await axiosInstanceToken.put(`/wing-coordinator/${payload?.id}`,payload?.checkdata);
+    return response.data;
+  })
+  export const GetWingFrom = createAsyncThunk('GetWingFrom',async (payload) => {
     const response = await axiosInstanceToken.get(`/wing-coordinator/${payload}`);
     return response.data;
   })
 
+  export const GetSingleWingFrom = createAsyncThunk('GetSingleWingFrom',async (payload) => {
+    const response = await axiosInstanceToken.get(`/wing-coordinator/single/${payload}`);
+    return response.data;
+  })
+
+  
+  export const WingPublished = createAsyncThunk('WingPublished',async (payload) => {
+    const response = await axiosInstanceToken.put(`/wing-coordinator/status/${payload?.id}`,payload?.checkdata);
+    return response.data;
+  })
 
 const userSlice = createSlice({
   name: 'Users',

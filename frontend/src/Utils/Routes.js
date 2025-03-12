@@ -141,7 +141,7 @@ const protects = {
         { path: "/weekly4form/edit/:id", element: <Weely4Form /> },
         { path: "/weekly4form/report/:id", element: <Weekly4FormReport /> },
         {path:"/wing-coordinator",element:<WingCoordinator/>},
-        {path:"/wing-coordinator/create",element:<OB_Wing/>},
+        {path:"/wing-coordinator/:id",element:<OB_Wing/>},
         { path: "*", element: <NotFound404 /> },
 
       ],
