@@ -36,6 +36,8 @@ const getSingleWingCoordinatorById = async (req, res) => {
     }
 };
 
+
+
 const getWingCoordinatorById = async (req, res) => {
     try {
         const wing = await WingCoordinator.find({userId:req.params.id}).populate("userId","-password -coordinator -designation -email -updatedAt -__v");

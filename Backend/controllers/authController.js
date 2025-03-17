@@ -118,25 +118,38 @@ const changePassword = async (req, res) => {
 };
 
 const FromCount = async (req, res) => {
+    const user = req?.user?.id
     try {
         // Use await to ensure proper execution of asynchronous queries
         // Use $or to check if any of the specified fields are false
-        const formTotalOneCount = await Form1.countDocuments({});
-        const formTotalTwoCount = await Form2.countDocuments({});
-        const formTotalThreeCount = await Form3.countDocuments({});
-        const formTotalFourCount = await Weekly4Form.countDocuments({});
+        const formTotalOneCount = await Form1.countDocuments({$or:[{coordinatorID:user},{teacherID:user},{userId:user}]});
+        const formTotalTwoCount = await Form2.countDocuments({$or:[{teacherID:user},{'grenralDetails.NameoftheVisitingTeacher':user},{createdBy:user}]});
+        const formTotalThreeCount = await Form3.countDocuments({$or:[{teacherID:user},{'grenralDetails.NameofObserver':user},{createdBy:user}]});
+        const formTotalFourCount = await Weekly4Form.countDocuments({$or:[{teacherId:user},{userId:user},{coordinatorID:user}]});
         const formOneCount = await Form1.countDocuments({
-            $or: [{ isTeacherComplete: false }, { isCoordinatorComplete: false }]
+            $and: [
+                { $or: [{ coordinatorID: user }, { teacherID: user }, { userId: user }] },
+                { $or: [{ isTeacherComplete: false }, { isCoordinatorComplete: false }] }
+            ]
         });
 
         const formTwoCount = await Form2.countDocuments({
-            $or: [{ isTeacherCompletes: false }, { isObserverCompleted: false }]
+            $and: [
+                { $or: [{ teacherID: user }, { 'grenralDetails.NameoftheVisitingTeacher': user }, { createdBy: user }] },
+                { $or: [{ isTeacherCompletes: false }, { isObserverCompleted: false }] }
+            ]
         });
 
         const formThreeCount = await Form3.countDocuments({
-            $or: [{ isTeacherComplete: false }, { isObserverComplete: false }]
+            $and:[
+                {$or:[{teacherID:user},{'grenralDetails.NameofObserver':user},{createdBy:user}]},
+            {$or: [{ isTeacherComplete: false }, { isObserverComplete: false }]}
+            ]
         });
-        const formFourCount = await Weekly4Form.countDocuments({isCompleted: false});
+        const formFourCount = await Weekly4Form.countDocuments({
+                $or:[{teacherId:user},{userId:user},{coordinatorID:user}],
+                isCompleted: false
+            });
 
         const payload = [
             {
@@ -184,43 +197,42 @@ const getFillterForms = async (req, res) => {
         const userId = req.user.id;
         const { range, className } = req.body;
 
-        if (!range || range.length !== 2 || !className) {
+        if (!range || range.length !== 2 || !Array.isArray(className) || className.length === 0) {
             return res.status(400).json({ message: "Invalid request parameters" });
         }
 
         const [fromDate, toDate] = range;
-        
 
         // Convert to Date objects
         const from = new Date(fromDate);
         const to = new Date(toDate);
         to.setHours(23, 59, 59, 999); // Ensure we include the entire 'to' day
-        
+
         // Fetch filtered forms
         const form1 = await Form1.find({
-            className: className,
+            className: { $in: className }, // ✅ Use `$in` for array filtering
             createdAt: { $gte: from, $lte: to },
-            isTeacherComplete:true,
-            isCoordinator:true,
+            isTeacherComplete: true,
+            isCoordinator: true,
             $or: [{ coordinatorID: userId }, { userId: userId }]
-        }).populate("userId teacherID","-password -mobile -employeeId")
+        }).populate("userId teacherID", "-password -mobile -employeeId");
 
         const form2 = await Form2.find({
-            "grenralDetails.className": className,  // Ensure "grenralDetails" is the correct field name
+            "grenralDetails.className": { $in: className }, // ✅ Use `$in`
             createdAt: { $gte: from, $lte: to },
             createdBy: userId,
-            isTeacherCompletes:true,
-            isObserverCompleted:true,
-        }).populate("grenralDetails.NameoftheVisitingTeacher createdBy","-password -mobile -employeeId")
+            isTeacherCompletes: true,
+            isObserverCompleted: true,
+        }).populate("grenralDetails.NameoftheVisitingTeacher createdBy", "-password -mobile -employeeId");
 
         const form3 = await Form3.find({
-            "grenralDetails.className": className, 
+            "grenralDetails.className": { $in: className }, // ✅ Use `$in`
             createdAt: { $gte: from, $lte: to },
-            isTeacherComplete:true,
-            isObserverComplete:true,
-            isReflation:true,
-            $or: [{ 'grenralDetails.NameofObserver': userId },{ createdBy: userId }]
-        }).populate("teacherID createdBy","-password -mobile -employeeId")
+            isTeacherComplete: true,
+            isObserverComplete: true,
+            isReflation: true,
+            $or: [{ 'grenralDetails.NameofObserver': userId }, { createdBy: userId }]
+        }).populate("teacherID createdBy", "-password -mobile -employeeId");
 
         const form4 = await Weekly4Form.find({
             createdAt: { $gte: from, $lte: to },
@@ -228,8 +240,8 @@ const getFillterForms = async (req, res) => {
         });
 
         res.json({
-             form1,
-             form2,
+            form1,
+            form2,
             form3,
             // form4
         });

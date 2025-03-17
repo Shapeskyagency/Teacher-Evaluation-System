@@ -87,3 +87,7 @@ color: #0b5ed7 !important;
   margin-right: 0;
 }
 }
+.ant-card-body
+{
+  width: 100%;
+}

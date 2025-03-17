@@ -100,6 +100,7 @@ function Fillter_Wing({ saveData, data }) {
                             ]}
                         >
                             <Select
+                            mode='multiple'
                                 placeholder="Choose Class"
                                 options={newData?.map((item) => ({
                                     key: item._id,
