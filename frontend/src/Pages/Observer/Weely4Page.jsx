@@ -3,7 +3,7 @@ import { Button, DatePicker, Select, Table, Tag } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { UserRole } from "../../config/config";
-import { getUserId } from "../../Utils/auth";
+import { getAllTimes, getUserId } from "../../Utils/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllWeeklyFrom } from "../../redux/userSlice";
 import moment from "moment";
@@ -199,7 +199,7 @@ function Weely4Page() {
               sorter: (a, b) => new Date(a) - new Date(b?.dateOfSubmission),
               render: (date) => (
                 <span>
-                  {date ? new Date(date).toLocaleDateString() : "N/A"}
+                  {date ? getAllTimes(date).formattedDate2 : "N/A"}
                 </span>
               ),
             },
@@ -233,11 +233,7 @@ function Weely4Page() {
               render: (text, record) => (
                 <span key={record?._id}>
                   {record?.isCompleted ? (
-                    // <Link to={`/weekly4form/report/${record?._id}`}>
-                    //   <Button variant="solid" color="primary" size="large">
-                    //     View Reports
-                    //   </Button>
-                    // </Link>
+                   
 
                     <Link to={`/weekly4form/report/${record._id}`}>
                       <button className="px-3 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors">
@@ -246,11 +242,7 @@ function Weely4Page() {
                     </Link>
                   ) : (
                     UserRole[2] === getUserId().access && (
-                      // <Link to={`/weekly4form/create/${record?._id}`}>
-                      //   <Button variant="link" color="primary" size="large">
-                      //     Continue Form
-                      //   </Button>
-                      // </Link>
+                     
 
                       <Link to={`/weekly4form/create/${record?._id}`}>
                         <button className="px-3 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors">

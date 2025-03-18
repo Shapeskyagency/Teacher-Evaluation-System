@@ -236,7 +236,7 @@ function NotebookPDF() {
           </Col>
 
           <Col md={6}>
-            <Card title="Teacher Reflation Feedback" className="mt-4">
+            <Card title="Teacher Reflection Feedback" className="mt-4">
               <p>{formDataList?.teacherReflationFeedback}</p>
             </Card>
           </Col>

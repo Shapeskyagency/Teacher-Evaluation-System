@@ -4,11 +4,10 @@ import {getUserId } from "./auth";
 import { Layout } from "antd";
 import Sidebar from "../Components/Sidebar";
 import Navbar from "../Components/Navbar";
-import MainFooter from "../Components/MainFooter";
 import { useDispatch } from "react-redux";
 import { getUserNotification } from "../redux/userSlice";
 
-const { Header, Footer, Sider, Content } = Layout;
+const { Header,  Sider, Content } = Layout;
 
 
 const DashboardLayout = () => {
@@ -48,9 +47,7 @@ const DashboardLayout = () => {
         <Content style={contentStyle}>
         <Outlet />
         </Content>
-        {/* <Footer style={footerStyle}>
-          <MainFooter/>
-        </Footer> */}
+        
       </Layout>
     </Layout>
     
@@ -90,12 +87,6 @@ const siderStyle = {
   zIndex: 999,
 };
 
-const footerStyle = {
-  textAlign: "center",
-  color: "#fff",
-  padding: "8px",
-  backgroundColor: "#4f6f52",
-};
 
 const layoutStyle = {
   width: "100%",

@@ -693,7 +693,7 @@ export const Formcolumns3 = [
     key: "grenralDetails",
     width:"180px",
     sorter: (a, b) => new Date(a.DateOfObservation) - new Date(b.grenralDetails.DateOfObservation),
-    render: (date) => <span>{date ? new Date(date?.DateOfObservation).toLocaleDateString() : "N/A"}</span>,
+    render: (date) => <span>{date ? getAllTimes(date?.DateOfObservation).formattedDate2 : "N/A"}</span>,
   },
   {
     title: "Teacher Status",
@@ -888,7 +888,7 @@ export const FormcolumnsForm1 = [
     key: "date",
     width:"120px",
     sorter: (a, b) => new Date(a.date) - new Date(b.date),
-    render: (date) => <span>{date ? new Date(date).toLocaleDateString() : "N/A"}</span>,
+    render: (date) => <span>{date ?  getAllTimes(date).formattedDate2 : "N/A"}</span>,
   },
   {
     title: "Teacher Status",

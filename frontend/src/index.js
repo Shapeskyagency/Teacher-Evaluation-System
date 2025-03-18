@@ -7,6 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 import {  ConfigProvider } from 'antd';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
+import './output.css';
 import 'react-loading-skeleton/dist/skeleton.css'
 import App from './App';
 
