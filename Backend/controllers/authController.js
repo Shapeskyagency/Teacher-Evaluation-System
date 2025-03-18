@@ -213,7 +213,7 @@ const getFillterForms = async (req, res) => {
             className: { $in: className }, // ✅ Use `$in` for array filtering
             createdAt: { $gte: from, $lte: to },
             isTeacherComplete: true,
-            isCoordinator: true,
+            isCoordinatorComplete: true,
             $or: [{ coordinatorID: userId }, { userId: userId }]
         }).populate("userId teacherID", "-password -mobile -employeeId");
 
@@ -236,14 +236,15 @@ const getFillterForms = async (req, res) => {
 
         const form4 = await Weekly4Form.find({
             createdAt: { $gte: from, $lte: to },
+            isCompleted:true
             // $or: [{ coordinatorID: userId }, { userID: userId }]
-        });
+        }).populate("teacherId userId", "-password -mobile -employeeId");
 
         res.json({
             form1,
             form2,
             form3,
-            // form4
+            form4
         });
 
     } catch (error) {

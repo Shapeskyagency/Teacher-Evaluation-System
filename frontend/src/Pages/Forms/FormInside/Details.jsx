@@ -172,12 +172,13 @@ const Details = () => {
     }
   
     
-  
+    setIsLoading(true);
     try {
       // Dispatch form submission
       const res = await dispatch(GetSingleFormComplete(payload));
-  
+      
       if (res.payload.message) {
+        setIsLoading(false);
         setAppnewData(res?.payload?.form);
         message.success("Form submitted successfully!");
         // Activity object
