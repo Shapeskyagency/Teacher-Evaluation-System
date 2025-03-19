@@ -283,6 +283,7 @@ export const Formcolumns1 = [
     title: UserRole[2] === Role ? "Observer Name" : "Teacher Name",
     dataIndex: "grenralDetails",
     key: "grenralDetails",
+    width:'160px',
     sorter: (a, b) => {
       const nameA = UserRole[2] === Role 
         ? (a?.createdBy?.name || "").toLowerCase() 
@@ -303,6 +304,7 @@ export const Formcolumns1 = [
     title: "Class Name",
     dataIndex: "grenralDetails",
     key: "className",
+    width:'150px',
     sorter: (a, b) =>
       (a?.grenralDetails?.className || "").localeCompare(b?.grenralDetails?.className || ""),
     render: (text) => <span>{text?.className}</span>,
@@ -311,6 +313,7 @@ export const Formcolumns1 = [
     title: "Section",
     dataIndex: "grenralDetails",
     key: "section",
+    width:'100px',
     sorter: (a, b) =>
       (a?.grenralDetails?.Section || "").localeCompare(b?.grenralDetails?.Section || ""),
     render: (text) => <span>{text?.Section}</span>,
@@ -319,6 +322,7 @@ export const Formcolumns1 = [
     title: "Subject",
     dataIndex: "grenralDetails",
     key: "subject",
+    width:'100px',
     sorter: (a, b) =>
       (a?.grenralDetails?.Subject || "").localeCompare(b?.grenralDetails?.Subject || ""),
     render: (text) => <span>{text?.Subject}</span>,
@@ -327,6 +331,7 @@ export const Formcolumns1 = [
     title: "Observation Date",
     dataIndex: "grenralDetails",
     key: "observationDate",
+    width:'160px',
     sorter: (a, b) => new Date(a?.grenralDetails?.DateOfObservation) - new Date(b?.grenralDetails?.DateOfObservation),
     render: (text) => <span>{getAllTimes(text?.DateOfObservation)?.formattedDate2}</span>,
   },
@@ -334,6 +339,7 @@ export const Formcolumns1 = [
     title: Role === UserRole[2] ? "Your Status" : "Teacher Status",
     dataIndex: "isTeacherCompletes",
     key: "isTeacherCompletes",
+    width:'160px',
     sorter: (a, b) => (a.isTeacherCompletes === b.isTeacherCompletes ? 0 : a.isTeacherCompletes ? -1 : 1),
     render: (isComplete) => (
       <span 
@@ -351,6 +357,7 @@ export const Formcolumns1 = [
     title: Role === UserRole[2] ? "Your Status" : "Observer Status",
     dataIndex: "isObserverCompleted",
     key: "isObserverCompleted",
+    width:'160px',
     sorter: (a, b) => (a.isObserverCompleted === b.isObserverCompleted ? 0 : a.isObserverCompleted ? -1 : 1),
     render: (isComplete) => (
       <span 
@@ -368,6 +375,7 @@ export const Formcolumns1 = [
     title: "Action",
     dataIndex: "action",
     key: "action",
+    width:'180px',
     render: (_, record) => (
       <Space size="middle">
         {(Role === UserRole[2] || Role === UserRole[1]) &&

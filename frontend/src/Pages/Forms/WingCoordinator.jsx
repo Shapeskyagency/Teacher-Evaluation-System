@@ -52,7 +52,7 @@ function WingCoordinator() {
               width: "160px",
               sorter: (a, b) =>
                 (a?.className || "").localeCompare(b?.className || ""),
-              render: (user,b) => <span>{user || "N/A"}</span>,
+              render: (user,b) => user?.map((item,index)=><span>{item || "N/A"} {user?.length !== index+1 && "-"} </span>),
             },
             {
               title: "Status",
