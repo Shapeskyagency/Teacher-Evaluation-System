@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 const { Title, Text } = Typography;
 function DashboardCard({stat, index}) {
   return (
-    <div className="col-lg-3 col-md-6 col-1 px-2 mb-3 flex">
+    <div className="col-lg-3 col-md-6 col-12 px-2 mb-3 flex">
         <Link to={stat.route} className='w-full flex text-decoration-none'>
         <div
       className="p-3 rounded-md w-100 "
