@@ -231,7 +231,7 @@ function Weely4Page() {
               key: "action",
               width: "200px",
               render: (text, record) => (
-                <span key={record?._id}>
+                <span key={record?._id} className="flex gap-3">
                   {record?.isCompleted ? (
                    
 
@@ -261,6 +261,17 @@ function Weely4Page() {
                       </Link>
                     )}
                  
+                 {getUserId().access === UserRole[1]&&   
+                               <Link
+                               to={`/delete/form4/${record._id}`}
+                             >
+                             <button
+                          className=" text-nowrap px-3 py-1 bg-red-50 text-red-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors"
+                        >
+                           Delete
+                        </button>
+                       </Link>
+                       }
                 </span>
               ),
             },

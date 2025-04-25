@@ -10,6 +10,7 @@ import './index.css';
 import './output.css';
 import 'react-loading-skeleton/dist/skeleton.css'
 import App from './App';
+import { ScoreContextProvider } from './Utils/ScoreContext';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -37,7 +38,9 @@ root.render(
         
       },
       }}>
+        <ScoreContextProvider>
         <App />
+        </ScoreContextProvider>
     </ConfigProvider>
     </BrowserRouter>
   </Provider>

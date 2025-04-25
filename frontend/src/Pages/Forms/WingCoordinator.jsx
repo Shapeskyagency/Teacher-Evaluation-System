@@ -108,6 +108,7 @@ function WingCoordinator() {
                   record;
                   if (isDraft && !isComplete) {
                   return(
+                    <>
                       <Link
                                 // className="btn text-primary"
                                 to={`/wing-coordinator/${record._id}`}
@@ -119,6 +120,18 @@ function WingCoordinator() {
                             </button>
                                
                               </Link>
+                              {getUserId().access === UserRole[1]&&   
+                                               <Link
+                                               to={`/delete/wing-coordinator/${record._id}`}
+                                             >
+                                             <button
+                                          className=" text-nowrap px-3 py-1 bg-red-50 text-red-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors"
+                                        >
+                                           Delete
+                                        </button>
+                                       </Link>
+                                       }
+                              </>
                   )
                   }
                 if (!isDraft && isComplete) {
@@ -145,9 +158,23 @@ function WingCoordinator() {
                   </button>
                        
                       </Link>
+
+                      {getUserId().access === UserRole[1]&&   
+                                               <Link
+                                               to={`/delete/wing-coordinator/${record._id}`}
+                                             >
+                                             <button
+                                          className=" text-nowrap px-3 py-1 bg-red-50 text-red-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors"
+                                        >
+                                           Delete
+                                        </button>
+                                       </Link>
+                                       }
                     </div>
                   );
                 }
+
+                
                 }
             },
           ]}

@@ -632,3 +632,9 @@ The Admin Team`;
       .json({ message: "Internal Server Error", error: error.message });
   }
 };
+
+
+
+exports.FormOneDelete = async (req,res)=>{
+  
+}

@@ -49,6 +49,7 @@ import TextBox from "../Pages/TextBox";
 import AdminReport from "../Pages/Admin/AdminReport";
 import ObserverReports from "../Pages/Observer/ObserverReports"
 import OB_Wing from "../Pages/Observer/Form/wing-coordinator/OB_Wing";
+import DeleteForm from "../Pages/Observer/DeleteForm";
 
 const role = getUserId()?.access;
 const isLoggedIn = getToken() !== null ? getToken() : null;
@@ -117,6 +118,7 @@ const protects = {
         { path: "/", element: <Navigate to="/dashboard" /> },
         { path: "/dashboard", element: <ObserverDashboard /> },
         { path: "/reports", element: <ObserverReports /> },
+        {path:"/delete/:name/:id",element:<DeleteForm/> },
         { path: '/fortnightly-monitor', element: <FortnightlyMonitor /> },
         { path: "/profile", element: <UserProfile /> },
         { path: '/fortnightly-monitor', element: <FortnightlyMonitor /> },

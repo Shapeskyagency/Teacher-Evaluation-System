@@ -4,13 +4,14 @@ import { useParams } from "react-router-dom";
 import { Button, Card, Spin, Table, Tag } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import { Container, Row, Col } from "react-bootstrap";
-import ReactPDF from "@react-pdf/renderer";
+import ReactPDF, { PDFViewer } from "@react-pdf/renderer";
 import Logo from "./Imgs/Logo.png";
 import LogoBanner from "./Imgs/image.png";
 import { GetNoteBookForm } from "../../redux/Form/noteBookSlice";
 import NoteBookDoc from "./Documents/NoteBookDoc";
 import { getAllTimes } from "../../Utils/auth";
 import DynamicScroreThree from "../../Components/DynamicScroreThree";
+import { useTeacherScores } from "../../Utils/ScoreContext";
 
 const TableCard = React.memo(({ title, dataSource }) => (
   <Card title={title} className="mt-4">
@@ -59,10 +60,11 @@ function NotebookPDF() {
   const { id: Id } = useParams();
   const dispatch = useDispatch();
   const { formDataList, isLoading } = useSelector((state) => state?.notebook);
-
+  // Use the context
+  const { scores } = useTeacherScores();
   const downloadPDF = useCallback(async () => {
     const blob = await ReactPDF.pdf(
-      <NoteBookDoc data={formDataList} />
+      <NoteBookDoc data={formDataList}  teacherScoreData={scores} />
     ).toBlob();
     const url = URL.createObjectURL(blob);
 
@@ -89,6 +91,8 @@ function NotebookPDF() {
     "Quality Of Learner",
   ];
 
+
+
   const getField = (field, type = "ObserverForm") =>
     formDataList?.[type]?.[field];
 
@@ -104,6 +108,9 @@ function NotebookPDF() {
       </Button>
 
       <Container className="justify-center items-start">
+      {/* <PDFViewer className="w-full h-[100dvh]">
+        <NoteBookDoc data={formDataList} teacherScoreData={scores}/>
+        </PDFViewer> */}
         <Row className="justify-content-start align-items-start">
           <Col xs={12} className="text-center mb-2 mt-2">
             <div className="d-flex flex-md-row align-items-center justify-content-center gap-2">
@@ -257,10 +264,12 @@ function NotebookPDF() {
             <DynamicScroreThree
               col={6}
               formName={formDataList?.TeacherForm}
+              type="TeacherForm"
               className="md:w-1/2"
             />
             <DynamicScroreThree
               col={6}
+                  type="ObserverForm"
               formName={formDataList?.ObserverForm}
               className="w-full md:w-1/2"
             />

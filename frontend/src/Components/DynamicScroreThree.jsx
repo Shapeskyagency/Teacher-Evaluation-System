@@ -1,74 +1,84 @@
 import { Card } from "antd";
 import React, { useEffect, useState } from "react";
 import { Col } from "react-bootstrap";
+import { useTeacherScores } from "../Utils/ScoreContext";
 
-function DynamicScroreThree({ col, formName }) {
+function DynamicScroreThree({ col, formName,type }) {
   const [totalScore, setTotalScore] = useState(0);
   const [numOfParameters, setNumOfParameters] = useState(0);
   const [percentageScore, setPercentageScore] = useState(0);
   const [getOutOfScore, setGetOutOfScore] = useState(0);
   const [grade, setGrade] = useState("");
+ // Use the context
+ const { updateScores } = useTeacherScores();
 
-  const validValues = ["1", "2", "3"];
-  const calculateSelfAssessmentScore = () => {
-    // // Array of keys to iterate over
-    const keyObject = [
-      "maintenanceOfNotebooks",
-      "qualityOfOppurtunities",
-      "qualityOfTeacherFeedback",
-      "qualityOfLearner",
-    ];
+ const validValues = ["1", "2", "3"];
+ const calculateSelfAssessmentScore = () => {
+   const keyObject = [
+     "maintenanceOfNotebooks",
+     "qualityOfOppurtunities",
+     "qualityOfTeacherFeedback",
+     "qualityOfLearner",
+   ];
 
-    const formValues = formName;
-    let totalScore = 0; // Total points scored
-    let outOfScore = 0; // Maximum possible score based on valid answers
-    let numOfParametersNA = 0; // Counter for "N/A" answers
+   const formValues = formName;
+   let totalScore = 0;
+   let outOfScore = 0;
+   let numOfParametersNA = 0;
 
-    keyObject.forEach((section) => {
-      if (formValues[section]) {
-        formValues[section].forEach((item) => {
-          const answer = item?.answer;
+   keyObject.forEach((section) => {
+     if (formValues[section]) {
+       formValues[section].forEach((item) => {
+         const answer = item?.answer;
 
-          // Only consider valid answers for both totalScore and outOfScore
-          if (validValues?.includes(answer)) {
-            totalScore += parseInt(answer, 10); // Accumulate score
-            outOfScore += 3; // Increment max score (4 points per question)
-          }
+         if (validValues.includes(answer)) {
+           totalScore += parseInt(answer, 10);
+           outOfScore += 3;
+         }
 
-          // Count "N/A" answers
-          if (["N/A", "NA", "N"].includes(answer)) {
-            numOfParametersNA++; // Increment the count for "N/A"
-          }
-        });
-      }
-    });
+         if (["N/A", "NA", "N"].includes(answer)) {
+           numOfParametersNA++;
+         }
+       });
+     }
+   });
 
-    setTotalScore(totalScore); // Set total score
-    setGetOutOfScore(outOfScore); // Set maximum possible score
-    setNumOfParameters(numOfParametersNA); // Update state with total "N/A" answers
+   const percentage = outOfScore > 0 ? (totalScore / outOfScore) * 100 : 0;
+   const formattedPercentage = parseFloat(percentage.toFixed(2));
+   const grade =
+     percentage >= 90
+       ? "A"
+       : percentage >= 80
+       ? "B"
+       : percentage >= 70
+       ? "C"
+       : percentage >= 60
+       ? "D"
+       : "F";
 
-    // Calculate percentage
-    const percentage = outOfScore > 0 ? (totalScore / outOfScore) * 100 : 0;
-    setPercentageScore(parseFloat(percentage.toFixed(2))); // Set percentage
+   setTotalScore(totalScore);
+   setGetOutOfScore(outOfScore);
+   setNumOfParameters(numOfParametersNA);
+   setPercentageScore(formattedPercentage);
+   setGrade(grade);
 
-    // Determine grade
-    const grade =
-      percentage >= 90
-        ? "A"
-        : percentage >= 80
-        ? "B"
-        : percentage >= 70
-        ? "C"
-        : percentage >= 60
-        ? "D"
-        : "F";
-    setGrade(grade); // Set grade
-  };
+   // Update the context state with the formName key, storing form data as an object
+   updateScores(type, {
+     totalScore,
+     outOfScore,
+     formattedPercentage,
+     grade,
+     numOfParametersNA,
+   });
+ };
+
+
   useEffect(() => {
     if (formName) {
       calculateSelfAssessmentScore();
     }
   }, [formName]);
+
   return (
     <Col md={col} className="mt-4">
       <Card>

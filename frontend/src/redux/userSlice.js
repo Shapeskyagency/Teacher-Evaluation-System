@@ -163,6 +163,38 @@ export const UserLogin = createAsyncThunk('UserLogin',async (payload) => {
     return response.data;
   })
 
+
+  // 🗑️ Delete Form1
+export const deleteForm1 = createAsyncThunk('deleteForm2', async (id) => {
+  const response = await axiosInstanceToken.delete(`/delete/form1/${id}`);
+  return response.data;
+});
+
+  // 🗑️ Delete Form2
+export const deleteForm2 = createAsyncThunk('deleteForm2', async (id) => {
+  const response = await axiosInstanceToken.delete(`/delete/form2/${id}`);
+  return response.data;
+});
+
+// 🗑️ Delete Form3
+export const deleteForm3 = createAsyncThunk('deleteForm3', async (id) => {
+  const response = await axiosInstanceToken.delete(`/delete/form3/${id}`);
+  return response.data;
+});
+
+// 🗑️ Delete Form4
+export const deleteForm4 = createAsyncThunk('deleteForm4', async (id) => {
+  const response = await axiosInstanceToken.delete(`/delete/form4/${id}`);
+  return response.data;
+});
+
+// 🗑️ Delete WingCoordinator
+export const deleteWingCoordinator = createAsyncThunk('deleteWingCoordinator', async (id) => {
+  const response = await axiosInstanceToken.delete(`/delete/wing-coordinator/${id}`);
+  return response.data;
+});
+
+
 const userSlice = createSlice({
   name: 'Users',
   initialState: {

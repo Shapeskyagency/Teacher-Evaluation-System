@@ -38,7 +38,7 @@ function Login() {
     if (!emailError && !passwordError) {
       // Proceed with login
 
-      dispatch(UserLogin({email:email, password:password})).then((res)=>{
+      dispatch(UserLogin({email:email.toLocaleLowerCase(), password:password})).then((res)=>{
         if(res?.payload?.token){
           localStorage.setItem("token",res?.payload?.token)
           message.success("Logging in...");

@@ -12,20 +12,26 @@ function CreateUserForm({ onOk, onCancel, Payload }) {
   const dispatch = useDispatch();
 
   const handleFinish = async (values) => {
-    setIsLoading(true); // Show loading state
+    setIsLoading(true);
     try {
-      // Dispatch API call and handle response
       const response = await dispatch(CreateUserList(values));
-      dispatch(GetUserList());
+  
+      if (response?.error) {
+        throw new Error(response.error.message || "Failed to create user");
+      }
+  
+      await dispatch(GetUserList());
       message.success("User created successfully");
-      form.resetFields(); // Reset form after submission
-      onOk(); // Notify parent about success
+      form.resetFields();
+      onOk?.(); // safe call
     } catch (error) {
-      message.error("Something went wrong. Please try again.");
+      console.error("Error creating user:", error);
+      message.error(error?.message || "Something went wrong. Please try again.");
     } finally {
-      setIsLoading(false); // Hide loading state
+      setIsLoading(false);
     }
   };
+  
 
   const handleSubmit = async () => {
     try {

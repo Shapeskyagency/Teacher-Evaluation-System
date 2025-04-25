@@ -280,7 +280,7 @@ export const columnsCreate = [
 
 export const Formcolumns1 = [
   {
-    title: UserRole[2] === Role ? "Observer Name" : "Teacher Name",
+    title: UserRole[2] === Role ? "Observer Name" : "Name of Teacher",
     dataIndex: "grenralDetails",
     key: "grenralDetails",
     width:'160px',
@@ -354,7 +354,7 @@ export const Formcolumns1 = [
     ),
   },
   {
-    title: Role === UserRole[2] ? "Your Status" : "Observer Status",
+    title: Role === UserRole[1] ? "Your Status" : "Observer Status",
     dataIndex: "isObserverCompleted",
     key: "isObserverCompleted",
     width:'160px',
@@ -375,7 +375,7 @@ export const Formcolumns1 = [
     title: "Action",
     dataIndex: "action",
     key: "action",
-    width:'180px',
+    width:'300px',
     render: (_, record) => (
       <Space size="middle">
         {(Role === UserRole[2] || Role === UserRole[1]) &&
@@ -408,6 +408,18 @@ export const Formcolumns1 = [
               Continue Form
             </Link>
           )}
+
+{Role === UserRole[1]&&   
+              <Link
+              to={`/delete/form2/${record._id}`}
+            >
+            <button
+         className="text-nowrap px-3 py-1 bg-red-50 text-red-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors"
+       >
+          Delete
+       </button>
+      </Link>
+      }
       </Space>
     ),
   },
@@ -773,7 +785,7 @@ export const Formcolumns3 = [
     title: "Action",
     dataIndex: "action",
     key: "action",
-    width:"200px",
+    width:"360px",
     render: (_, record) => (
       <Space size="middle">
         {(Role === UserRole[1] || Role === UserRole[2]) &&
@@ -840,6 +852,18 @@ export const Formcolumns3 = [
         {Role === UserRole[1] && !record?.isTeacherComplete && record?.isObserverComplete && (
           <Reminder id={record?._id} type={'form3'} />
         )}
+
+{Role === UserRole[1]&&   
+              <Link
+              to={`/delete/form3/${record._id}`}
+            >
+            <button
+         className="text-nowrap px-3 py-1 bg-red-50 text-red-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors"
+       >
+          Delete
+       </button>
+      </Link>
+      }
       </Space>
     ),
     width:'160px',
@@ -849,19 +873,6 @@ export const Formcolumns3 = [
 
 
 export const FormcolumnsForm1 = [
-  // {
-  //   title: UserRole[1] === Role ? "Teacher Name" : "Observer Name",
-  //   dataIndex: "teacherID",
-  //   key: "teacherID",
-  //   width:"160px",
-  //   render: (text, record) => (
-  //     <a>
-  //       {UserRole[1] === Role
-  //         ? record?.teacherID?.name || record?.userId?.name
-  //         : record?.coordinatorID?.name || record?.userId?.name}
-  //     </a>
-  //   ),
-  // },
   {
     title: UserRole[1] === Role ? "Teacher Name" : "Observer Name",
     dataIndex: UserRole[1] === Role ? "teacherID" : "coordinatorID",
@@ -946,12 +957,13 @@ export const FormcolumnsForm1 = [
     title: "Action",
     dataIndex: "action",
     key: "action",
-    width:"160px",
+    width:"300px",
     render: (_, record) => {
       const { isTeacherComplete, isCoordinatorComplete, isObserverInitiation } =
         record;
       const currentUserRole = getUserId()?.access;
 
+      
       if (isTeacherComplete && isCoordinatorComplete) {
         return (
           <div className="d-flex gap-1 justify-content-start align-items-center">
@@ -969,13 +981,24 @@ export const FormcolumnsForm1 = [
               to={`/fortnightly-monitor/edit/${record._id}`}
             >
               <button
-              
           className="text-nowrap px-3 py-1 bg-red-50 text-red-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors"
         >
           Edit
         </button>
+        </Link>
              
-            </Link>
+         
+            {currentUserRole === UserRole[1]&&   
+              <Link
+              to={`/delete/form1/${record._id}`}
+            >
+            <button
+         className="text-nowrap px-3 py-1 bg-red-50 text-red-600 hover:bg-blue-100 rounded-md text-sm font-medium transition-colors"
+       >
+          Delete
+       </button>
+      </Link>
+      }
           </div>
         );
       }
@@ -1050,6 +1073,8 @@ export const FormcolumnsForm1 = [
         );
       }
 
+     
+
       if (
         currentUserRole === UserRole[1] &&
         isTeacherComplete &&
@@ -1068,6 +1093,8 @@ export const FormcolumnsForm1 = [
           </Link>
         );
       }
+      
+      
 
       return null;
     },
